@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>VOC.SK – odborné časopisy, publikácie a vzdelávanie pre správu a techniku budov</title>
+<meta name="description" content="V.O.Č. SLOVAKIA vydáva časopisy Správca bytových domov a Plynár – vodár – kúrenár + klimatizácia, publikáciu Správca budov a organizuje odborné vzdelávanie.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:#FFFFFF;color:#04173A;font-family:Geist,system-ui,sans-serif;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+*,*::before,*::after{box-sizing:border-box}
+a{color:#0A5FD8;text-underline-offset:3px;transition:color .15s ease,background-color .15s ease,border-color .15s ease,transform .2s ease}
+a:hover{color:#006FE8}
+button{transition:background-color .15s ease,color .15s ease}
+:focus-visible{outline:3px solid #00C2E8;outline-offset:3px}
+img{display:block;max-width:100%}
+@keyframes vocmarq{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+<script src="./image-slot.js"></script>
+</helmet>
+
+<a href="#obsah" style="position:absolute;left:-9999px;top:8px;z-index:100;background:#04173A;color:#FFFFFF;padding:12px 16px;font-weight:700" style-focus="left:16px">Preskočiť na obsah</a>
+
+<header style="position:fixed;left:0;right:0;top:0;z-index:60;background:{{ navBg }};border-bottom:1px solid {{ navLine }};transition:background-color .25s ease,border-color .25s ease">
+  <div style="max-width:1400px;margin:0 auto;padding:0 clamp(20px,3vw,48px);height:76px;display:flex;align-items:center;gap:28px">
+    <a href="https://voc.sk/" aria-label="VOC.SK – úvodná stránka" style="display:flex;align-items:center;min-height:44px;flex:0 0 auto">
+      <img src="https://voc.sk/wp-content/uploads/VOCslovakiawhite.png" alt="V.O.Č. SLOVAKIA" width="2188" height="351" style="height:26px;width:auto">
+    </a>
+    <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+      <nav aria-label="Hlavná navigácia" style="margin:0 auto">
+        <ul style="list-style:none;margin:0;padding:0;display:flex;gap:4px">
+          <li><a href="#casopisy" style="display:flex;align-items:center;min-height:44px;padding:0 14px;color:#FFFFFF;text-decoration:none;font-weight:500;font-size:15px;border-radius:999px" style-hover="background:rgba(255,255,255,.12);color:#FFFFFF">Časopisy</a></li>
+          <li><a href="#temy" style="display:flex;align-items:center;min-height:44px;padding:0 14px;color:#FFFFFF;text-decoration:none;font-weight:500;font-size:15px;border-radius:999px" style-hover="background:rgba(255,255,255,.12);color:#FFFFFF">Témy</a></li>
+          <li><a href="#vzdelavanie" style="display:flex;align-items:center;min-height:44px;padding:0 14px;color:#FFFFFF;text-decoration:none;font-weight:500;font-size:15px;border-radius:999px" style-hover="background:rgba(255,255,255,.12);color:#FFFFFF">Vzdelávanie</a></li>
+          <li><a href="#inzercia" style="display:flex;align-items:center;min-height:44px;padding:0 14px;color:#FFFFFF;text-decoration:none;font-weight:500;font-size:15px;border-radius:999px" style-hover="background:rgba(255,255,255,.12);color:#FFFFFF">Inzercia</a></li>
+          <li><a href="#archiv" style="display:flex;align-items:center;min-height:44px;padding:0 14px;color:#FFFFFF;text-decoration:none;font-weight:500;font-size:15px;border-radius:999px" style-hover="background:rgba(255,255,255,.12);color:#FFFFFF">Archív</a></li>
+          <li><a href="#kontakt" style="display:flex;align-items:center;min-height:44px;padding:0 14px;color:#FFFFFF;text-decoration:none;font-weight:500;font-size:15px;border-radius:999px" style-hover="background:rgba(255,255,255,.12);color:#FFFFFF">Kontakt</a></li>
+        </ul>
+      </nav>
+      <a href="mailto:voc@voc.sk?subject=Inzercia" style="display:inline-flex;align-items:center;gap:8px;height:46px;padding:0 20px;background:#FFFFFF;color:#04173A;text-decoration:none;font-weight:600;font-size:15px;border-radius:999px;white-space:nowrap" style-hover="background:#00C2E8;color:#04173A">Inzerovať u nás ↗</a>
+    </sc-if>
+    <sc-if value="{{ narrow }}" hint-placeholder-val="{{ false }}">
+      <button type="button" onClick="{{ toggleMenu }}" aria-expanded="{{ menuOpenStr }}" aria-controls="mobilne-menu" style="margin-left:auto;height:46px;padding:0 18px;display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.14);border:0;border-radius:999px;font:600 15px/1 Geist,system-ui,sans-serif;color:#FFFFFF;cursor:pointer">
+        <span aria-hidden="true" style="display:grid;gap:4px;width:16px"><span style="height:2px;background:#FFFFFF"></span><span style="height:2px;background:#FFFFFF"></span></span>{{ menuLabel }}
+      </button>
+    </sc-if>
+  </div>
+  <sc-if value="{{ mobileMenuVisible }}" hint-placeholder-val="{{ false }}">
+    <nav id="mobilne-menu" aria-label="Hlavná navigácia" style="background:#04173A;border-top:1px solid rgba(255,255,255,.12)">
+      <ul style="list-style:none;margin:0;padding:8px clamp(20px,3vw,48px) 24px;display:grid">
+        <li style="border-bottom:1px solid rgba(255,255,255,.12)"><a href="#casopisy" onClick="{{ closeMenu }}" style="display:flex;align-items:center;min-height:56px;color:#FFFFFF;text-decoration:none;font-weight:600;font-size:20px">Časopisy</a></li>
+        <li style="border-bottom:1px solid rgba(255,255,255,.12)"><a href="#temy" onClick="{{ closeMenu }}" style="display:flex;align-items:center;min-height:56px;color:#FFFFFF;text-decoration:none;font-weight:600;font-size:20px">Témy</a></li>
+        <li style="border-bottom:1px solid rgba(255,255,255,.12)"><a href="#vzdelavanie" onClick="{{ closeMenu }}" style="display:flex;align-items:center;min-height:56px;color:#FFFFFF;text-decoration:none;font-weight:600;font-size:20px">Vzdelávanie</a></li>
+        <li style="border-bottom:1px solid rgba(255,255,255,.12)"><a href="#inzercia" onClick="{{ closeMenu }}" style="display:flex;align-items:center;min-height:56px;color:#FFFFFF;text-decoration:none;font-weight:600;font-size:20px">Inzercia</a></li>
+        <li style="border-bottom:1px solid rgba(255,255,255,.12)"><a href="#archiv" onClick="{{ closeMenu }}" style="display:flex;align-items:center;min-height:56px;color:#FFFFFF;text-decoration:none;font-weight:600;font-size:20px">Archív</a></li>
+        <li style="border-bottom:1px solid rgba(255,255,255,.12)"><a href="#kontakt" onClick="{{ closeMenu }}" style="display:flex;align-items:center;min-height:56px;color:#FFFFFF;text-decoration:none;font-weight:600;font-size:20px">Kontakt</a></li>
+        <li style="padding-top:18px"><a href="mailto:voc@voc.sk?subject=Inzercia" style="display:flex;align-items:center;justify-content:center;min-height:54px;background:#FFFFFF;color:#04173A;text-decoration:none;font-weight:600;font-size:17px;border-radius:999px">Inzerovať u nás</a></li>
+      </ul>
+    </nav>
+  </sc-if>
+</header>
+
+<main id="obsah">
+
+<div style="display:flex;flex-direction:column;min-height:max(100svh,720px)">
+<section aria-labelledby="hero-nadpis" style="position:relative;flex:1 1 auto;width:100%;overflow:hidden;background:#04173A;color:#FFFFFF;display:flex;flex-direction:column;justify-content:center;padding-top:76px" data-screen-label="Hero video">
+  <div style="position:absolute;inset:0">
+    <sc-if value="{{ hasVideo }}" hint-placeholder-val="{{ false }}">{{ videoEl }}</sc-if>
+    <sc-if value="{{ noVideo }}" hint-placeholder-val="{{ true }}"><img src="https://unsplash.com/photos/9NNAR40GXVM/download?w=2400" alt="" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"></sc-if>
+  </div>
+  <div aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(4,23,58,.55) 0%,rgba(4,23,58,.1) 30%,rgba(4,23,58,.35) 60%,rgba(4,23,58,.92) 100%)"></div>
+  <div style="position:relative;width:100%;max-width:1400px;margin:0 auto;padding:clamp(40px,5vw,64px) clamp(20px,3vw,48px);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:40px 64px;pointer-events:none">
+    <div style="flex:1 1 560px;min-width:0;max-width:860px;pointer-events:auto">
+      <h1 id="hero-nadpis" style="margin:0;font-size:clamp(44px,6.6vw,104px);line-height:.98;font-weight:700;letter-spacing:-0.04em;text-wrap:balance">Odborný svet budov na jednom mieste.</h1>
+      <p style="margin:24px 0 0;font-size:clamp(17px,1.5vw,21px);line-height:1.5;color:#D2DEEE;max-width:44ch;text-wrap:pretty">Časopisy, publikácie a odborné vzdelávanie pre správcov budov a profesionálov v oblasti technických zariadení budov.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:36px">
+        <a href="#casopisy" style="display:inline-flex;align-items:center;gap:12px;height:56px;padding:0 28px;background:#FFFFFF;color:#04173A;text-decoration:none;font-weight:600;font-size:16px;border-radius:999px;white-space:nowrap" style-hover="background:#00C2E8;color:#04173A">Objaviť časopisy <span aria-hidden="true">↓</span></a>
+        <a href="https://voc.sk/uvod/o-nas/" style="display:inline-flex;align-items:center;height:56px;padding:0 28px;border:1px solid rgba(255,255,255,.45);color:#FFFFFF;text-decoration:none;font-weight:600;font-size:16px;border-radius:999px;white-space:nowrap" style-hover="background:rgba(255,255,255,.12);color:#FFFFFF">Spoznať VOC.SK</a>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px 16px;margin-top:36px">
+        <div style="display:flex"><div style="position:relative;width:44px;height:44px;border-radius:50%;overflow:hidden;border:2px solid #04173A;background:#2A4468;z-index:3"><span aria-hidden="true" style="position:absolute;inset:0;display:grid;place-items:center;font-size:14px;font-weight:600;color:#FFFFFF;background:#2A4468">MK</span><span aria-hidden="true" style="position:absolute;inset:0;background-image:{{ av1 }};background-size:cover;background-position:center"></span></div><div style="position:relative;width:44px;height:44px;border-radius:50%;overflow:hidden;border:2px solid #04173A;background:#2A4468;margin-left:-12px;z-index:2"><span aria-hidden="true" style="position:absolute;inset:0;display:grid;place-items:center;font-size:14px;font-weight:600;color:#FFFFFF;background:#0B7A5E">JH</span><span aria-hidden="true" style="position:absolute;inset:0;background-image:{{ av2 }};background-size:cover;background-position:center"></span></div><div style="position:relative;width:44px;height:44px;border-radius:50%;overflow:hidden;border:2px solid #04173A;background:#2A4468;margin-left:-12px;z-index:1"><span aria-hidden="true" style="position:absolute;inset:0;display:grid;place-items:center;font-size:14px;font-weight:600;color:#FFFFFF;background:#00708C">PS</span><span aria-hidden="true" style="position:absolute;inset:0;background-image:{{ av3 }};background-size:cover;background-position:center"></span></div></div>
+        <div>
+          <p role="img" aria-label="Hodnotenie 5 z 5" style="margin:0;font-size:16px;line-height:1;letter-spacing:2px;color:#FFC24B">★★★★★</p>
+          <p style="margin:6px 0 0;font-size:15px;line-height:1.3;color:#D2DEEE">Číta nás viac ako <strong style="color:#FFFFFF;font-weight:600">10 000</strong> odborníkov z praxe</p>
+        </div>
+      </div>
+    </div>
+    <sc-if value="{{ wide }}" hint-placeholder-val="{{ true }}">
+      <div role="group" aria-label="Aktuálne čísla" style="flex:0 0 auto;position:relative;width:clamp(340px,34vw,540px);aspect-ratio:1/1.02;pointer-events:auto">
+        <a href="https://voc.sk/spravca-bytovych-domov/zakladne-informacie/" aria-label="Správca bytových domov 2/2026" style="position:absolute;left:0;top:0;width:60%;display:block;transform:rotate(-8deg);z-index:1" style-hover="transform:rotate(-5deg) translateY(-8px)">
+          <img src="https://voc.sk/wp-content/uploads/SBD2_2026-pdf-image.jpg" alt="" width="595" height="842" style="width:100%;height:auto;aspect-ratio:595/842;border-radius:6px;box-shadow:0 40px 70px -26px rgba(0,0,0,.75);filter:brightness(.9)">
+        </a>
+        <a href="https://voc.sk/plynar-vodar-kurenar-klimatizacia/zakladne-informacie/" aria-label="Plynár – vodár – kúrenár + klimatizácia 4/2026" style="position:absolute;right:0;bottom:0;width:62%;display:block;transform:rotate(4deg);z-index:2" style-hover="transform:rotate(2deg) translateY(-8px)">
+          <img src="https://voc.sk/wp-content/uploads/PVK4_2026-pdf-image.jpg" alt="" width="595" height="842" style="width:100%;height:auto;aspect-ratio:595/842;border-radius:6px;box-shadow:0 50px 90px -30px rgba(0,0,0,.85)">
+        </a>
+      </div>
+    </sc-if>
+  </div>
+</section>
+
+<section aria-label="Partneri a inzerenti" style="background:#FFFFFF;padding:40px 0;overflow:hidden" data-screen-label="Partneri">
+  <p style="margin:0 auto 28px;max-width:1400px;padding:0 clamp(20px,3vw,48px);text-align:center;font-size:14px;font-weight:600;letter-spacing:.16em;color:#7D8FA5">INZERUJÚ U NÁS</p>
+  <div style="-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)">{{ marquee }}</div>
+</section>
+</div>
+
+<section aria-label="VOC.SK v číslach" style="background:linear-gradient(135deg,#0A2F6E 0%,#04173A 70%);color:#FFFFFF" data-screen-label="Štatistiky">
+  <div ref="{{ statsRef }}" style="max-width:1400px;margin:0 auto;padding:clamp(56px,6vw,96px) clamp(20px,3vw,48px);display:grid;grid-template-columns:{{ statCols }};gap:48px 0">
+    <div style="padding:0 clamp(16px,2.5vw,40px);border-left:{{ sb0 }};text-align:center">
+      <p style="margin:0;font-size:clamp(48px,4.8vw,76px);line-height:.95;font-weight:700;letter-spacing:-0.045em;color:#FFFFFF">{{ st0 }}+</p>
+      <p style="margin:16px 0 0;font-size:16px;color:#A9B9CC">rokov odborného publikovania</p>
+    </div>
+    <div style="padding:0 clamp(16px,2.5vw,40px);border-left:{{ sb1 }};text-align:center">
+      <p style="margin:0;font-size:clamp(48px,4.8vw,76px);line-height:.95;font-weight:700;letter-spacing:-0.045em;color:#FFFFFF">{{ st1 }}</p>
+      <p style="margin:16px 0 0;font-size:16px;color:#A9B9CC">recenzované odborné časopisy</p>
+    </div>
+    <div style="padding:0 clamp(16px,2.5vw,40px);border-left:{{ sb2 }};text-align:center">
+      <p style="margin:0;font-size:clamp(48px,4.8vw,76px);line-height:.95;font-weight:700;letter-spacing:-0.045em;color:#FFFFFF">{{ st2 }}×</p>
+      <p style="margin:16px 0 0;font-size:16px;color:#A9B9CC">vydania ročne každého titulu</p>
+    </div>
+    <div style="padding:0 clamp(16px,2.5vw,40px);border-left:{{ sb3 }};text-align:center">
+      <p style="margin:0;font-size:clamp(48px,4.8vw,76px);line-height:.95;font-weight:700;letter-spacing:-0.045em;color:#FFFFFF">{{ st3 }} h</p>
+      <p style="margin:16px 0 0;font-size:16px;color:#A9B9CC">akreditovaného kurzu pre správcov</p>
+    </div>
+  </div>
+</section>
+
+<section id="casopisy" aria-labelledby="casopisy-nadpis" style="max-width:1400px;margin:0 auto;padding:clamp(96px,11vw,160px) clamp(20px,3vw,48px) 0;scroll-margin-top:76px" data-screen-label="Časopisy">
+  <div style="text-align:center;max-width:980px;margin:0 auto">
+    <h2 id="casopisy-nadpis" style="margin:0 auto;font-size:clamp(40px,5.4vw,84px);line-height:.98;font-weight:700;letter-spacing:-0.04em;text-wrap:balance;max-width:16ch">Vždy o krok vpred v správe a technike budov.</h2>
+    <p style="margin:28px auto 0;font-size:clamp(17px,1.5vw,20px);color:#4A5B70;max-width:60ch;text-wrap:pretty">Či spravujete bytový dom, navrhujete vykurovanie, montujete rozvody vody a plynu, alebo servisujete klimatizáciu — v každom čísle nájdete legislatívu, technológie, produkty a skúsenosti z praxe, ktoré vás posunú ďalej.</p>
+  </div>
+
+  <div style="margin-top:clamp(56px,7vw,104px);display:grid;grid-template-columns:{{ twoCols }};gap:clamp(72px,8vw,120px) clamp(32px,5vw,80px)">
+    <article aria-labelledby="sbd-nadpis" style="display:flex;flex-direction:column;align-items:center;text-align:center;height:100%">
+      <a href="https://voc.sk/spravca-bytovych-domov/zakladne-informacie/" tabindex="-1" aria-hidden="true" style="position:relative;display:block;width:100%;max-width:560px;aspect-ratio:1/0.82" style-hover="transform:translateY(-6px)">
+        <img src="https://voc.sk/wp-content/uploads/SBD4_2025-pdf-image.jpg" alt="" width="595" height="842" loading="lazy" style="position:absolute;left:8%;top:14%;width:32%;height:auto;aspect-ratio:595/842;border-radius:4px;transform:rotate(-9deg);box-shadow:0 24px 44px -22px rgba(4,23,58,.55)">
+        <img src="https://voc.sk/wp-content/uploads/SBD1_2026-pdf-image.jpg" alt="" width="595" height="842" loading="lazy" style="position:absolute;right:8%;top:14%;width:32%;height:auto;aspect-ratio:595/842;border-radius:4px;transform:rotate(9deg);box-shadow:0 24px 44px -22px rgba(4,23,58,.55)">
+        <img src="https://voc.sk/wp-content/uploads/SBD2_2026-pdf-image.jpg" alt="" width="595" height="842" loading="lazy" style="position:absolute;left:50%;top:0;width:42%;height:auto;aspect-ratio:595/842;border-radius:4px;transform:translateX(-50%);box-shadow:0 44px 70px -30px rgba(4,23,58,.65)">
+      </a>
+      <p style="margin:36px 0 0;font-size:15px;font-weight:600;color:#0B7A5E">Pre správcov bytových domov</p>
+      <h3 id="sbd-nadpis" style="margin:10px 0 0;font-size:clamp(28px,2.8vw,42px);line-height:1.05;min-height:{{ magTitleMin }};display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:-0.03em;text-wrap:balance">Správca bytových domov</h3>
+      <p style="margin:14px 0 0;font-size:18px;color:#4A5B70;max-width:40ch;min-height:{{ magTextMin }};text-wrap:pretty">, energie a technika bytových domov v recenzovanom odbornom časopise.</p>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:12px 24px;margin-top:auto;padding-top:28px">
+        <a href="https://voc.sk/spravca-bytovych-domov/zakladne-informacie/" style="display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 24px;background:#04173A;color:#FFFFFF;text-decoration:none;font-weight:600;font-size:15px;border-radius:999px;white-space:nowrap" style-hover="background:#006FE8;color:#FFFFFF">Otvoriť časopis →</a>
+        <a href="https://voc.sk/wp-content/uploads/SBD2_2026.pdf" style="font-weight:600;font-size:15px">Ukážka čísla 2/2026</a>
+      </div>
+    </article>
+    <article aria-labelledby="pvk-nadpis" style="display:flex;flex-direction:column;align-items:center;text-align:center;height:100%">
+      <a href="https://voc.sk/plynar-vodar-kurenar-klimatizacia/zakladne-informacie/" tabindex="-1" aria-hidden="true" style="position:relative;display:block;width:100%;max-width:560px;aspect-ratio:1/0.82" style-hover="transform:translateY(-6px)">
+        <img src="https://voc.sk/wp-content/uploads/PVK2_2026-pdf-image.jpg" alt="" width="595" height="842" loading="lazy" style="position:absolute;left:8%;top:14%;width:32%;height:auto;aspect-ratio:595/842;border-radius:4px;transform:rotate(-9deg);box-shadow:0 24px 44px -22px rgba(4,23,58,.55)">
+        <img src="https://voc.sk/wp-content/uploads/PVK3_2026-pdf-image.jpg" alt="" width="595" height="842" loading="lazy" style="position:absolute;right:8%;top:14%;width:32%;height:auto;aspect-ratio:595/842;border-radius:4px;transform:rotate(9deg);box-shadow:0 24px 44px -22px rgba(4,23,58,.55)">
+        <img src="https://voc.sk/wp-content/uploads/PVK4_2026-pdf-image.jpg" alt="" width="595" height="842" loading="lazy" style="position:absolute;left:50%;top:0;width:42%;height:auto;aspect-ratio:595/842;border-radius:4px;transform:translateX(-50%);box-shadow:0 44px 70px -30px rgba(4,23,58,.65)">
+      </a>
+      <p style="margin:36px 0 0;font-size:15px;font-weight:600;color:#00708C">Pre profesie TZB</p>
+      <h3 id="pvk-nadpis" style="margin:10px 0 0;font-size:clamp(28px,2.8vw,42px);line-height:1.05;min-height:{{ magTitleMin }};display:flex;align-items:center;justify-content:center;font-weight:700;letter-spacing:-0.03em;text-wrap:balance">Plynár – Vodár – Kúrenár + Klimatizácia</h3>
+      <p style="margin:14px 0 0;font-size:18px;color:#4A5B70;max-width:40ch;min-height:{{ magTextMin }};text-wrap:pretty">, plyn, klimatizácia a vzduchotechnika vo vedecko-odbornom časopise.</p>
+      <div style="display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:12px 24px;margin-top:auto;padding-top:28px">
+        <a href="https://voc.sk/plynar-vodar-kurenar-klimatizacia/zakladne-informacie/" style="display:inline-flex;align-items:center;gap:10px;height:52px;padding:0 24px;background:#04173A;color:#FFFFFF;text-decoration:none;font-weight:600;font-size:15px;border-radius:999px;white-space:nowrap" style-hover="background:#006FE8;color:#FFFFFF">Otvoriť časopis →</a>
+        <a href="https://voc.sk/wp-content/uploads/PVK4_2026.pdf" style="font-weight:600;font-size:15px">Ukážka čísla 4/2026</a>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section aria-labelledby="onas-veta" style="position:relative;overflow:hidden;margin-top:clamp(112px,12vw,176px);background:#04173A;color:#FFFFFF" data-screen-label="O nás">
+  <img src="https://unsplash.com/photos/pQVGCKktYUY/download?w=2400" alt="" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.35;filter:grayscale(1)">
+  <div aria-hidden="true" style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(4,23,58,.95) 0%,rgba(4,23,58,.72) 60%,rgba(4,23,58,.5) 100%)"></div>
+  <div style="position:relative;max-width:1400px;margin:0 auto;padding:clamp(112px,13vw,200px) clamp(20px,3vw,48px)">
+    <p id="onas-veta" style="margin:0;font-size:clamp(30px,3.9vw,62px);line-height:1.16;font-weight:400;letter-spacing:-0.03em;max-width:22em;text-wrap:pretty;color:#B9C8DA">Viac ako <strong style="font-weight:700;color:#FFFFFF">20 rokov</strong> prinášame správcom budov a profesiám TZB <strong style="font-weight:700;color:#4DA3FF">overené odborné informácie</strong> — recenzované, z praxe a vždy <strong style="font-weight:700;color:#FFFFFF">o krok pred zmenami</strong> v legislatíve a technológiách.</p>
+    <a href="https://voc.sk/uvod/o-nas/" style="margin-top:clamp(40px,5vw,64px);display:inline-flex;align-items:center;gap:12px;height:54px;padding:0 26px;border:1px solid rgba(255,255,255,.4);border-radius:999px;font-size:16px;font-weight:600;color:#FFFFFF;text-decoration:none" style-hover="background:#FFFFFF;color:#04173A">Spoznať vydavateľstvo →</a>
+  </div>
+</section>
+
+<section id="temy" aria-labelledby="temy-nadpis" style="max-width:1400px;margin:0 auto;padding:clamp(96px,11vw,160px) clamp(20px,3vw,48px) 0;scroll-margin-top:76px" data-screen-label="Témy">
+  <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px 64px">
+    <div>
+      <p style="margin:0;font-size:15px;font-weight:600;color:#006FE8">Prečo nás čítať</p>
+      <h2 id="temy-nadpis" style="margin:12px 0 0;font-size:clamp(36px,4.4vw,64px);line-height:1;font-weight:700;letter-spacing:-0.035em;max-width:14ch;text-wrap:balance">Čo nájdete v časopisoch</h2>
+    </div>
+    <p style="margin:0;font-size:18px;color:#4A5B70;max-width:40ch;text-wrap:pretty">Informácie, ktoré šetria čas, peniaze a starosti — v každom čísle.</p>
+  </div>
+  <div style="margin-top:clamp(40px,5vw,64px);display:grid;grid-template-columns:{{ topicCols }};gap:20px">
+    <article style="position:relative;aspect-ratio:4/5;border-radius:28px;overflow:hidden;background:#04173A;color:#FFFFFF">
+      <img src="https://unsplash.com/photos/NkhK9J-0DaI/download?w=1200" alt="Čitateľ s časopisom" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+      <div aria-hidden="true" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,23,58,0) 30%,rgba(4,23,58,.55) 60%,rgba(4,23,58,.95) 100%)"></div>
+      <div style="position:absolute;left:0;right:0;bottom:0;padding:clamp(28px,3vw,40px)">
+        <p style="margin:0;font-size:15px;font-weight:600;color:#7FB6FF">01</p>
+        <h3 style="margin:10px 0 0;font-size:clamp(26px,2.4vw,36px);line-height:1.08;font-weight:700;letter-spacing:-0.03em;text-wrap:balance">Legislatíva zrozumiteľne</h3>
+        <p style="margin:12px 0 0;font-size:16px;line-height:1.55;color:#D3DDEA;max-width:34ch;text-wrap:pretty">Zmeny zákonov a noriem vysvetlené odborníkmi — skôr, než začnú platiť.</p>
+      </div>
+    </article>
+    <article style="position:relative;aspect-ratio:4/5;border-radius:28px;overflow:hidden;background:#04173A;color:#FFFFFF">
+      <img src="https://unsplash.com/photos/4VCm8l6wLQY/download?w=1200" alt="Tepelné čerpadlo pri obnovenom dome" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+      <div aria-hidden="true" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,23,58,0) 30%,rgba(4,23,58,.55) 60%,rgba(4,23,58,.95) 100%)"></div>
+      <div style="position:absolute;left:0;right:0;bottom:0;padding:clamp(28px,3vw,40px)">
+        <p style="margin:0;font-size:15px;font-weight:600;color:#7FB6FF">02</p>
+        <h3 style="margin:10px 0 0;font-size:clamp(26px,2.4vw,36px);line-height:1.08;font-weight:700;letter-spacing:-0.03em;text-wrap:balance">Overené technológie</h3>
+        <p style="margin:12px 0 0;font-size:16px;line-height:1.55;color:#D3DDEA;max-width:34ch;text-wrap:pretty">Tepelné čerpadlá, OZE a obnova domov. Riešenia s dátami z praxe, nie z prospektov.</p>
+      </div>
+    </article>
+    <article style="position:relative;aspect-ratio:4/5;border-radius:28px;overflow:hidden;background:#04173A;color:#FFFFFF">
+      <img src="https://unsplash.com/photos/AsxOJcsaR4g/download?w=1200" alt="Rečník na odbornom podujatí" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+      <div aria-hidden="true" style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(4,23,58,0) 30%,rgba(4,23,58,.55) 60%,rgba(4,23,58,.95) 100%)"></div>
+      <div style="position:absolute;left:0;right:0;bottom:0;padding:clamp(28px,3vw,40px)">
+        <p style="margin:0;font-size:15px;font-weight:600;color:#7FB6FF">03</p>
+        <h3 style="margin:10px 0 0;font-size:clamp(26px,2.4vw,36px);line-height:1.08;font-weight:700;letter-spacing:-0.03em;text-wrap:balance">Produkty, veľtrhy a ocenenia</h3>
+        <p style="margin:12px 0 0;font-size:16px;line-height:1.55;color:#D3DDEA;max-width:34ch;text-wrap:pretty">Novinky výrobcov, reportáže z Infothermy či Aquathermu a ocenenie Firma časopisu.</p>
+      </div>
+    </article>
+  </div>
+  <div style="margin-top:clamp(56px,6vw,88px);background:linear-gradient(135deg,#0A2F6E 0%,#04173A 75%);color:#FFFFFF;border-radius:28px;padding:clamp(32px,4vw,52px) clamp(28px,4vw,56px);display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px 48px">
+    <div style="flex:1 1 420px;min-width:0">
+      <p style="margin:0;font-size:14px;font-weight:600;color:#7FB6FF">Predplatné</p>
+      <h2 style="margin:8px 0 0;font-size:clamp(26px,2.6vw,38px);line-height:1.1;font-weight:700;letter-spacing:-0.025em;text-wrap:balance">Majte každé nové číslo medzi prvými.</h2>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px">
+      <a href="https://voc.sk/spravca-bytovych-domov/zakladne-informacie/" style="display:inline-flex;align-items:center;height:52px;padding:0 22px;background:#FFFFFF;color:#04173A;text-decoration:none;font-weight:600;font-size:15px;border-radius:999px;white-space:nowrap" style-hover="background:#1CC49A;color:#04173A">Predplatiť SBD</a>
+      <a href="https://voc.sk/plynar-vodar-kurenar-klimatizacia/zakladne-informacie/" style="display:inline-flex;align-items:center;height:52px;padding:0 22px;background:#FFFFFF;color:#04173A;text-decoration:none;font-weight:600;font-size:15px;border-radius:999px;white-space:nowrap" style-hover="background:#00C2E8;color:#04173A">Predplatiť PVK</a>
+    </div>
+  </div>
+</section>
+
+<section aria-label="Pre koho píšeme" style="position:relative;overflow:hidden;margin-top:clamp(112px,12vw,176px);min-height:min(88vh,860px);display:flex;align-items:flex-end;background:#04173A;color:#FFFFFF" data-screen-label="Obrazový predel">
+  <img src="https://unsplash.com/photos/FgV9cfdZ6Ng/download?w=2400" alt="Fasáda bytového domu s balkónmi" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 30%">
+  <div aria-hidden="true" style="position:absolute;inset:0;background:linear-gradient(0deg,rgba(4,23,58,.9) 0%,rgba(4,23,58,.25) 55%,rgba(4,23,58,.1) 100%)"></div>
+  <div style="position:relative;width:100%;max-width:1400px;margin:0 auto;padding:clamp(56px,7vw,112px) clamp(20px,3vw,48px)">
+    <p style="margin:0;font-size:clamp(34px,4.6vw,76px);line-height:1.02;font-weight:700;letter-spacing:-0.04em;max-width:15em;text-wrap:balance">Pre tých, ktorí budovy <span style="color:#4DA3FF">spravujú, navrhujú a udržiavajú.</span></p>
+  </div>
+</section>
+
+<section id="pre-koho" aria-labelledby="role-nadpis" style="max-width:1400px;margin:0 auto;padding:clamp(88px,10vw,150px) clamp(20px,3vw,48px) 0;scroll-margin-top:76px" data-screen-label="Pre koho">
+  <div style="display:flex;flex-direction:column;align-items:center;text-align:center">
+    <p style="margin:0;font-size:15px;font-weight:600;color:#006FE8">Pre koho</p>
+    <h2 id="role-nadpis" style="margin:12px 0 0;font-size:clamp(36px,4.4vw,64px);line-height:1;font-weight:700;letter-spacing:-0.035em">Čo hľadáte vy?</h2>
+    <div role="tablist" aria-label="Vyberte, kto ste" style="margin-top:32px;display:flex;flex-wrap:wrap;justify-content:center;gap:6px;padding:6px;background:#F3F6FA;border-radius:999px">
+      <button type="button" role="tab" aria-selected="{{ ts0 }}" onClick="{{ pick0 }}" style="height:48px;padding:0 22px;border:0;border-radius:999px;background:{{ tb0 }};color:{{ tf0 }};font:600 15px/1 Geist,system-ui,sans-serif;cursor:pointer;white-space:nowrap;box-shadow:{{ tsh0 }}">Spravujem bytové domy</button><button type="button" role="tab" aria-selected="{{ ts1 }}" onClick="{{ pick1 }}" style="height:48px;padding:0 22px;border:0;border-radius:999px;background:{{ tb1 }};color:{{ tf1 }};font:600 15px/1 Geist,system-ui,sans-serif;cursor:pointer;white-space:nowrap;box-shadow:{{ tsh1 }}">Pracujem v TZB</button><button type="button" role="tab" aria-selected="{{ ts2 }}" onClick="{{ pick2 }}" style="height:48px;padding:0 22px;border:0;border-radius:999px;background:{{ tb2 }};color:{{ tf2 }};font:600 15px/1 Geist,system-ui,sans-serif;cursor:pointer;white-space:nowrap;box-shadow:{{ tsh2 }}">Chcem inzerovať</button>
+    </div>
+  </div>
+  <div style="margin-top:clamp(48px,6vw,72px)">
+      <div role="tabpanel" style="display:{{ pd0 }};grid-template-columns:{{ roleCols }};gap:clamp(32px,5vw,80px);align-items:center">
+        <div style="position:relative;aspect-ratio:4/3;border-radius:28px;overflow:hidden;background:#DCE4EE"><img src="https://unsplash.com/photos/couTAixLzNM/download?w=1400" alt="Moderný bytový dom" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></div>
+        <div>
+          <h3 style="margin:0;font-size:clamp(28px,3vw,44px);line-height:1.05;font-weight:700;letter-spacing:-0.03em;text-wrap:balance">Pre správcov a spoločenstvá vlastníkov</h3>
+          <p style="margin:16px 0 0;font-size:18px;color:#4A5B70;max-width:44ch;text-wrap:pretty">Legislatíva, obnova a energie bytových domov v jednom časopise — plus učebnica a akreditovaný kurz, ktoré vás pripravia na prax.</p>
+          <ul style="list-style:none;margin:28px 0 0;padding:0;border-top:1px solid #DCE4EE">
+            <li><a href="https://voc.sk/spravca-bytovych-domov/zakladne-informacie/" style="display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px;border-bottom:1px solid #DCE4EE;color:#04173A;text-decoration:none;font-size:17px;font-weight:600" style-hover="color:#006FE8">Časopis Správca bytových domov<span aria-hidden="true">→</span></a></li>
+            <li><a href="https://voc.sk/wp-content/uploads/LetakUcebnica.pdf" style="display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px;border-bottom:1px solid #DCE4EE;color:#04173A;text-decoration:none;font-size:17px;font-weight:600" style-hover="color:#006FE8">Publikácia Správca budov<span aria-hidden="true">→</span></a></li>
+            <li><a href="https://voc.sk/kurz-sprava-bytoveho-fondu/" style="display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px;border-bottom:1px solid #DCE4EE;color:#04173A;text-decoration:none;font-size:17px;font-weight:600" style-hover="color:#006FE8">Kurz Správa bytového fondu<span aria-hidden="true">→</span></a></li>
+          </ul>
+          <a href="https://voc.sk/spravca-bytovych-domov/zakladne-informacie/" style="margin-top:28px;display:inline-flex;align-items:center;height:54px;padding:0 26px;background:#006FE8;color:#FFFFFF;text-decoration:none;font-weight:600;font-size:16px;border-radius:999px;white-space:nowrap" style-hover="background:#04173A;color:#FFFFFF">Predplatiť Správcu bytových domov</a>
+        </div>
+      </div>
+      <div role="tabpanel" style="display:{{ pd1 }};grid-template-columns:{{ roleCols }};gap:clamp(32px,5vw,80px);align-items:center">
+        <div style="position:relative;aspect-ratio:4/3;border-radius:28px;overflow:hidden;background:#DCE4EE"><img src="https://unsplash.com/photos/2nsQWyPU6tw/download?w=1400" alt="Potrubia a meradlá vykurovacej sústavy" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></div>
+        <div>
+          <h3 style="margin:0;font-size:clamp(28px,3vw,44px);line-height:1.05;font-weight:700;letter-spacing:-0.03em;text-wrap:balance">Pre projektantov, montážnikov a firmy TZB</h3>
+          <p style="margin:16px 0 0;font-size:18px;color:#4A5B70;max-width:44ch;text-wrap:pretty">Vykurovanie, voda, plyn, klimatizácia a vzduchotechnika — technické riešenia, dáta a produktové novinky z praxe.</p>
+          <ul style="list-style:none;margin:28px 0 0;padding:0;border-top:1px solid #DCE4EE">
+            <li><a href="https://voc.sk/plynar-vodar-kurenar-klimatizacia/zakladne-informacie/" style="display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px;border-bottom:1px solid #DCE4EE;color:#04173A;text-decoration:none;font-size:17px;font-weight:600" style-hover="color:#006FE8">Časopis Plynár – Vodár – Kúrenár + K<span aria-hidden="true">→</span></a></li>
+            <li><a href="http://www.tzbportal.sk/" style="display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px;border-bottom:1px solid #DCE4EE;color:#04173A;text-decoration:none;font-size:17px;font-weight:600" style-hover="color:#006FE8">TZBportal.sk a NEWS<span aria-hidden="true">↗</span></a></li>
+            <li><a href="https://voc.sk/konferencia-sprava-budov/" style="display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px;border-bottom:1px solid #DCE4EE;color:#04173A;text-decoration:none;font-size:17px;font-weight:600" style-hover="color:#006FE8">Konferencia Správa budov<span aria-hidden="true">→</span></a></li>
+          </ul>
+          <a href="https://voc.sk/plynar-vodar-kurenar-klimatizacia/zakladne-informacie/" style="margin-top:28px;display:inline-flex;align-items:center;height:54px;padding:0 26px;background:#006FE8;color:#FFFFFF;text-decoration:none;font-weight:600;font-size:16px;border-radius:999px;white-space:nowrap" style-hover="background:#04173A;color:#FFFFFF">Predplatiť Plynár – Vodár – Kúrenár</a>
+        </div>
+      </div>
+      <div role="tabpanel" style="display:{{ pd2 }};grid-template-columns:{{ roleCols }};gap:clamp(32px,5vw,80px);align-items:center">
+        <div style="position:relative;aspect-ratio:4/3;border-radius:28px;overflow:hidden;background:#DCE4EE"><img src="https://unsplash.com/photos/aNGDRhH7ie4/download?w=1400" alt="Čitateľ s odborným časopisom" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></div>
+        <div>
+          <h3 style="margin:0;font-size:clamp(28px,3vw,44px);line-height:1.05;font-weight:700;letter-spacing:-0.03em;text-wrap:balance">Pre výrobcov, dodávateľov a partnerov</h3>
+          <p style="margin:16px 0 0;font-size:18px;color:#4A5B70;max-width:44ch;text-wrap:pretty">Oslovte správcov budov aj profesie TZB — v tlači, direct-mailingom aj online.</p>
+          <ul style="list-style:none;margin:28px 0 0;padding:0;border-top:1px solid #DCE4EE">
+            <li><a href="https://voc.sk/spravca-bytovych-domov/inzercia/" style="display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px;border-bottom:1px solid #DCE4EE;color:#04173A;text-decoration:none;font-size:17px;font-weight:600" style-hover="color:#006FE8">Inzercia v Správcovi bytových domov<span aria-hidden="true">→</span></a></li>
+            <li><a href="https://voc.sk/plynar-vodar-kurenar-klimatizacia/inzercia/" style="display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px;border-bottom:1px solid #DCE4EE;color:#04173A;text-decoration:none;font-size:17px;font-weight:600" style-hover="color:#006FE8">Inzercia v Plynár – Vodár – Kúrenár<span aria-hidden="true">→</span></a></li>
+            <li><a href="https://voc.sk/uvod/sluzby/" style="display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:60px;border-bottom:1px solid #DCE4EE;color:#04173A;text-decoration:none;font-size:17px;font-weight:600" style-hover="color:#006FE8">Všetky služby vydavateľstva<span aria-hidden="true">→</span></a></li>
+          </ul>
+          <a href="mailto:voc@voc.sk?subject=Inzercia" style="margin-top:28px;display:inline-flex;align-items:center;height:54px;padding:0 26px;background:#006FE8;color:#FFFFFF;text-decoration:none;font-weight:600;font-size:16px;border-radius:999px;white-space:nowrap" style-hover="background:#04173A;color:#FFFFFF">Dohodnúť inzerciu</a>
+        </div>
+      </div>
+  </div>
+</section>
+
+<section id="vzdelavanie" aria-labelledby="vzdel-nadpis" style="max-width:1400px;margin:0 auto;padding:clamp(88px,10vw,150px) clamp(20px,3vw,48px) 0;scroll-margin-top:76px" data-screen-label="Vzdelávanie">
+  <p style="margin:0;font-size:15px;font-weight:600;color:#006FE8">Vzdelávanie</p>
+  <h2 id="vzdel-nadpis" style="margin:12px 0 0;font-size:clamp(36px,4.4vw,64px);line-height:1;font-weight:700;letter-spacing:-0.035em;max-width:16ch">Stretnite sa s odborníkmi naživo.</h2>
+  <div style="margin-top:clamp(40px,5vw,64px);display:grid;grid-template-columns:{{ twoCols }};gap:16px">
+    <a href="https://voc.sk/konferencia-sprava-budov/" style="display:flex;flex-direction:column;background:#F3F6FA;border-radius:24px;overflow:hidden;text-decoration:none;color:#04173A" style-hover="background:#E8EEF6;color:#04173A">
+      <div style="position:relative;aspect-ratio:16/9;background:#04173A;display:grid;place-items:center;padding:28px"><img src="https://voc.sk/wp-content/uploads/konferencia-1980x300-1.jpeg" alt="" width="1980" height="300" loading="lazy" style="width:100%;height:auto;border-radius:6px"></div>
+      <div style="padding:clamp(24px,3vw,40px);display:flex;align-items:flex-end;justify-content:space-between;gap:24px">
+        <div><p style="margin:0;font-size:15px;font-weight:600;color:#00708C">Medzinárodná konferencia</p><h3 style="margin:8px 0 0;font-size:clamp(24px,2.2vw,32px);line-height:1.1;font-weight:700;letter-spacing:-0.02em">Konferencia Správa budov</h3><p style="margin:10px 0 0;font-size:16px;color:#4A5B70">Riešenia pre správu bytových domov a nehnuteľností.</p></div>
+        <span aria-hidden="true" style="flex:0 0 auto;width:52px;height:52px;border-radius:50%;background:#04173A;color:#FFFFFF;display:grid;place-items:center;font-size:20px">↗</span>
+      </div>
+    </a>
+    <a href="https://voc.sk/kurz-sprava-bytoveho-fondu/" style="display:flex;flex-direction:column;background:#F3F6FA;border-radius:24px;overflow:hidden;text-decoration:none;color:#04173A" style-hover="background:#E8EEF6;color:#04173A">
+      <div style="position:relative;aspect-ratio:16/9;background:#DCE4EE"><img src="https://unsplash.com/photos/XaSfNBHcjlw/download?w=1400" alt="Štúdium pri pracovnom stole" loading="lazy" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;"></div>
+      <div style="padding:clamp(24px,3vw,40px);display:flex;align-items:flex-end;justify-content:space-between;gap:24px">
+        <div><p style="margin:0;font-size:15px;font-weight:600;color:#006FE8">Akreditovaný kurz · 96 hodín</p><h3 style="margin:8px 0 0;font-size:clamp(24px,2.2vw,32px);line-height:1.1;font-weight:700;letter-spacing:-0.02em">Kurz Správa bytového fondu</h3><p style="margin:10px 0 0;font-size:16px;color:#4A5B70">Kvalifikácia podľa zákona č. 246/2015 Z. z. o správcoch bytových domov.</p></div>
+        <span aria-hidden="true" style="flex:0 0 auto;width:52px;height:52px;border-radius:50%;background:#04173A;color:#FFFFFF;display:grid;place-items:center;font-size:20px">↗</span>
+      </div>
+    </a>
+  </div>
+</section>
+
+<section id="inzercia" aria-labelledby="inz-nadpis" style="margin-top:clamp(88px,10vw,150px);background:#F3F6FA;scroll-margin-top:76px" data-screen-label="Inzercia">
+  <div style="max-width:1400px;margin:0 auto;padding:clamp(80px,9vw,140px) clamp(20px,3vw,48px) clamp(56px,6vw,88px);display:grid;grid-template-columns:{{ inzCols }};gap:48px clamp(48px,7vw,120px);align-items:start">
+    <div style="position:{{ inzSticky }};top:108px">
+      <p style="margin:0;font-size:15px;font-weight:600;color:#006FE8">Inzercia</p>
+      <h2 id="inz-nadpis" style="margin:12px 0 0;font-size:clamp(36px,4.2vw,60px);line-height:1;font-weight:700;letter-spacing:-0.035em;text-wrap:balance">Oslovte odborníkov, ktorí budovy spravujú, navrhujú a udržiavajú.</h2>
+      <p style="margin:22px 0 0;font-size:18px;color:#4A5B70;max-width:44ch;text-wrap:pretty">Viac ako 20 rokov prinášame recenzované informácie správcom budov a profesiám TZB. Vašu firmu predstavíme v tlači aj online — presne tým, ktorí o technike budov rozhodujú.</p>
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:12px 24px;margin-top:32px">
+        <a href="mailto:voc@voc.sk?subject=Inzercia" style="display:inline-flex;align-items:center;height:56px;padding:0 28px;background:#04173A;color:#FFFFFF;text-decoration:none;font-weight:600;font-size:16px;border-radius:999px;white-space:nowrap" style-hover="background:#006FE8;color:#FFFFFF">Dohodnúť inzerciu ↗</a>
+        <a href="https://voc.sk/uvod/sluzby/" style="font-weight:600;font-size:16px">Všetky služby →</a>
+      </div>
+    </div>
+    <div>
+      <h3 style="margin:0;font-size:15px;font-weight:600;color:#5B6B80">Kde vás uvidia</h3>
+      <ul style="list-style:none;margin:8px 0 0;padding:0;border-top:1px solid #DCE4EE">
+        <li style="border-bottom:1px solid #DCE4EE"><a href="https://voc.sk/spravca-bytovych-domov/inzercia/" style="display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:20px;align-items:center;padding:22px 0;text-decoration:none;color:#04173A" style-hover="color:#006FE8">
+          <img src="https://voc.sk/wp-content/uploads/SBD2_2026-pdf-image.jpg" alt="" width="595" height="842" loading="lazy" style="width:64px;height:90px;object-fit:cover;border-radius:4px;background:#FFFFFF;box-shadow:0 12px 22px -14px rgba(4,23,58,.45)">
+          <span style="min-width:0"><span style="display:block;font-size:clamp(19px,1.6vw,22px);font-weight:700;letter-spacing:-0.015em;line-height:1.25">Správca bytových domov</span><span style="display:block;margin-top:4px;font-size:15px;color:#4A5B70">Správcovia, spoločenstvá a bytové družstvá · Slovensko</span><span style="display:block;margin-top:8px;font-size:14px;font-weight:500;color:#5B6B80">Plošná inzercia · Odborný článok · Direct-mailing</span></span>
+          <span aria-hidden="true" style="width:44px;height:44px;border-radius:50%;border:1px solid #CBD5E1;display:grid;place-items:center;font-size:17px">→</span>
+        </a></li>
+        <li style="border-bottom:1px solid #DCE4EE"><a href="https://voc.sk/plynar-vodar-kurenar-klimatizacia/inzercia/" style="display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:20px;align-items:center;padding:22px 0;text-decoration:none;color:#04173A" style-hover="color:#006FE8">
+          <img src="https://voc.sk/wp-content/uploads/PVK4_2026-pdf-image.jpg" alt="" width="595" height="842" loading="lazy" style="width:64px;height:90px;object-fit:cover;border-radius:4px;background:#FFFFFF;box-shadow:0 12px 22px -14px rgba(4,23,58,.45)">
+          <span style="min-width:0"><span style="display:block;font-size:clamp(19px,1.6vw,22px);font-weight:700;letter-spacing:-0.015em;line-height:1.25">Plynár – Vodár – Kúrenár + Klimatizácia</span><span style="display:block;margin-top:4px;font-size:15px;color:#4A5B70">Projektanti, montážnici a firmy TZB · Slovensko a Česko</span><span style="display:block;margin-top:8px;font-size:14px;font-weight:500;color:#5B6B80">Plošná inzercia · Odborný článok · Direct-mailing</span></span>
+          <span aria-hidden="true" style="width:44px;height:44px;border-radius:50%;border:1px solid #CBD5E1;display:grid;place-items:center;font-size:17px">→</span>
+        </a></li>
+        <li style="border-bottom:1px solid #DCE4EE"><a href="http://www.tzbportal.sk/" style="display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:20px;align-items:center;padding:22px 0;text-decoration:none;color:#04173A" style-hover="color:#006FE8">
+          <img src="https://voc.sk/wp-content/uploads/tzb-176x200.jpg" alt="" width="176" height="200" loading="lazy" style="width:64px;height:90px;object-fit:contain;border-radius:4px;background:#FFFFFF;box-shadow:0 12px 22px -14px rgba(4,23,58,.45)">
+          <span style="min-width:0"><span style="display:block;font-size:clamp(19px,1.6vw,22px);font-weight:700;letter-spacing:-0.015em;line-height:1.25">TZBportal.sk a NEWS</span><span style="display:block;margin-top:4px;font-size:15px;color:#4A5B70">Online čitatelia z oblasti technických zariadení budov</span><span style="display:block;margin-top:8px;font-size:14px;font-weight:500;color:#5B6B80">Odborné články · Prezentácia firmy online</span></span>
+          <span aria-hidden="true" style="width:44px;height:44px;border-radius:50%;border:1px solid #CBD5E1;display:grid;place-items:center;font-size:17px">↗</span>
+        </a></li>
+      </ul>
+    </div>
+  </div>
+  <div style="max-width:1400px;margin:0 auto;padding:0 clamp(20px,3vw,48px) clamp(80px,9vw,140px)">
+    <h3 style="margin:0;font-size:15px;font-weight:600;color:#5B6B80">Ako vám pomôžeme</h3>
+    <ul style="list-style:none;margin:20px 0 0;padding:0;display:grid;grid-template-columns:{{ svcCols }};gap:16px">
+      <li style="background:#FFFFFF;border-radius:24px;padding:clamp(24px,2.4vw,32px);display:flex;flex-direction:column;gap:28px;box-shadow:0 1px 0 rgba(4,23,58,.04)">
+        <span style="width:56px;height:56px;border-radius:16px;background:#E8F1FF;color:#006FE8;display:grid;place-items:center"><svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H15l5 5v9.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 4 18.5z"/><path d="M15 4v5h5"/><path d="M8 13h8M8 16.5h5"/></svg></span>
+        <div><h3 style="margin:0;font-size:19px;line-height:1.25;font-weight:700;letter-spacing:-0.015em">Prezentácia v časopise</h3><p style="margin:8px 0 0;font-size:15px;color:#4A5B70;text-wrap:pretty">Plošná inzercia, odborný článok a pozvánky na výstavy či podujatia.</p></div>
+      </li>
+      <li style="background:#FFFFFF;border-radius:24px;padding:clamp(24px,2.4vw,32px);display:flex;flex-direction:column;gap:28px;box-shadow:0 1px 0 rgba(4,23,58,.04)">
+        <span style="width:56px;height:56px;border-radius:16px;background:#E8F1FF;color:#006FE8;display:grid;place-items:center"><svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></span>
+        <div><h3 style="margin:0;font-size:19px;line-height:1.25;font-weight:700;letter-spacing:-0.015em">Grafické návrhy</h3><p style="margin:8px 0 0;font-size:15px;color:#4A5B70;text-wrap:pretty">Inzercie a firemné materiály — letáky, plagáty, katalógy.</p></div>
+      </li>
+      <li style="background:#FFFFFF;border-radius:24px;padding:clamp(24px,2.4vw,32px);display:flex;flex-direction:column;gap:28px;box-shadow:0 1px 0 rgba(4,23,58,.04)">
+        <span style="width:56px;height:56px;border-radius:16px;background:#E8F1FF;color:#006FE8;display:grid;place-items:center"><svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8M12 17v4"/><path d="M7 9h6M7 12h10"/></svg></span>
+        <div><h3 style="margin:0;font-size:19px;line-height:1.25;font-weight:700;letter-spacing:-0.015em">Online na TZBportal.sk</h3><p style="margin:8px 0 0;font-size:15px;color:#4A5B70;text-wrap:pretty">Umiestnenie odborných článkov na portáli a v newslettri NEWS.</p></div>
+      </li>
+      <li style="background:#FFFFFF;border-radius:24px;padding:clamp(24px,2.4vw,32px);display:flex;flex-direction:column;gap:28px;box-shadow:0 1px 0 rgba(4,23,58,.04)">
+        <span style="width:56px;height:56px;border-radius:16px;background:#E8F1FF;color:#006FE8;display:grid;place-items:center"><svg aria-hidden="true" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg></span>
+        <div><h3 style="margin:0;font-size:19px;line-height:1.25;font-weight:700;letter-spacing:-0.015em">Výtlačky pre vašich klientov</h3><p style="margin:8px 0 0;font-size:15px;color:#4A5B70;text-wrap:pretty">Až 100 výtlačkov s vašou inzerciou pošleme na náklady vydavateľstva.</p></div>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section id="archiv" aria-labelledby="archiv-nadpis" style="max-width:1400px;margin:0 auto;padding:clamp(88px,10vw,150px) clamp(20px,3vw,48px) 0;scroll-margin-top:76px" data-screen-label="Archív">
+  <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:20px 48px">
+    <div>
+      <p style="margin:0;font-size:15px;font-weight:600;color:#006FE8">Posledné čísla</p>
+      <h2 id="archiv-nadpis" style="margin:12px 0 0;font-size:clamp(36px,4.4vw,64px);line-height:1;font-weight:700;letter-spacing:-0.035em">Pozrite sa, čo vychádza.</h2>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button type="button" onClick="{{ railPrev }}" aria-label="Posunúť späť" style="width:52px;height:52px;border-radius:50%;border:1px solid #D3DCE6;background:#FFFFFF;color:#04173A;font-size:18px;cursor:pointer" style-hover="background:#04173A;color:#FFFFFF">←</button>
+      <button type="button" onClick="{{ railNext }}" aria-label="Posunúť ďalej" style="width:52px;height:52px;border-radius:50%;border:1px solid #D3DCE6;background:#FFFFFF;color:#04173A;font-size:18px;cursor:pointer" style-hover="background:#04173A;color:#FFFFFF">→</button>
+    </div>
+  </div>
+  <ul ref="{{ railRef }}" style="list-style:none;margin:40px 0 0;padding:0 0 8px;display:flex;gap:20px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;scroll-behavior:smooth">
+    <li style="flex:0 0 {{ issueW }};scroll-snap-align:start"><a href="https://voc.sk/wp-content/uploads/SBD2_2026.pdf" style="display:block;text-decoration:none;color:#04173A" style-hover="color:#006FE8"><img src="https://voc.sk/wp-content/uploads/SBD2_2026-pdf-image.jpg" alt="" width="595" height="842" loading="lazy" style="width:100%;height:auto;aspect-ratio:595/842;border-radius:6px;box-shadow:0 18px 30px -20px rgba(4,23,58,.45)"><span style="display:block;margin-top:14px;font-size:15px;font-weight:600">Správca bytových domov</span><span style="display:block;font-size:14px;color:#5B6B80">2/2026</span></a></li>
+    <li style="flex:0 0 {{ issueW }};scroll-snap-align:start"><a href="https://voc.sk/wp-content/uploads/PVK4_2026.pdf" style="display:block;text-decoration:none;color:#04173A" style-hover="color:#006FE8"><img src="https://voc.sk/wp-content/uploads/PVK4_2026-pdf-image.jpg" alt="" width="595" height="842" loading="lazy" style="width:100%;height:auto;aspect-ratio:595/842;border-radius:6px;box-shadow:0 18px 30px -20px rgba(4,23,58,.45)"><span style="display:block;margin-top:14px;font-size:15px;font-weight:600">Plynár – Vodár – Kúrenár</span><span style="display:block;font-size:14px;color:#5B6B80">4/2026</span></a></li>
+    <li style="flex:0 0 {{ issueW }};scroll-snap-align:start"><a href="https://voc.sk/plynar-vodar-kurenar-klimatizacia/zakladne-informacie/" style="display:block;text-decoration:none;color:#04173A" style-hover="color:#006FE8"><img src="https://voc.sk/wp-content/uploads/PVK3_2026-pdf-image.jpg" alt="" width="595" height="842" loading="lazy" style="width:100%;height:auto;aspect-ratio:595/842;border-radius:6px;box-shadow:0 18px 30px -20px rgba(4,23,58,.45)"><span style="display:block;margin-top:14px;font-size:15px;font-weight:600">Plynár – Vodár – Kúrenár</span><span style="display:block;font-size:14px;color:#5B6B80">3/2026</span></a></li>
+    <li style="flex:0 0 {{ issueW }};scroll-snap-align:start"><a href="https://voc.sk/spravca-bytovych-domov/zakladne-informacie/" style="display:block;text-decoration:none;color:#04173A" style-hover="color:#006FE8"><img src="https://voc.sk/wp-content/uploads/SBD1_2026-pdf-image.jpg" alt="" width="595" height="842" loading="lazy" style="width:100%;height:auto;aspect-ratio:595/842;border-radius:6px;box-shadow:0 18px 30px -20px rgba(4,23,58,.45)"><span style="display:block;margin-top:14px;font-size:15px;font-weight:600">Správca bytových domov</span><span style="display:block;font-size:14px;color:#5B6B80">1/2026</span></a></li>
+    <li style="flex:0 0 {{ issueW }};scroll-snap-align:start"><a href="https://voc.sk/plynar-vodar-kurenar-klimatizacia/zakladne-informacie/" style="display:block;text-decoration:none;color:#04173A" style-hover="color:#006FE8"><img src="https://voc.sk/wp-content/uploads/PVK2_2026-pdf-image.jpg" alt="" width="595" height="842" loading="lazy" style="width:100%;height:auto;aspect-ratio:595/842;border-radius:6px;box-shadow:0 18px 30px -20px rgba(4,23,58,.45)"><span style="display:block;margin-top:14px;font-size:15px;font-weight:600">Plynár – Vodár – Kúrenár</span><span style="display:block;font-size:14px;color:#5B6B80">2/2026</span></a></li>
+    <li style="flex:0 0 {{ issueW }};scroll-snap-align:start"><a href="https://voc.sk/plynar-vodar-kurenar-klimatizacia/zakladne-informacie/" style="display:block;text-decoration:none;color:#04173A" style-hover="color:#006FE8"><img src="https://voc.sk/wp-content/uploads/PVK1_2026-pdf-image.jpg" alt="" width="595" height="842" loading="lazy" style="width:100%;height:auto;aspect-ratio:595/842;border-radius:6px;box-shadow:0 18px 30px -20px rgba(4,23,58,.45)"><span style="display:block;margin-top:14px;font-size:15px;font-weight:600">Plynár – Vodár – Kúrenár</span><span style="display:block;font-size:14px;color:#5B6B80">1/2026</span></a></li>
+    <li style="flex:0 0 {{ issueW }};scroll-snap-align:start"><a href="https://voc.sk/spravca-bytovych-domov/zakladne-informacie/" style="display:block;text-decoration:none;color:#04173A" style-hover="color:#006FE8"><img src="https://voc.sk/wp-content/uploads/SBD4_2025-pdf-image.jpg" alt="" width="595" height="842" loading="lazy" style="width:100%;height:auto;aspect-ratio:595/842;border-radius:6px;box-shadow:0 18px 30px -20px rgba(4,23,58,.45)"><span style="display:block;margin-top:14px;font-size:15px;font-weight:600">Správca bytových domov</span><span style="display:block;font-size:14px;color:#5B6B80">4/2025</span></a></li>
+  </ul>
+</section>
+
+<section aria-labelledby="faq-nadpis" style="max-width:1400px;margin:0 auto;padding:clamp(88px,10vw,150px) clamp(20px,3vw,48px) 0" data-screen-label="Časté otázky">
+  <div style="display:grid;grid-template-columns:{{ faqCols }};gap:32px clamp(40px,6vw,96px)">
+    <div>
+      <h2 id="faq-nadpis" style="margin:0;font-size:clamp(36px,4.4vw,64px);line-height:1;font-weight:700;letter-spacing:-0.035em">Časté otázky</h2>
+      <p style="margin:18px 0 0;font-size:17px;color:#4A5B70">Nenašli ste odpoveď? Napíšte na <a href="mailto:voc@voc.sk" style="font-weight:600">voc@voc.sk</a>.</p>
+    </div>
+    <div style="border-top:1px solid #E3E9F0">
+      <sc-for list="{{ faqs }}" as="f" hint-placeholder-count="4">
+        <div style="border-bottom:1px solid #E3E9F0">
+          <button type="button" onClick="{{ f.toggle }}" aria-expanded="{{ f.expanded }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:24px 0;background:transparent;border:0;text-align:left;cursor:pointer;font:600 clamp(18px,1.5vw,21px)/1.35 Geist,system-ui,sans-serif;color:#04173A">
+            <span>{{ f.q }}</span>
+            <span aria-hidden="true" style="flex:0 0 auto;width:36px;height:36px;border-radius:50%;background:{{ f.iconBg }};color:{{ f.iconFg }};display:grid;place-items:center;font-size:20px;font-weight:500">{{ f.icon }}</span>
+          </button>
+          <sc-if value="{{ f.open }}" hint-placeholder-val="{{ false }}"><p style="margin:0;padding:0 64px 26px 0;font-size:17px;color:#4A5B70;text-wrap:pretty">{{ f.a }}</p></sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section id="kontakt" aria-labelledby="cta-nadpis" style="max-width:1400px;margin:0 auto;padding:clamp(88px,10vw,150px) clamp(20px,3vw,48px) clamp(40px,4vw,56px);scroll-margin-top:76px" data-screen-label="Kontakt">
+  <div style="background:#0A3FB5;color:#FFFFFF;border-radius:32px;padding:clamp(40px,6vw,88px);display:grid;grid-template-columns:{{ featCols }};gap:40px;align-items:end">
+    <div>
+      <h2 id="cta-nadpis" style="margin:0;font-size:clamp(36px,4.8vw,72px);line-height:.98;font-weight:700;letter-spacing:-0.04em;text-wrap:balance">Buďte v ďalšom čísle.</h2>
+      <p style="margin:20px 0 0;font-size:18px;color:#DCEBFF;max-width:40ch">Inzercia, predplatné, publikácia alebo prihláška na vzdelávanie — ozvite sa nám.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:32px">
+        <a href="mailto:voc@voc.sk" style="display:inline-flex;align-items:center;height:56px;padding:0 28px;background:#FFFFFF;color:#04173A;text-decoration:none;font-weight:600;font-size:16px;border-radius:999px;white-space:nowrap" style-hover="background:#04173A;color:#FFFFFF">Napísať e-mail ↗</a>
+        <a href="tel:+421556782808" style="display:inline-flex;align-items:center;height:56px;padding:0 28px;border:1px solid rgba(255,255,255,.55);color:#FFFFFF;text-decoration:none;font-weight:600;font-size:16px;border-radius:999px;white-space:nowrap" style-hover="background:rgba(255,255,255,.14);color:#FFFFFF">+421 55 678 28 08</a>
+      </div>
+    </div>
+    <address style="font-style:normal;justify-self:{{ ctaAddr }};font-size:16px;line-height:1.7;color:#DCEBFF">V.O.Č. SLOVAKIA s.r.o.<br>Školská 23<br>040 11 Košice</address>
+  </div>
+</section>
+
+</main>
+
+<footer style="max-width:1400px;margin:0 auto;padding:0 clamp(20px,3vw,48px) 36px" data-screen-label="Päta">
+  <div style="border-top:1px solid #E3E9F0;padding-top:28px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px 32px;font-size:14px;color:#5B6B80">
+    <p style="margin:0">© {{ year }} V.O.Č. SLOVAKIA s.r.o.</p>
+    <ul style="list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:4px 24px">
+      <li><a href="https://voc.sk/uvod/o-nas/" style="color:#04173A;text-decoration:none;font-weight:500" style-hover="color:#006FE8">O nás</a></li>
+      <li><a href="https://voc.sk/uvod/historia/" style="color:#04173A;text-decoration:none;font-weight:500" style-hover="color:#006FE8">História</a></li>
+      <li><a href="https://voc.sk/uvod/sluzby/" style="color:#04173A;text-decoration:none;font-weight:500" style-hover="color:#006FE8">Služby</a></li>
+      <li><a href="http://www.tzbportal.sk/" style="color:#04173A;text-decoration:none;font-weight:500" style-hover="color:#006FE8">TZBportal.sk ↗</a></li>
+      <li><a href="https://voc.sk/uvod/ochrana-osobnych-udajov-gdpr/" style="color:#5B6B80;text-decoration:none" style-hover="color:#006FE8">GDPR</a></li>
+    </ul>
+  </div>
+</footer>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;heroVideo&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Hero&quot;},&quot;avatar1&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Hero – tváre (URL fotiek)&quot;},&quot;avatar2&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Hero – tváre (URL fotiek)&quot;},&quot;avatar3&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Hero – tváre (URL fotiek)&quot;},&quot;brands&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Viessmann, Buderus, Vaillant, Protherm, Geberit, Danfoss, Grundfos, Wilo, Rehau, Uponor, Honeywell, Siemens&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Partneri&quot;}}">
+class Component extends DCLogic {
+  state = { role: 0, w: typeof window !== 'undefined' ? window.innerWidth : 1400, menu: false, scrolled: false, p: 0, faq: 0 };
+  statsRef = React.createRef();
+  railRef = React.createRef();
+  componentDidMount() {
+    this.onResize = () => { const w = window.innerWidth; if (w !== this.state.w) this.setState({ w, menu: w < 1080 ? this.state.menu : false }); };
+    this.onScroll = () => { const s = window.scrollY > 40; if (s !== this.state.scrolled) this.setState({ scrolled: s }); };
+    window.addEventListener('resize', this.onResize);
+    window.addEventListener('scroll', this.onScroll, { passive: true });
+    this.onResize(); this.onScroll();
+    const reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduced || !('IntersectionObserver' in window)) { this.setState({ p: 1 }); return; }
+    this.io = new IntersectionObserver(es => {
+      if (es.some(e => e.isIntersecting)) {
+        this.io.disconnect();
+        const t0 = performance.now(), dur = 1400;
+        const step = t => { const k = Math.min(1, (t - t0) / dur); this.setState({ p: 1 - Math.pow(1 - k, 3) }); if (k < 1) this.raf = requestAnimationFrame(step); };
+        this.raf = requestAnimationFrame(step);
+      }
+    }, { threshold: .3 });
+    if (this.statsRef.current) this.io.observe(this.statsRef.current);
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this.onResize); window.removeEventListener('scroll', this.onScroll); if (this.io) this.io.disconnect(); cancelAnimationFrame(this.raf); }
+  rail(d) { const el = this.railRef.current; if (!el) return; const c = el.firstElementChild; el.scrollBy({ left: d * (c ? c.getBoundingClientRect().width + 20 : 300) * 2, behavior: 'smooth' }); }
+  renderVals() {
+    const { w, menu, scrolled, p, faq , role } = this.state;
+    const narrow = w < 1080, mid = w < 900, small = w < 640;
+    const brands = (this.props.brands ?? 'Viessmann, Buderus, Vaillant, Protherm, Geberit, Danfoss, Grundfos, Wilo, Rehau, Uponor, Honeywell, Siemens').split(',').map(s => s.trim()).filter(Boolean);
+    const item = (b, i) => React.createElement('span', { key: i, style: { flex: '0 0 auto', padding: '0 clamp(28px,3.5vw,56px)', fontSize: 'clamp(22px,2.2vw,30px)', fontWeight: 700, letterSpacing: '-0.02em', color: '#7D8FA5', whiteSpace: 'nowrap' } }, b);
+    const list = brands.concat(brands);
+    const marquee = React.createElement('div', { style: { display: 'flex', width: 'max-content', animation: `vocmarq ${Math.max(20, brands.length * 3.5)}s linear infinite` } }, list.map(item));
+    const src = (this.props.heroVideo || '').trim();
+    const videoEl = src ? React.createElement('video', { key: src, src, autoPlay: true, muted: true, loop: true, playsInline: true, preload: 'auto', 'aria-hidden': true, style: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' } }) : null;
+    const faqData = [
+      ['Ako si objednám predplatné časopisu?', 'Predplatné si objednáte na stránke príslušného časopisu alebo e-mailom na voc@voc.sk. Radi vám poradíme s tlačenou aj elektronickou verziou.'],
+      ['Ako môžem inzerovať v časopisoch a na TZBportal.sk?', 'Napíšte nám na voc@voc.sk alebo zavolajte na +421 55 678 28 08. Pripravíme ponuku podľa média a formátu — pri inzercii vo viacerých médiách poskytujeme zľavy.'],
+      ['Kde kúpim publikáciu Správca budov?', 'Publikáciu si objednáte prostredníctvom objednávkového letáka (PDF) na tejto stránke alebo e-mailom.'],
+      ['Pre koho je kurz Správa bytového fondu?', 'Akreditovaný 96-hodinový kurz je určený pre záujemcov o kvalifikáciu správcu podľa zákona č. 246/2015 Z. z. o správcoch bytových domov.']
+    ];
+    return {
+      narrow, wide: !narrow,
+      mobileMenuVisible: narrow && menu,
+      menuOpenStr: menu ? 'true' : 'false',
+      menuLabel: menu ? 'Zavrieť' : 'Menu',
+      toggleMenu: () => this.setState(s => ({ menu: !s.menu })),
+      closeMenu: () => this.setState({ menu: false }),
+      navBg: scrolled || menu ? 'rgba(4,23,58,.94)' : 'transparent',
+      navLine: scrolled ? 'rgba(255,255,255,.08)' : 'transparent',
+      hasVideo: !!src, noVideo: !src, videoEl,
+      marquee,
+      statsRef: this.statsRef,
+      st0: Math.round(20 * p), st1: Math.round(2 * p), st2: Math.round(4 * p), st3: Math.round(96 * p),
+      statCols: narrow ? 'repeat(2,minmax(0,1fr))' : 'repeat(4,minmax(0,1fr))',
+      sb0: '0', sb1: '1px solid rgba(255,255,255,.18)', sb2: narrow ? '0' : '1px solid rgba(255,255,255,.18)', sb3: '1px solid rgba(255,255,255,.18)',
+      featCols: mid ? 'minmax(0,1fr)' : 'repeat(2,minmax(0,1fr))',
+      topicCols: small ? 'minmax(0,1fr)' : (mid ? 'repeat(2,minmax(0,1fr))' : 'repeat(3,minmax(0,1fr))'),
+      magTitleMin: mid ? '0' : '2.1em', magTextMin: mid ? '0' : '3.2em',
+      roleCols: mid ? 'minmax(0,1fr)' : 'minmax(0,1.05fr) minmax(0,1fr)',
+      pd0: role === 0 ? 'grid' : 'none', ts0: role === 0 ? 'true' : 'false', tb0: role === 0 ? '#04173A' : 'transparent', tf0: role === 0 ? '#FFFFFF' : '#04173A', tsh0: role === 0 ? '0 6px 16px -8px rgba(4,23,58,.5)' : 'none', pick0: () => this.setState({ role: 0 }),
+      pd1: role === 1 ? 'grid' : 'none', ts1: role === 1 ? 'true' : 'false', tb1: role === 1 ? '#04173A' : 'transparent', tf1: role === 1 ? '#FFFFFF' : '#04173A', tsh1: role === 1 ? '0 6px 16px -8px rgba(4,23,58,.5)' : 'none', pick1: () => this.setState({ role: 1 }),
+      pd2: role === 2 ? 'grid' : 'none', ts2: role === 2 ? 'true' : 'false', tb2: role === 2 ? '#04173A' : 'transparent', tf2: role === 2 ? '#FFFFFF' : '#04173A', tsh2: role === 2 ? '0 6px 16px -8px rgba(4,23,58,.5)' : 'none', pick2: () => this.setState({ role: 2 }),
+      revOrder: mid ? 0 : 2,
+      twoCols: mid ? 'minmax(0,1fr)' : 'repeat(2,minmax(0,1fr))',
+      av1: this.props.avatar1 ? `url("${this.props.avatar1}")` : 'none', av2: this.props.avatar2 ? `url("${this.props.avatar2}")` : 'none', av3: this.props.avatar3 ? `url("${this.props.avatar3}")` : 'none',
+      inzCols: mid ? 'minmax(0,1fr)' : 'minmax(0,1fr) minmax(0,1.15fr)',
+      inzSticky: mid ? 'static' : 'sticky',
+      svcCols2: small ? 'minmax(0,1fr)' : 'repeat(2,minmax(0,1fr))',
+      svcCols: small ? 'minmax(0,1fr)' : (narrow ? 'repeat(2,minmax(0,1fr))' : 'repeat(4,minmax(0,1fr))'),
+      bigCol: small ? 'auto' : 'span 2',
+      bigRow: narrow ? 'auto' : 'span 2',
+      railRef: this.railRef, railPrev: () => this.rail(-1), railNext: () => this.rail(1),
+      issueW: small ? '62%' : (narrow ? '30%' : 'calc((100% - 80px) / 5)'),
+      faqCols: mid ? 'minmax(0,1fr)' : 'minmax(0,1fr) minmax(0,1.5fr)',
+      faqs: faqData.map((f, i) => ({ q: f[0], a: f[1], open: faq === i, expanded: faq === i ? 'true' : 'false', icon: faq === i ? '−' : '+', iconBg: faq === i ? '#04173A' : '#F3F6FA', iconFg: faq === i ? '#FFFFFF' : '#04173A', toggle: () => this.setState(s => ({ faq: s.faq === i ? -1 : i })) })),
+      ctaAddr: mid ? 'start' : 'end',
+      year: new Date().getFullYear()
+    };
+  }
+}
+</script>
+</body>
+</html>

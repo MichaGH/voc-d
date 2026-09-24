@@ -1,26 +1,82 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --color-background: #ffffff;
+  --color-navy: #04173a;
+  --color-navy-light: #0a2f6e;
+  --color-blue: #006fe8;
+  --color-blue-light: #4da3ff;
+  --color-blue-pale: #7fb6ff;
+  --color-blue-wash: #e8f1ff;
+  --color-cta: #0a3fb5;
+  --color-cyan: #00c2e8;
+  --color-green: #0b7a5e;
+  --color-mint: #1cc49a;
+  --color-teal: #00708c;
+  --color-gold: #ffc24b;
+  --color-copy: #4a5b70;
+  --color-muted: #5b6b80;
+  --color-steel: #7d8fa5;
+  --color-slate-blue: #2a4468;
+  --color-hero-copy: #d2deee;
+  --color-card-copy: #d3ddea;
+  --color-about-copy: #b9c8da;
+  --color-stat-copy: #a9b9cc;
+  --color-cta-copy: #dcebff;
+  --color-surface: #f3f6fa;
+  --color-surface-hover: #e8eef6;
+  --color-line: #dce4ee;
+  --color-line-dark: #cbd5e1;
+  --color-line-button: #d3dce6;
+  --color-line-light: #e3e9f0;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-geist);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+  background: var(--color-background);
+  color: var(--color-navy);
+  font-family: var(--font-geist), system-ui, sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+:focus-visible {
+  outline: 3px solid var(--color-cyan);
+  outline-offset: 3px;
+}
+
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+}
+
+.marquee-track {
+  animation: voc-marquee 42s linear infinite;
+}
+
+.archive-rail::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes voc-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
