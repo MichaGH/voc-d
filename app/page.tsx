@@ -23,7 +23,7 @@ export default function Home() {
       </Link>
       <Navbar />
       <main id="obsah">
-        <div className="flex min-h-[max(100svh,720px)] flex-col">
+        <div className="flex min-h-[max(100svh,720px)] w-full flex-col xl:h-[100svh] xl:min-h-[720px]">
           <HeroSection />
           <PartnersSection />
         </div>

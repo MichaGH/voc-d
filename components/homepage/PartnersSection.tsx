@@ -2,7 +2,7 @@ import { brands } from "@/data/homepage";
 
 export default function PartnersSection() {
   return (
-    <section aria-label="Partneri a inzerenti" className="overflow-hidden bg-white py-10">
+    <section aria-label="Partneri a inzerenti" className="shrink-0 overflow-hidden bg-white py-10">
       <p className="mx-auto mb-7 max-w-[1400px] px-5 text-center text-sm font-semibold tracking-[.16em] text-[var(--color-steel)] md:px-8 xl:px-12">
         INZERUJÚ U NÁS
       </p>

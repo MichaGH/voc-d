@@ -6,23 +6,27 @@ export default function HeroSection() {
   return (
     <section
       aria-labelledby="hero-nadpis"
-      className="relative flex min-h-[720px] flex-1 flex-col justify-center overflow-hidden bg-[var(--color-navy)] pt-[76px] text-white"
+      className="relative flex flex-1 flex-col justify-center overflow-hidden bg-[var(--color-navy)] pt-[76px] text-white"
     >
-      <Image
-        src="/images/hero.jpg"
-        alt=""
-        fill
-        priority
-        sizes="100vw"
-        className="object-cover"
-      />
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(4,23,58,.55)_0%,rgba(4,23,58,.1)_30%,rgba(4,23,58,.35)_60%,rgba(4,23,58,.92)_100%)]" />
+      <video
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        poster="/images/hero.jpg"
+        aria-hidden="true"
+        className="absolute inset-0 size-full object-cover"
+      >
+        <source src="/videos/herovideo.mp4" type="video/mp4" />
+      </video>
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(4,23,58,.62)_0%,rgba(4,23,58,.24)_30%,rgba(4,23,58,.43)_60%,rgba(4,23,58,.92)_100%)]" />
 
       <div className="pointer-events-none relative mx-auto flex w-full max-w-[1400px] flex-wrap items-center justify-between gap-x-16 gap-y-10 px-5 py-[clamp(40px,5vw,64px)] md:px-8 xl:px-12">
         <div className="pointer-events-auto min-w-0 flex-[1_1_560px] max-w-[860px]">
           <h1
             id="hero-nadpis"
-            className="max-w-[9em] text-[clamp(44px,6.6vw,104px)] leading-[.98] font-bold tracking-[-.04em] text-balance"
+            className="max-w-[9em] text-[clamp(44px,6vw,92px)] leading-[.98] font-bold tracking-[-.04em] text-balance"
           >
             Odborný svet budov na jednom mieste.
           </h1>
@@ -58,7 +62,7 @@ export default function HeroSection() {
           </div>
         </div>
 
-        <div role="group" aria-label="Aktuálne čísla" className="pointer-events-auto relative hidden aspect-[1/1.02] w-[clamp(340px,34vw,540px)] shrink-0 lg:block">
+        <div role="group" aria-label="Aktuálne čísla" className="pointer-events-auto relative hidden aspect-[1/1.02] w-[clamp(320px,31vw,486px)] shrink-0 lg:block">
           <Link href={LINKS.sbd} aria-label="Správca bytových domov 2/2026" className="absolute top-0 left-0 z-10 block w-[60%] -rotate-[8deg] transition-transform duration-200 hover:-translate-y-2 hover:-rotate-[5deg]">
             <Image src="/images/sbd-2-2026.jpg" alt="" width={595} height={842} priority className="aspect-[595/842] h-auto w-full rounded-md brightness-90 shadow-[0_40px_70px_-26px_rgba(0,0,0,.75)]" />
           </Link>
