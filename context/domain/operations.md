@@ -2,7 +2,7 @@
 
 ## Boundary and Status
 
-Planned contracts, not implemented functions. Define domain interfaces in `types/content.ts`, provider interface in `lib/content/provider.ts`, public server-only exports in `lib/content/index.ts` and the mock adapter in `lib/content/providers/mock.ts` using `data/mock/`. Add Sanity last.
+Implemented for fixtures: domain interfaces in `types/content.ts`, provider interface in `lib/content/provider.ts`, public server-only exports in `lib/content/index.ts` and the mock adapter in `lib/content/providers/mock.ts` using `data/mock/`. Not yet implemented: getSiteSettings, getHomePageContent, getReaderAdPlacement, getReaderPageData. Add Sanity last.
 
 Every read is asynchronous from day one. Pages use the facade; adapters normalize source data. UI never selects the provider.
 
@@ -15,6 +15,7 @@ Every read is asynchronous from day one. Pages use the facade; adapters normaliz
 | getPartners | Optional bounded selection | Published names/logos/destinations in display order |
 | getMagazines | None | Published summaries in stable order |
 | getMagazineBySlug | Full magazine slug | Magazine or null |
+| getMagazine | Magazine key | Magazine or null |
 | getEditionYears | Magazine key | Descending years with public cover records |
 | getEditions | magazineKey, optional year/cursor, bounded limit | Summary page and next cursor |
 | getEdition | magazineKey, editionSlug | Matching detail or null |
@@ -25,8 +26,9 @@ Every read is asynchronous from day one. Pages use the facade; adapters normaliz
 | getReaderPageData | magazineSlug, editionSlug | Matching magazine/edition and resolved ad, or null |
 | getArticles | section, optional magazine/kind filter, cursor, bounded limit | Published summaries; initial section is education |
 | getArticleBySlug | section, article slug | Scoped published detail or null; feature 01 uses education |
+| getEducationOffers | None | Evergreen conference/course offers in display order |
 
-Use object interfaces and a narrow magazine-key union. Keep summaries/detail types distinct and exclude PDF bytes/article bodies from lists. Set page defaults, maximum limits and cursor encoding together during implementation.
+Use object interfaces and a narrow magazine-key union. Keep summaries/detail types distinct and exclude PDF bytes/article bodies from lists. Defaults: page size 12, maximum 48, opaque offset cursors (invalid cursors restart at the first page).
 
 Feature 01 defines education as the initial article section. getArticles takes a section filter plus optional magazine/kind filter and bounded pagination; getArticleBySlug verifies that section so education URLs cannot display unrelated posts. Event occurrence and article publication dates are separate. Homepage reads reuse featured records rather than copying whole article bodies into cards.
 

@@ -7,9 +7,9 @@
 | Framework | Next.js 16.3.6 App Router, React 19.2.8 | Installed; public website with server/client boundaries |
 | Language | TypeScript 5, strict mode | Installed; `@/` resolves to repository root |
 | Styling | Tailwind CSS 4, CSS custom properties | Existing VOC design in `app/globals.css` |
-| Content now | Local TypeScript arrays and public assets | Homepage fixtures exist; domain provider boundary planned |
+| Content now | Typed fixtures in `data/mock/` behind `lib/content` | Implemented: server-only facade, provider contract, mock provider; presentational homepage arrays remain in `data/homepage.ts` |
 | Content later | Sanity Content Lake and Studio | Planned; install/connect last |
-| Complex UI motion | gsap and @gsap/react when needed | Requested for feature 01; not installed, simple motion may use CSS |
+| Complex UI motion | gsap and @gsap/react | Installed; used by the homepage hero (`components/hero/`); simple motion uses CSS |
 | PDF rendering | React-PDF backed by PDF.js | Selected for feature 02; implementation and version/worker compatibility check pending |
 | Delivery | Cached server reads, direct asset delivery | Planned; policy depends on installed Next.js and chosen host |
 | Authentication | Sanity editor authentication | Future Studio only; no visitor accounts |
@@ -18,18 +18,18 @@ No Prisma/PostgreSQL, Clerk, Liveblocks, React Flow, Trigger.dev or Vercel Blob.
 
 ## System Boundaries
 
-- `app/` — public routes, metadata, layouts and server-side composition; homepage only today.
-- `components/layout/`, `components/homepage/` — current presentation; future magazine/editorial/reader folders group feature UI.
-- `data/` — existing homepage/navigation arrays. Future `data/mock/` holds domain fixtures.
-- `types/content.ts` — planned provider-independent interfaces.
-- `lib/content/` — planned server-only asynchronous read facade, provider contract and mock/Sanity adapters.
+- `app/` — public routes, metadata, layouts and server-side composition: homepage, `casopisy`, `(magazines)/[magazineSlug]` (landing, `vydania`, `vydania/[editionSlug]`, `edicny-plan`), `vzdelavanie` and `vzdelavanie/[postSlug]`. Root layout renders the navbar/footer.
+- `components/layout/`, `components/homepage/`, `components/hero/`, `components/magazine/`, `components/education/`, `components/shared/` — presentation grouped by feature; future `components/pdf-reader/`.
+- `data/` — presentational homepage/navigation arrays; `data/mock/` holds domain fixtures.
+- `types/content.ts` — provider-independent interfaces (implemented).
+- `lib/content/` — server-only read facade, provider contract, mock adapter and pure rules (implemented); Sanity adapter later. `lib/format/` — pure Slovak date/plural/text helpers.
 - `lib/advertising/` — planned pure ad selection/fallback rules.
 - `public/` — current assets and future local PDF/banner fixtures; never a runtime CMS upload directory.
 - `sanity/` — future schemas, queries, configuration and generated query types, added at final integration; Studio hosting/route chosen then.
 - `app/api/` — only justified integration handlers such as a verified publication webhook; Server Components normally read content directly.
-- `constants/` — current links/contact configuration and future shared route construction.
+- `constants/` — links/contact configuration; `constants/routes.ts` is the central route registry and `SITE_ORIGIN` (`NEXT_PUBLIC_SITE_ORIGIN`).
 
-Planned paths are documentation, not evidence that those modules exist.
+Paths described as planned/future are documentation, not evidence that those modules exist.
 
 ## Content and Storage
 
@@ -49,7 +49,7 @@ Intended flow: Server Component -> content operation -> selected provider -> nor
 
 Implement the same asynchronous contracts using fixtures first. Then add a Sanity adapter that queries published documents, resolves references/assets and maps them into those contracts. Pages import the facade, never fixtures or GROQ queries. Production provider selection is explicit; a CMS outage must not silently display demo content.
 
-Query types, rich-text mapping, caching and provider errors stay behind the boundary. The current homepage imports fixtures directly; migrating these imports is later implementation work, not completed by this context change.
+Query types, rich-text mapping, caching and provider errors stay behind the boundary. Homepage domain sections (hero, partners, magazines, education, latest editions) read through the facade; remaining presentational homepage arrays (stats, audience tabs, advertising, FAQ) migrate with `getHomePageContent` later.
 
 ## Server and Client Responsibilities
 

@@ -53,7 +53,7 @@ Sequence: video hero with overlapping covers, partner marquee, statistics, magaz
 
 Covers retain portrait proportions (existing assets 595:842), restrained shadows and occasional slight rotations. Never crop important cover content into landscape cards. The homepage rail previews recent issues; magazine archives must expose every supplied cover.
 
-No component library is installed. Reuse existing components/simple local primitives. Current icons include text arrows, plus/minus marks and small custom graphics; Lucide/shadcn are not mandatory.
+No component library is installed. Reuse existing components/simple local primitives. Current icons include text arrows (`→` internal, `↗` external/mailto), plus/minus marks and small custom graphics; Lucide/shadcn are not mandatory.
 
 ## Feature 01 Direction and Review Rules
 
@@ -68,6 +68,20 @@ Detailed Čo nájdete content belongs on each magazine page initially. Homepage 
 The new page family includes a magazine directory, magazine landings, galleries, HTML edition details with optional Vkladačky, magazine-specific Edičný plán and education listings/articles. Card counts, arrangements and spacing are refined through review. Content editing is planned through the [editorial inventory](domain/editorial-content.md); layout/code remain frontend responsibilities.
 
 Record accepted interaction/content/template decisions here; route/data decisions belong in architecture/domain context. Track usable pages/subsystems in progress-tracker.md, not each minor visual revision. No final visual approval or completed implementation is claimed by these planning notes.
+
+## Feature 01 Prototype in Review
+
+Implemented direction awaiting user review — not approved:
+
+- **Hero:** one full-bleed media stage; small H1 kicker (`Odborné časopisy o správe a technike budov`) with a magazine-coloured rule, a per-magazine headline/summary/CTAs panel (`Otvoriť časopis`, `Všetky vydania`), and the two latest covers as tab selectors. Desktop: copy left, covers right. Mobile: compact cover-thumbnail selector row sits under the kicker so both choices are on the first screen. Selected cover scale 1, other 0.8 + navy dim; a 2px accent line under the selected title. Accents on navy: PVK cyan, SBD mint.
+- **Hero motion (GSAP):** crossfade with a slight settle (footage 1.05→1, still poster 1.08→1 slowly), panel copy rises in with a short stagger, outgoing copy lifts out. No intro animation; content is readable on first paint. Hover selects after a 140 ms intent delay; click/tap/arrow keys also select. No auto-cycling.
+- **Navigation:** transparent header only over navy heroes (home, magazine landings); solid navy elsewhere. `Časopisy` opens a white two-column panel with each magazine's links.
+- **Subpage header:** white `PageIntro` (breadcrumb, eyebrow, large heading, lead). Magazine landing uses a navy poster hero with the latest cover.
+- **Magazine topics:** photo cards for topics with images, a bordered text list for the rest (no empty tiles for any count).
+- **Editions:** covers in 2/3/5-column grids grouped by year with a year jump bar; detail page with sticky cover, `V tomto čísle nájdete`, Vkladačky cards and a print/subscription contact panel.
+- **Edičný plán:** year tabs; table on desktop, labelled cards on mobile; `Najbližšie vydanie` badge; linked editions show `Vyšlo – zobraziť`.
+- **Education:** evergreen offer cards plus dated post cards; image-less posts show an event-date tile.
+- Slovak typography: dates use non-breaking spaces; spaced dashes bind to the preceding word in long titles.
 
 ## Future Magazine Pages and Edičný Plán
 

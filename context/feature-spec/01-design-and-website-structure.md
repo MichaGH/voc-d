@@ -2,7 +2,7 @@
 
 ## Status and Purpose
 
-Specification prepared; implementation has not started. Feature 01 is an iterative design and site-structure phase, developed over many user prompts and visual reviews. The user will refine layouts with the implementing agent until satisfied. A first draft or one completed prompt does not mean this feature is done.
+Implementation started: a first complete prototype of units 1–5 is built on fixtures and is in user review (see progress-tracker.md and the "Feature 01 Prototype in Review" section of ui-context.md). Feature 01 is an iterative design and site-structure phase, developed over many user prompts and visual reviews. The user will refine layouts with the implementing agent until satisfied. A first draft or one completed prompt does not mean this feature is done.
 
 Extend the chosen VOC design D, preserving its editorial character, typography and palette while changing the hero, content hierarchy and routes described here. Implement fixtures and reusable content operations first; connect Sanity last.
 

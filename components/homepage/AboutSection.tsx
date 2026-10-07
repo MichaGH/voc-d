@@ -12,7 +12,7 @@ export default function AboutSection() {
           Viac ako <strong className="font-bold text-white">20 rokov</strong> prinášame správcom budov a profesiám TZB <strong className="font-bold text-[var(--color-blue-light)]">overené odborné informácie</strong> — recenzované, z praxe a vždy <strong className="font-bold text-white">o krok pred zmenami</strong> v legislatíve a technológiách.
         </p>
         <Link href={LINKS.about} className="mt-[clamp(40px,5vw,64px)] inline-flex h-[54px] items-center gap-3 rounded-full border border-white/40 px-[26px] text-base font-semibold text-white no-underline hover:bg-white hover:text-[var(--color-navy)]">
-          Spoznať vydavateľstvo →
+          Spoznať vydavateľstvo ↗
         </Link>
       </div>
     </section>

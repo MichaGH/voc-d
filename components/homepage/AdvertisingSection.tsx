@@ -21,7 +21,7 @@ export default function AdvertisingSection() {
           <p className="mt-[22px] max-w-[44ch] text-lg text-[var(--color-copy)] text-pretty">Viac ako 20 rokov prinášame recenzované informácie správcom budov a profesiám TZB. Vašu firmu predstavíme v tlači aj online — presne tým, ktorí o technike budov rozhodujú.</p>
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
             <Link href={LINKS.advertise} className="inline-flex h-14 items-center rounded-full bg-[var(--color-navy)] px-7 text-base font-semibold whitespace-nowrap text-white no-underline hover:bg-[var(--color-blue)] hover:text-white">Dohodnúť inzerciu ↗</Link>
-            <Link href={LINKS.services} className="text-base font-semibold text-[var(--color-blue)]">Všetky služby →</Link>
+            <Link href={LINKS.services} className="text-base font-semibold text-[var(--color-blue)]">Všetky služby ↗</Link>
           </div>
         </div>
 

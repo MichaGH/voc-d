@@ -1,8 +1,20 @@
-export const navigation = [
-  { label: "Časopisy", href: "#casopisy" },
-  { label: "Témy", href: "#temy" },
-  { label: "Vzdelávanie", href: "#vzdelavanie" },
-  { label: "Inzercia", href: "#inzercia" },
-  { label: "Archív", href: "#archiv" },
-  { label: "Kontakt", href: "#kontakt" },
-] as const;
+import { LINKS } from "@/constants";
+import { ROUTES } from "@/constants/routes";
+
+/**
+ * Primary navigation labels. Destinations come from the central route
+ * registry; the magazines entry expands into per-magazine links.
+ */
+export interface NavigationItem {
+  label: string;
+  href: string;
+  kind?: "magazines" | "external";
+}
+
+export const navigation: NavigationItem[] = [
+  { label: "Časopisy", href: ROUTES.magazines, kind: "magazines" },
+  { label: "Vzdelávanie", href: ROUTES.education },
+  { label: "Inzercia", href: ROUTES.advertising },
+  { label: "O nás", href: LINKS.about, kind: "external" },
+  { label: "Kontakt", href: ROUTES.contact },
+];

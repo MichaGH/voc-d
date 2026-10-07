@@ -51,11 +51,12 @@
 ## File Organization
 
 - `app/` — public routes, metadata, layouts and server-side composition.
-- `components/layout/`, `components/homepage/` — existing UI; add focused magazine/editorial/reader folders as implemented. Domain rules stay in shared modules.
+- `components/layout/`, `components/homepage/` (sections end in `Section`), `components/hero/`, `components/magazine/`, `components/education/`, `components/shared/` — UI by feature; `components/magazine/identity.ts` maps magazine keys to accent classes. Domain rules stay in shared modules.
 - `lib/content/` — server-only read facade, provider contract, mock/Sanity adapters and mapping.
 - `lib/advertising/` — reusable ad selection/fallback rules.
+- `lib/format/` — pure Slovak date (non-breaking spaces, month vs day precision), plural and text helpers.
 - `types/content.ts` — provider-independent interfaces; generated Sanity query types stay separate.
-- `data/mock/` — future domain fixtures. Existing `data/homepage.ts` and `data/navigation.ts` are presentation fixtures/static configuration to migrate as needed.
+- `data/mock/` — domain fixtures. Existing `data/homepage.ts` and `data/navigation.ts` are presentation fixtures/static configuration to migrate as needed.
 - `public/images/`, `public/videos/`, future `public/pdfs/` — local assets; not runtime upload storage.
 - `sanity/` — future schemas, queries, Studio configuration and generated types, introduced during final integration.
 - `constants/` — site configuration and shared links; avoid duplicated route/domain rules.

@@ -2,19 +2,20 @@
 
 ## Status
 
-Proposed domain model for local fixtures first and Sanity later; no schemas implemented. This replaces a relational database map. Working keys are `pvk`/`sbd`; SPD wording from the brief awaits editorial confirmation. Magazine identity is independent of hostname.
+Domain model implemented as TypeScript contracts (`types/content.ts`) with local fixtures; no Sanity schemas yet. This replaces a relational database map. Working keys are `pvk`/`sbd`; SPD wording from the brief awaits editorial confirmation. Magazine identity is independent of hostname.
 
 ## Documents
 
 | Entity | Fields | Relationships |
 | --- | --- | --- |
 | magazine | ID, key, title, slug, description/audience, ordered benefits/topics, hero presentation/media, optional confirmed publication identifiers | Independent reusable magazine identity; presentation behavior stays in code |
-| edition | ID, slug, issue label/title, year, numeric order, description, optional actual publication date, cover, optional PDF, ordered inserts, verified print/inquiry information | Required reference to one magazine |
+| edition | ID, slug, issue label/title, year, numeric order, description, optional actual publication date, cover, ordered highlights (`V tomto čísle nájdete`: title + optional page), optional PDF, ordered inserts, verified print/inquiry information | Required reference to one magazine |
 | editorialPlan | ID, year, ordered entries | Required magazine reference; one published plan per magazine/year |
 | advertisement | ID, internal title, advertiser name, desktop image, optional mobile image, accessible text, optional destination | Reusable creative |
 | readerAdPlacement | ID, enabled, ordered creative references, selected creative reference, optional fallback | One published reader placement per magazine |
 | article | ID, slug, title, excerpt, body, optional image, publication date, section, kind, optional event details | Feature 01 publishes education conference/course/article posts; optional magazine associations, other sections later |
 | partner | ID, name, logo/alt text, optional destination, display order | Reusable partner record; verified roster |
+| educationOffer | Key, kind (conference/course), label, title, description, image, destination | Evergreen offers linking to their existing pages; dated posts are separate articles |
 | siteSettings | Company/contact data, shared links and default metadata | Deliberately managed shared singleton |
 | homePageContent | Section text/actions and references to featured editions, articles/magazines, partner selection | Homepage template content; no arbitrary layout/code fields |
 
