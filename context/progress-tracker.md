@@ -23,6 +23,13 @@ Update this file whenever the current phase, active feature, or implementation s
 - **Pages (units 2–5):** `/casopisy`, both magazine landings, `/[magazine]/vydania`, edition detail with Vkladačky, `/[magazine]/edicny-plan` with year tabs, `/vzdelavanie` listing and article detail, styled `not-found`. Unknown and cross-magazine slugs return 404 (`dynamicParams = false`).
 - **Verification done:** `tsc`, `eslint`, `next build` (all routes static/SSG), Playwright checks at 1440px and 390px (no overflow, no broken images, 404s), hero interaction/video/reduced-motion checks.
 
+## Review Round 1 (applied, awaiting review)
+
+- Shared type/spacing/button scale; unified eyebrows; aligned containers.
+- Magazine landing rebuilt as a presentation page (removed latest-issue contents and next-issue card).
+- Navbar magazines menu rebuilt as a two-item cover list; `Porovnať oba časopisy` and the `/casopisy` comparison block removed.
+- Homepage: removed the duplicate `Novinky a pozvánky` list; simplified magazine cards and the latest-issues rail.
+
 ## Next Up
 
 - Collect review feedback on the hero (composition, copy, motion intensity, optional auto-cycling) and the page templates.

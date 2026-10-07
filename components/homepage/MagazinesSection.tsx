@@ -1,12 +1,13 @@
 import MagazineCard from "@/components/magazine/MagazineCard";
 import SubscribeBand from "@/components/magazine/SubscribeBand";
-import { getLatestEditions, getMagazine, getMagazines } from "@/lib/content";
+import { lead } from "@/components/shared/ui";
+import { getLatestEditions, getMagazines } from "@/lib/content";
 
 export default async function MagazinesSection() {
   const summaries = await getMagazines();
   const entries = await Promise.all(
     summaries.map(async ({ key }) => ({
-      magazine: await getMagazine(key),
+      magazine: summaries.find((summary) => summary.key === key)!,
       editions: await getLatestEditions({ magazineKey: key, limit: 3 }),
     })),
   );
@@ -18,15 +19,15 @@ export default async function MagazinesSection() {
           <h2 id="casopisy-nadpis" className="text-[clamp(40px,5.4vw,84px)] leading-[.98] font-bold tracking-[-.04em] text-balance">
             Vždy o krok vpred
           </h2>
-          <p className="mx-auto mt-6 max-w-[52ch] text-[clamp(17px,1.5vw,20px)] text-[var(--color-copy)] text-pretty">
+          <p className={`mx-auto mt-6 max-w-[48ch] ${lead}`}>
             Dva odborné časopisy — jeden pre správu bytových domov, druhý pre profesie technických zariadení budov.
           </p>
         </div>
 
         <div className="mt-[clamp(56px,7vw,104px)] grid gap-x-[clamp(32px,5vw,80px)] gap-y-[clamp(72px,8vw,120px)] lg:grid-cols-2">
-          {entries.map(({ magazine, editions }) =>
-            magazine ? <MagazineCard key={magazine.key} magazine={magazine} editions={editions} /> : null,
-          )}
+          {entries.map(({ magazine, editions }) => (
+            <MagazineCard key={magazine.key} magazine={magazine} editions={editions} />
+          ))}
         </div>
 
         <div className="mt-[clamp(72px,8vw,120px)]">

@@ -3,8 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useId, useRef, useState } from "react";
-import { magazineAccent } from "@/components/magazine/identity";
+import { useEffect, useId, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
 import { LINKS } from "@/constants";
 import { ROUTES, hasOverlayHeader } from "@/constants/routes";
 import { navigation } from "@/data/navigation";
@@ -14,7 +13,8 @@ export interface NavMagazine {
   key: MagazineKey;
   title: string;
   audience: string;
-  links: { label: string; href: string }[];
+  href: string;
+  cover?: { src: string; width: number; height: number };
 }
 
 function isCurrent(pathname: string, href: string) {
@@ -29,7 +29,20 @@ export default function Navbar({ magazines }: { magazines: NavMagazine[] }) {
   const [scrolled, setScrolled] = useState(false);
   const [lastPathname, setLastPathname] = useState(pathname);
   const dropdownRef = useRef<HTMLLIElement>(null);
+  const closeTimer = useRef<number | undefined>(undefined);
   const panelId = useId();
+
+  // Mouse users get hover-to-open with a short grace period; click/keyboard toggle as usual.
+  const openOnHover = (event: ReactPointerEvent) => {
+    if (event.pointerType !== "mouse") return;
+    window.clearTimeout(closeTimer.current);
+    setMagazinesOpen(true);
+  };
+  const closeOnLeave = (event: ReactPointerEvent) => {
+    if (event.pointerType !== "mouse") return;
+    window.clearTimeout(closeTimer.current);
+    closeTimer.current = window.setTimeout(() => setMagazinesOpen(false), 180);
+  };
 
   // Close menus after client-side navigation.
   if (pathname !== lastPathname) {
@@ -42,7 +55,10 @@ export default function Navbar({ magazines }: { magazines: NavMagazine[] }) {
     const onScroll = () => setScrolled(window.scrollY > 40);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.clearTimeout(closeTimer.current);
+    };
   }, []);
 
   useEffect(() => {
@@ -87,16 +103,14 @@ export default function Navbar({ magazines }: { magazines: NavMagazine[] }) {
           <ul className="flex list-none gap-1">
             {navigation.map((item) =>
               item.kind === "magazines" ? (
-                <li key={item.href} ref={dropdownRef} className="relative">
+                <li key={item.href} ref={dropdownRef} className="relative" onPointerEnter={openOnHover} onPointerLeave={closeOnLeave}>
                   <button
                     type="button"
                     aria-expanded={magazinesOpen}
                     aria-controls={panelId}
                     onClick={() => setMagazinesOpen((open) => !open)}
                     className={`flex min-h-11 cursor-pointer items-center gap-1.5 rounded-full border-0 px-3.5 text-[15px] font-medium text-white transition-colors hover:bg-white/12 ${
-                      magazinesOpen || isCurrent(pathname, item.href) || magazines.some((m) => m.links.some((l) => isCurrent(pathname, l.href)))
-                        ? "bg-white/12"
-                        : "bg-transparent"
+                      magazinesOpen || magazines.some((m) => isCurrent(pathname, m.href)) ? "bg-white/12" : "bg-transparent"
                     }`}
                   >
                     {item.label}
@@ -105,46 +119,42 @@ export default function Navbar({ magazines }: { magazines: NavMagazine[] }) {
                       height="10"
                       viewBox="0 0 10 10"
                       aria-hidden="true"
-                      className={`transition-transform duration-200 ${magazinesOpen ? "rotate-180" : ""}`}
+                      className={`opacity-70 transition-transform duration-200 ${magazinesOpen ? "rotate-180" : ""}`}
                     >
                       <path d="M2 3.5 5 6.5 8 3.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </button>
 
-                  <div
-                    id={panelId}
-                    hidden={!magazinesOpen}
-                    className="absolute top-[calc(100%+14px)] left-1/2 w-[640px] -translate-x-1/2 rounded-3xl bg-white p-3 text-[var(--color-navy)] shadow-[0_30px_60px_-24px_rgba(4,23,58,.45)]"
-                  >
-                    <div className="grid grid-cols-2 gap-1">
+                  {/* Padding bridges the gap so the pointer can travel into the panel. */}
+                  <div id={panelId} hidden={!magazinesOpen} className="absolute top-full left-1/2 w-[440px] -translate-x-1/2 pt-3">
+                    <ul className="grid list-none gap-1 rounded-2xl bg-white p-2 shadow-[0_24px_48px_-20px_rgba(4,23,58,.5)]">
                       {magazines.map((magazine) => (
-                        <div key={magazine.key} className="rounded-2xl p-5 hover:bg-[var(--color-surface)]">
-                          <p className={`text-sm font-semibold ${magazineAccent[magazine.key].text}`}>{magazine.audience}</p>
-                          <p className="mt-1 text-[17px] leading-snug font-bold tracking-[-.01em] text-balance">{magazine.title}</p>
-                          <ul className="mt-3 grid list-none gap-0.5">
-                            {magazine.links.map((link) => (
-                              <li key={link.href}>
-                                <Link
-                                  href={link.href}
-                                  aria-current={pathname === link.href ? "page" : undefined}
-                                  className="flex min-h-9 items-center justify-between text-[15px] font-medium text-[var(--color-copy)] no-underline hover:text-[var(--color-blue)] aria-[current=page]:text-[var(--color-blue)]"
-                                >
-                                  {link.label}
-                                  <span aria-hidden="true">→</span>
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
+                        <li key={magazine.key}>
+                          <Link
+                            href={magazine.href}
+                            aria-current={pathname === magazine.href ? "page" : undefined}
+                            className="group flex items-center gap-4 rounded-xl p-3 text-[var(--color-navy)] no-underline transition-colors hover:bg-[var(--color-surface)]"
+                          >
+                            {magazine.cover && (
+                              <Image
+                                src={magazine.cover.src}
+                                alt=""
+                                width={magazine.cover.width}
+                                height={magazine.cover.height}
+                                sizes="44px"
+                                loading="eager"
+                                className="h-auto w-11 shrink-0 rounded-[3px] shadow-[0_8px_16px_-8px_rgba(4,23,58,.5)]"
+                              />
+                            )}
+                            <span className="min-w-0 flex-1">
+                              <span className="block text-[15px] leading-snug font-semibold">{magazine.title}</span>
+                              <span className="mt-0.5 block text-sm text-[var(--color-muted)]">{magazine.audience}</span>
+                            </span>
+                            <span aria-hidden="true" className="text-[var(--color-steel)] transition-transform group-hover:translate-x-0.5 group-hover:text-[var(--color-navy)]">→</span>
+                          </Link>
+                        </li>
                       ))}
-                    </div>
-                    <Link
-                      href={item.href}
-                      className="mt-1 flex min-h-12 items-center justify-between rounded-2xl bg-[var(--color-surface)] px-5 text-[15px] font-semibold text-[var(--color-navy)] no-underline hover:bg-[var(--color-surface-hover)]"
-                    >
-                      Porovnať oba časopisy
-                      <span aria-hidden="true">→</span>
-                    </Link>
+                    </ul>
                   </div>
                 </li>
               ) : (
@@ -203,26 +213,32 @@ export default function Navbar({ magazines }: { magazines: NavMagazine[] }) {
                   {item.kind === "external" && <span aria-hidden="true" className="ml-2 text-white/50">↗</span>}
                 </Link>
                 {item.kind === "magazines" && (
-                  <div className="grid gap-5 pb-5 sm:grid-cols-2">
+                  <ul className="grid list-none gap-1 pb-4">
                     {magazines.map((magazine) => (
-                      <div key={magazine.key}>
-                        <p className={`text-sm font-semibold ${magazineAccent[magazine.key].textOnDark}`}>{magazine.title}</p>
-                        <ul className="mt-1 grid list-none">
-                          {magazine.links.map((link) => (
-                            <li key={link.href}>
-                              <Link
-                                href={link.href}
-                                onClick={() => setMenuOpen(false)}
-                                className="flex min-h-11 items-center text-base text-[var(--color-hero-copy)] no-underline"
-                              >
-                                {link.label}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
+                      <li key={magazine.key}>
+                        <Link
+                          href={magazine.href}
+                          onClick={() => setMenuOpen(false)}
+                          className="flex items-center gap-4 rounded-xl py-2 text-white no-underline"
+                        >
+                          {magazine.cover && (
+                            <Image
+                              src={magazine.cover.src}
+                              alt=""
+                              width={magazine.cover.width}
+                              height={magazine.cover.height}
+                              sizes="40px"
+                              className="h-auto w-10 shrink-0 rounded-[3px]"
+                            />
+                          )}
+                          <span className="min-w-0">
+                            <span className="block text-base leading-snug font-semibold">{magazine.title}</span>
+                            <span className="block text-sm text-white/60">{magazine.audience}</span>
+                          </span>
+                        </Link>
+                      </li>
                     ))}
-                  </div>
+                  </ul>
                 )}
               </li>
             ))}

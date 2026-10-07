@@ -28,7 +28,7 @@ export default function InsertList({ inserts }: { inserts: EditionInsert[] }) {
               />
             )}
             <div className="min-w-0">
-              <h3 className="text-[19px] leading-snug font-bold tracking-[-.01em] text-balance">{insert.title}</h3>
+              <h3 className="text-lg leading-snug font-semibold text-balance">{insert.title}</h3>
               {insert.description && <p className="mt-2 text-[15px] text-[var(--color-copy)] text-pretty">{insert.description}</p>}
               <dl className="mt-4 grid gap-1 text-sm">
                 {meta.length > 0 && (

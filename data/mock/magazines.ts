@@ -17,6 +17,15 @@ export const mockMagazines: Magazine[] = [
     description:
       "Vykurovanie, voda, plyn, klimatizácia a vzduchotechnika vo vedecko-odbornom časopise.",
     readers: "Projektanti, montážnici a firmy TZB · Slovensko a Česko",
+    audienceStatement:
+      "Pre ľudí, ktorí technické zariadenia budov navrhujú, montujú a udržiavajú v prevádzke.",
+    readerGroups: ["Projektanti TZB", "Montážne a inštalatérske firmy", "Servisní technici", "Výrobcovia a dodávatelia"],
+    image: {
+      src: "/images/role-tzb.jpg",
+      alt: "Potrubia a meradlá vykurovacej sústavy",
+      width: 1400,
+      height: 2106,
+    },
     intro:
       "Odborný časopis pre projektantov, montážnikov, servisných technikov a firmy z oblasti technických zariadení budov. V každom čísle prináša technické riešenia, skúsenosti z realizácií, zmeny v predpisoch a novinky výrobcov.",
     hero: {
@@ -36,25 +45,13 @@ export const mockMagazines: Magazine[] = [
         key: "vykurovanie",
         title: "Vykurovanie a obnoviteľné zdroje",
         description:
-          "Tepelné čerpadlá, kotly, solárne systémy a tepelné siete — s dátami z prevádzky, nie z prospektov.",
-        image: {
-          src: "/images/topic-technology.jpg",
-          alt: "Tepelné čerpadlo pri rodinnom dome",
-          width: 1200,
-          height: 800,
-        },
+          "Tepelné čerpadlá, kotly, solárne systémy a tepelné siete — s dátami z prevádzky, nie z prospektov."
       },
       {
         key: "voda-plyn",
         title: "Voda, plyn a rozvody",
         description:
-          "Potrubné systémy, armatúry, hygiena pitnej vody a bezpečná prevádzka plynových zariadení.",
-        image: {
-          src: "/images/role-tzb.jpg",
-          alt: "Potrubia a meradlá vykurovacej sústavy",
-          width: 1400,
-          height: 2106,
-        },
+          "Potrubné systémy, armatúry, hygiena pitnej vody a bezpečná prevádzka plynových zariadení."
       },
       {
         key: "klimatizacia",
@@ -72,18 +69,12 @@ export const mockMagazines: Magazine[] = [
         key: "produkty",
         title: "Produkty, veľtrhy a súťaže",
         description:
-          "Novinky výrobcov, reportáže z veľtrhov ako Aquatherm a súťaže odborných zručností.",
-        image: {
-          src: "/images/topic-events.jpg",
-          alt: "Rečník na odbornom podujatí",
-          width: 1200,
-          height: 782,
-        },
+          "Novinky výrobcov, reportáže z veľtrhov ako Aquatherm a súťaže odborných zručností."
       },
     ],
     subscription: {
-      title: "Predplatné časopisu Plynár – Vodár – Kúrenár",
-      text: "Tlačené vydanie vám pošleme poštou hneď po vyjdení. Napíšte nám a pripravíme predplatné pre vás alebo celú firmu.",
+      title: "Každé nové číslo poštou hneď po vyjdení",
+      text: "Napíšte nám a pripravíme predplatné pre vás alebo pre celú firmu.",
     },
     advertisingInfoUrl: LINKS.pvkAds,
   },
@@ -97,6 +88,15 @@ export const mockMagazines: Magazine[] = [
     description:
       "Legislatíva, obnova, energie a technika bytových domov v recenzovanom odbornom časopise.",
     readers: "Správcovia, spoločenstvá a bytové družstvá · Slovensko",
+    audienceStatement:
+      "Pre ľudí, ktorí sa starajú o bytové domy — o ich správu, hospodárenie, obnovu aj techniku.",
+    readerGroups: ["Správcovia bytových domov", "Spoločenstvá vlastníkov", "Bytové družstvá", "Zástupcovia vlastníkov"],
+    image: {
+      src: "/images/role-manager.jpg",
+      alt: "Moderný bytový dom",
+      width: 1400,
+      height: 2100,
+    },
     intro:
       "Recenzovaný odborný časopis pre správcov bytových domov, spoločenstvá vlastníkov a bytové družstvá. Pomáha zorientovať sa v legislatíve, obnove domov, energiách a technike — s príkladmi z praxe.",
     hero: {
@@ -116,25 +116,13 @@ export const mockMagazines: Magazine[] = [
         key: "legislativa",
         title: "Legislatíva a judikatúra",
         description:
-          "Zákony, vyhlášky a rozhodnutia súdov, ktoré menia správu domov — vysvetlené zrozumiteľne.",
-        image: {
-          src: "/images/topic-legislation.jpg",
-          alt: "Čitateľ s odborným časopisom",
-          width: 1200,
-          height: 1800,
-        },
+          "Zákony, vyhlášky a rozhodnutia súdov, ktoré menia správu domov — vysvetlené zrozumiteľne."
       },
       {
         key: "obnova",
         title: "Obnova a energie",
         description:
-          "Zatepľovanie, výmena zdrojov tepla a úspory energie v bytových domoch krok za krokom.",
-        image: {
-          src: "/images/role-manager.jpg",
-          alt: "Moderný bytový dom",
-          width: 1400,
-          height: 2100,
-        },
+          "Zatepľovanie, výmena zdrojov tepla a úspory energie v bytových domoch krok za krokom."
       },
       {
         key: "technika",
@@ -152,18 +140,12 @@ export const mockMagazines: Magazine[] = [
         key: "konferencie",
         title: "Firma časopisu a konferencie",
         description:
-          "Ocenenie Firma časopisu Správca bytových domov a novinky z konferencie Správa budov.",
-        image: {
-          src: "/images/topic-events.jpg",
-          alt: "Rečník na konferencii",
-          width: 1200,
-          height: 782,
-        },
+          "Ocenenie Firma časopisu Správca bytových domov a novinky z konferencie Správa budov."
       },
     ],
     subscription: {
-      title: "Predplatné časopisu Správca bytových domov",
-      text: "Tlačené vydanie vám pošleme poštou hneď po vyjdení. Napíšte nám a pripravíme predplatné pre vás, vaše spoločenstvo alebo družstvo.",
+      title: "Každé nové číslo poštou hneď po vyjdení",
+      text: "Napíšte nám a pripravíme predplatné pre vás, vaše spoločenstvo alebo družstvo.",
     },
     advertisingInfoUrl: LINKS.sbdAds,
   },

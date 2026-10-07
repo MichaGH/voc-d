@@ -23,7 +23,7 @@ export default function EditionCard({ edition, magazineTitle, headingLevel = "h3
         sizes={sizes ?? "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 260px"}
         className="aspect-[595/842] h-auto w-full rounded-md bg-[var(--color-surface)] shadow-[0_18px_30px_-20px_rgba(4,23,58,.45)] transition-transform duration-300 group-hover:-translate-y-1.5"
       />
-      <Heading className="mt-4 text-[17px] leading-snug font-semibold">
+      <Heading className="mt-4 text-base leading-snug font-semibold">
         <Link
           href={editionPath(edition.magazineKey, edition.slug)}
           className="text-[var(--color-navy)] no-underline after:absolute after:inset-0 group-hover:text-[var(--color-blue)]"

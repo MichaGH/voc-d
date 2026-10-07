@@ -3,8 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import InsertList from "@/components/magazine/InsertList";
-import { magazineAccent } from "@/components/magazine/identity";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
+import { body, buttonPrimary, display, eyebrow, h3, inner, meta, pageTop, sectionX, textLink } from "@/components/shared/ui";
 import { CONTACT } from "@/constants";
 import { ROUTES, editionPath, editionsPath, magazinePath, subscriptionPath } from "@/constants/routes";
 import { getEdition, getEditions, getMagazineBySlug, getMagazines } from "@/lib/content";
@@ -63,8 +63,8 @@ export default async function EditionPage({ params }: PageProps<"/[magazineSlug]
   const orderSubject = encodeURIComponent(`Objednávka výtlačku – ${magazine.title} ${edition.label}`);
 
   return (
-    <main id="obsah" className="px-5 pt-[calc(76px+clamp(32px,4vw,56px))] md:px-8 xl:px-12">
-      <div className="mx-auto max-w-[1400px]">
+    <main id="obsah" className={`${sectionX} ${pageTop}`}>
+      <div className={inner}>
         <Breadcrumbs
           items={[
             { label: "Časopisy", href: ROUTES.magazines },
@@ -74,8 +74,8 @@ export default async function EditionPage({ params }: PageProps<"/[magazineSlug]
           ]}
         />
 
-        <article className="mt-[clamp(32px,4vw,56px)] grid items-start gap-x-[clamp(40px,7vw,120px)] gap-y-12 lg:grid-cols-[minmax(0,.8fr)_minmax(0,1.2fr)]">
-          <div className="lg:sticky lg:top-[108px]">
+        <article className="mt-[clamp(40px,5vw,72px)] grid items-start gap-x-[clamp(40px,7vw,120px)] gap-y-12 lg:grid-cols-[minmax(0,.8fr)_minmax(0,1.2fr)]">
+          <div className="lg:sticky lg:top-[116px]">
             <Image
               src={edition.cover.src}
               alt={edition.cover.alt}
@@ -83,34 +83,24 @@ export default async function EditionPage({ params }: PageProps<"/[magazineSlug]
               height={edition.cover.height}
               sizes="(max-width: 1024px) 80vw, 460px"
               preload
-              className="mx-auto aspect-[595/842] h-auto w-full max-w-[280px] rounded-md sm:max-w-[400px] lg:max-w-[460px] shadow-[0_44px_70px_-30px_rgba(4,23,58,.6)] lg:mx-0"
+              className="mx-auto aspect-[595/842] h-auto w-full max-w-[280px] rounded-md shadow-[0_44px_70px_-30px_rgba(4,23,58,.6)] sm:max-w-[380px] lg:mx-0 lg:max-w-[440px]"
             />
           </div>
 
           <div className="min-w-0">
             <h1>
-              <span className={`block text-[15px] font-semibold ${magazineAccent[key].text}`}>{magazine.title}</span>
-              <span className="mt-3 block text-[clamp(44px,5.6vw,88px)] leading-[.98] font-bold tracking-[-.04em]">Číslo {edition.label}</span>
+              <span className={`block ${eyebrow}`}>{magazine.title}</span>
+              <span className={`mt-4 block ${display}`}>Číslo {edition.label}</span>
             </h1>
-            {edition.description && <p className="mt-6 max-w-[56ch] text-[clamp(17px,1.5vw,20px)] text-[var(--color-copy)] text-pretty">{edition.description}</p>}
+            {edition.description && <p className={`mt-6 max-w-[52ch] ${body}`}>{edition.description}</p>}
 
-            <dl className="mt-9 grid grid-cols-2 gap-x-10 gap-y-5 border-y border-[var(--color-line)] py-6 sm:grid-cols-3">
+            <dl className="mt-10 grid grid-cols-2 gap-x-10 border-y border-[var(--color-line)] py-6">
               <div>
-                <dt className="text-sm text-[var(--color-muted)]">Ročník</dt>
-                <dd className="mt-1 text-[17px] font-semibold">{edition.year}</dd>
+                <dt className={meta}>{edition.publishedOn ? "Vyšlo" : "Ročník"}</dt>
+                <dd className="mt-1 text-[17px] font-semibold">{edition.publishedOn ? formatLongDate(edition.publishedOn) : edition.year}</dd>
               </div>
               <div>
-                <dt className="text-sm text-[var(--color-muted)]">{edition.publishedOn ? "Vyšlo" : "Vkladačky"}</dt>
-                <dd className="mt-1 text-[17px] font-semibold">
-                  {edition.publishedOn
-                    ? formatLongDate(edition.publishedOn)
-                    : edition.inserts.length > 0
-                      ? `${edition.inserts.length} ${plural(edition.inserts.length, INSERT_FORMS)}`
-                      : "Bez vkladačiek"}
-                </dd>
-              </div>
-              <div>
-                <dt className="text-sm text-[var(--color-muted)]">Elektronická verzia</dt>
+                <dt className={meta}>Elektronická verzia</dt>
                 <dd className="mt-1 text-[17px] font-semibold">
                   {edition.pdf ? "Čítanie na webe pripravujeme" : "Zatiaľ nie je dostupná"}
                 </dd>
@@ -118,13 +108,13 @@ export default async function EditionPage({ params }: PageProps<"/[magazineSlug]
             </dl>
 
             {edition.highlights.length > 0 && (
-              <section aria-labelledby="obsah-cisla" className="mt-12">
-                <h2 id="obsah-cisla" className="text-[clamp(26px,2.4vw,34px)] leading-tight font-bold tracking-[-.025em]">V tomto čísle nájdete</h2>
-                <ol className="mt-4 list-none border-t border-[var(--color-line)]">
+              <section aria-labelledby="obsah-cisla" className="mt-16">
+                <h2 id="obsah-cisla" className={h3}>V tomto čísle nájdete</h2>
+                <ol className="mt-6 list-none border-t border-[var(--color-line)]">
                   {edition.highlights.map((highlight) => (
                     <li key={highlight.title} className="flex items-baseline justify-between gap-6 border-b border-[var(--color-line)] py-5">
-                      <span className="text-[clamp(17px,1.4vw,20px)] leading-snug font-semibold text-balance">{highlight.title}</span>
-                      {highlight.page && <span className="shrink-0 text-[15px] text-[var(--color-muted)]">str. {highlight.page}</span>}
+                      <span className="text-[17px] leading-snug font-semibold text-balance">{highlight.title}</span>
+                      {highlight.page && <span className={`shrink-0 ${meta}`}>str. {highlight.page}</span>}
                     </li>
                   ))}
                 </ol>
@@ -132,43 +122,40 @@ export default async function EditionPage({ params }: PageProps<"/[magazineSlug]
             )}
 
             {edition.inserts.length > 0 && (
-              <section aria-labelledby="vkladacky" className="mt-12">
+              <section aria-labelledby="vkladacky" className="mt-16">
                 <div className="flex items-baseline justify-between gap-4">
-                  <h2 id="vkladacky" className="text-[clamp(26px,2.4vw,34px)] leading-tight font-bold tracking-[-.025em]">Vkladačky</h2>
-                  <p className="text-[15px] text-[var(--color-muted)]">
+                  <h2 id="vkladacky" className={h3}>Vkladačky</h2>
+                  <p className={meta}>
                     {edition.inserts.length} {plural(edition.inserts.length, INSERT_FORMS)}
                   </p>
                 </div>
-                <div className="mt-5">
+                <div className="mt-6">
                   <InsertList inserts={edition.inserts} />
                 </div>
               </section>
             )}
 
-            <section aria-labelledby="objednat" className="mt-12 rounded-[28px] bg-[var(--color-surface)] p-[clamp(24px,3vw,40px)]">
-              <h2 id="objednat" className="text-[clamp(22px,2vw,28px)] leading-tight font-bold tracking-[-.02em]">Chcete tlačené vydanie?</h2>
-              <p className="mt-3 max-w-[52ch] text-[17px] text-[var(--color-copy)] text-pretty">
+            <section aria-labelledby="objednat" className="mt-16 rounded-[28px] bg-[var(--color-surface)] p-[clamp(28px,3.5vw,48px)]">
+              <h2 id="objednat" className={h3}>Chcete tlačené vydanie?</h2>
+              <p className={`mt-3 max-w-[52ch] ${body}`}>
                 Výtlačky aj predplatné vybavujeme e-mailom alebo telefonicky na{" "}
                 <span className="whitespace-nowrap">{CONTACT.phoneDisplay}</span>. Dostupnosť staršieho čísla vám potvrdíme.
               </p>
-              <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
-                <Link
-                  href={`mailto:${CONTACT.email}?subject=${orderSubject}`}
-                  className="inline-flex h-[52px] items-center rounded-full bg-[var(--color-navy)] px-6 text-[15px] font-semibold whitespace-nowrap text-white no-underline transition-colors hover:bg-[var(--color-blue)] hover:text-white"
-                >
+              <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4">
+                <Link href={`mailto:${CONTACT.email}?subject=${orderSubject}`} className={buttonPrimary}>
                   Objednať výtlačok ↗
                 </Link>
-                <Link href={subscriptionPath(key)} className="text-[15px] font-semibold text-[var(--color-blue)]">
+                <Link href={subscriptionPath(key)} className={textLink}>
                   Predplatné časopisu →
                 </Link>
               </div>
             </section>
 
-            <nav aria-label="Ďalšie vydania" className="mt-12 grid grid-cols-2 gap-4 border-t border-[var(--color-line)] pt-6">
+            <nav aria-label="Ďalšie vydania" className="mt-16 grid grid-cols-2 gap-4 border-t border-[var(--color-line)] pt-6">
               <div>
                 {older && (
                   <Link href={editionPath(key, older.slug)} className="group inline-flex flex-col text-[var(--color-navy)] no-underline">
-                    <span className="text-sm text-[var(--color-muted)]">← Staršie</span>
+                    <span className={meta}>← Staršie</span>
                     <span className="text-[17px] font-semibold group-hover:text-[var(--color-blue)]">Číslo {older.label}</span>
                   </Link>
                 )}
@@ -176,7 +163,7 @@ export default async function EditionPage({ params }: PageProps<"/[magazineSlug]
               <div className="text-right">
                 {newer && (
                   <Link href={editionPath(key, newer.slug)} className="group inline-flex flex-col items-end text-[var(--color-navy)] no-underline">
-                    <span className="text-sm text-[var(--color-muted)]">Novšie →</span>
+                    <span className={meta}>Novšie →</span>
                     <span className="text-[17px] font-semibold group-hover:text-[var(--color-blue)]">Číslo {newer.label}</span>
                   </Link>
                 )}

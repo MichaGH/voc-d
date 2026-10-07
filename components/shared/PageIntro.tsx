@@ -1,31 +1,27 @@
 import type { ReactNode } from "react";
 import Breadcrumbs, { type Crumb } from "@/components/shared/Breadcrumbs";
+import { display, eyebrow as eyebrowClass, inner, lead as leadClass, pageTop, sectionX } from "@/components/shared/ui";
 
 interface PageIntroProps {
   breadcrumbs: Crumb[];
   eyebrow?: ReactNode;
-  eyebrowClass?: string;
   title: ReactNode;
   lead?: ReactNode;
   children?: ReactNode;
 }
 
 /** Light page header used below the solid navigation on subpages. */
-export default function PageIntro({ breadcrumbs, eyebrow, eyebrowClass, title, lead, children }: PageIntroProps) {
+export default function PageIntro({ breadcrumbs, eyebrow, title, lead, children }: PageIntroProps) {
   return (
-    <header className="px-5 pt-[calc(76px+clamp(32px,4vw,56px))] md:px-8 xl:px-12">
-      <div className="mx-auto max-w-[1400px]">
+    <header className={`${sectionX} ${pageTop}`}>
+      <div className={inner}>
         <Breadcrumbs items={breadcrumbs} />
-        {eyebrow && (
-          <p className={`mt-[clamp(32px,4vw,56px)] text-[15px] font-semibold ${eyebrowClass ?? "text-[var(--color-blue)]"}`}>{eyebrow}</p>
-        )}
-        <h1
-          className={`${eyebrow ? "mt-3" : "mt-[clamp(32px,4vw,56px)]"} max-w-[18ch] text-[clamp(40px,5.2vw,80px)] leading-[.98] font-bold tracking-[-.04em] text-balance`}
-        >
-          {title}
-        </h1>
-        {lead && <p className="mt-6 max-w-[58ch] text-[clamp(17px,1.5vw,20px)] text-[var(--color-copy)] text-pretty">{lead}</p>}
-        {children && <div className="mt-8">{children}</div>}
+        <div className="mt-[clamp(40px,5vw,72px)]">
+          {eyebrow && <p className={`mb-4 ${eyebrowClass}`}>{eyebrow}</p>}
+          <h1 className={`max-w-[18ch] ${display}`}>{title}</h1>
+          {lead && <p className={`mt-6 max-w-[52ch] ${leadClass}`}>{lead}</p>}
+          {children && <div className="mt-10">{children}</div>}
+        </div>
       </div>
     </header>
   );

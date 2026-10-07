@@ -4,8 +4,8 @@ import Link from "next/link";
 import Script from "next/script";
 import Footer from "@/components/layout/Footer";
 import Navbar, { type NavMagazine } from "@/components/layout/Navbar";
-import { SITE_ORIGIN, editionsPath, editorialPlanPath, magazinePath } from "@/constants/routes";
-import { getMagazines } from "@/lib/content";
+import { SITE_ORIGIN, magazinePath } from "@/constants/routes";
+import { getLatestEditions, getMagazines } from "@/lib/content";
 import "./globals.css";
 
 const geist = Geist({
@@ -26,16 +26,18 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
   const magazines = await getMagazines();
-  const navMagazines: NavMagazine[] = magazines.map((magazine) => ({
-    key: magazine.key,
-    title: magazine.title,
-    audience: magazine.audience,
-    links: [
-      { label: "O časopise", href: magazinePath(magazine.key) },
-      { label: "Všetky vydania", href: editionsPath(magazine.key) },
-      { label: "Edičný plán", href: editorialPlanPath(magazine.key) },
-    ],
-  }));
+  const navMagazines: NavMagazine[] = await Promise.all(
+    magazines.map(async (magazine) => {
+      const [latest] = await getLatestEditions({ magazineKey: magazine.key, limit: 1 });
+      return {
+        key: magazine.key,
+        title: magazine.title,
+        audience: magazine.audience,
+        href: magazinePath(magazine.key),
+        cover: latest?.cover,
+      };
+    }),
+  );
 
   return (
     <html lang="sk" className={`${geist.variable} h-full antialiased`}>

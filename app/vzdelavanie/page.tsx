@@ -3,6 +3,7 @@ import ContactSection from "@/components/homepage/ContactSection";
 import ArticleCard from "@/components/education/ArticleCard";
 import OfferCard from "@/components/education/OfferCard";
 import PageIntro from "@/components/shared/PageIntro";
+import { h2, headerGap, inner, sectionTop, sectionX } from "@/components/shared/ui";
 import { getArticles, getEducationOffers } from "@/lib/content";
 import { todayInSiteZone } from "@/lib/format/dates";
 
@@ -25,16 +26,14 @@ export default async function EducationPage() {
     <main id="obsah">
       <PageIntro
         breadcrumbs={[{ label: "Vzdelávanie" }]}
-        eyebrow="Vzdelávanie"
-        title="Konferencie, kurzy a odborné poznatky."
-        lead="Stretnutia správcov bytových domov a profesií TZB, akreditovaná príprava správcov a ohliadnutia za tým, čo sa v odbore deje."
+        title="Vzdelávanie"
+        lead="Konferencia Správa budov, akreditovaný kurz pre správcov a odborné články z praxe."
       />
 
       {offers.length > 0 && (
-        <section aria-labelledby="ponuka-nadpis" className="px-5 pt-[clamp(64px,7vw,104px)] md:px-8 xl:px-12">
-          <div className="mx-auto max-w-[1400px]">
-            <h2 id="ponuka-nadpis" className="text-[15px] font-semibold text-[var(--color-muted)]">Pravidelná ponuka</h2>
-            <div className="mt-5 grid gap-4 lg:grid-cols-2">
+        <section aria-label="Konferencia a kurz" className={`${sectionX} pt-[clamp(72px,8vw,120px)]`}>
+          <div className={inner}>
+            <div className="grid gap-4 lg:grid-cols-2">
               {offers.map((offer) => (
                 <OfferCard key={offer.key} offer={offer} />
               ))}
@@ -43,13 +42,13 @@ export default async function EducationPage() {
         </section>
       )}
 
-      <section aria-labelledby="prispevky-nadpis" className="px-5 pt-[clamp(88px,10vw,150px)] md:px-8 xl:px-12">
-        <div className="mx-auto max-w-[1400px]">
-          <h2 id="prispevky-nadpis" className="text-[clamp(36px,4.4vw,64px)] leading-none font-bold tracking-[-.035em]">Novinky a pozvánky</h2>
+      <section aria-labelledby="prispevky-nadpis" className={`${sectionX} ${sectionTop}`}>
+        <div className={inner}>
+          <h2 id="prispevky-nadpis" className={h2}>Novinky a pozvánky</h2>
           {posts.length === 0 ? (
             <p className="mt-10 rounded-3xl bg-[var(--color-surface)] p-10 text-lg text-[var(--color-copy)]">Pripravujeme prvé príspevky.</p>
           ) : (
-            <ul className="mt-[clamp(40px,5vw,64px)] grid list-none gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className={`${headerGap} grid list-none gap-x-6 gap-y-16 sm:grid-cols-2 lg:grid-cols-3`}>
               {posts.map((post) => (
                 <li key={post.slug}>
                   <ArticleCard article={post} today={today} />

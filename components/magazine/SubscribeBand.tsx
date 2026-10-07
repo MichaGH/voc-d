@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { eyebrowOnDark } from "@/components/shared/ui";
 import { subscriptionPath } from "@/constants/routes";
 import type { MagazineSummary } from "@/types/content";
 
@@ -12,8 +13,8 @@ export default function SubscribeBand({ magazines }: { magazines: MagazineSummar
   return (
     <div className="flex flex-wrap items-center justify-between gap-x-12 gap-y-6 rounded-[28px] bg-[linear-gradient(135deg,var(--color-navy-light)_0%,var(--color-navy)_75%)] px-[clamp(28px,4vw,56px)] py-[clamp(32px,4vw,52px)] text-white">
       <div className="min-w-0 flex-[1_1_420px]">
-        <p className="text-sm font-semibold text-[var(--color-blue-pale)]">Predplatné</p>
-        <p className="mt-2 text-[clamp(26px,2.6vw,38px)] leading-[1.1] font-bold tracking-[-.025em] text-balance">
+        <p className={eyebrowOnDark}>Predplatné</p>
+        <p className="mt-3 text-[clamp(26px,2.6vw,38px)] leading-[1.1] font-bold tracking-[-.025em] text-balance">
           Majte každé nové číslo medzi prvými.
         </p>
       </div>

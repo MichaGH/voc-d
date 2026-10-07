@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { eyebrow } from "@/components/shared/ui";
 import { audienceGroups } from "@/data/homepage";
 
 export default function AudienceSection() {
@@ -13,8 +14,8 @@ export default function AudienceSection() {
     <section id="pre-koho" aria-labelledby="role-nadpis" className="scroll-mt-[76px] px-5 pt-[clamp(88px,10vw,150px)] md:px-8 xl:px-12">
       <div className="mx-auto max-w-[1400px]">
         <div className="flex flex-col items-center text-center">
-          <p className="text-[15px] font-semibold text-[var(--color-blue)]">Pre koho</p>
-          <h2 id="role-nadpis" className="mt-3 text-[clamp(36px,4.4vw,64px)] leading-none font-bold tracking-[-.035em]">Čo hľadáte vy?</h2>
+          <p className={eyebrow}>Pre koho</p>
+          <h2 id="role-nadpis" className="mt-4 text-[clamp(36px,4.4vw,64px)] leading-[1.02] font-bold tracking-[-.035em]">Čo hľadáte vy?</h2>
           <div role="tablist" aria-label="Vyberte, kto ste" className="mt-8 flex max-w-full flex-wrap justify-center gap-1.5 rounded-[28px] bg-[var(--color-surface)] p-1.5 sm:rounded-full">
             {audienceGroups.map((group, index) => {
               const active = activeIndex === index;

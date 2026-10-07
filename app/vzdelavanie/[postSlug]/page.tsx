@@ -6,6 +6,7 @@ import ArticleCard from "@/components/education/ArticleCard";
 import PortableTextBody from "@/components/education/PortableTextBody";
 import { articleKindLabel } from "@/components/education/labels";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
+import { buttonPrimary, display, eyebrow, h2, headerGap, inner, lead, meta, pageTop, sectionTop, sectionX, textLink } from "@/components/shared/ui";
 import { LINKS } from "@/constants";
 import { ROUTES, SITE_ORIGIN } from "@/constants/routes";
 import { getArticleBySlug, getArticles } from "@/lib/content";
@@ -53,20 +54,18 @@ export default async function EducationArticlePage({ params }: PageProps<"/vzdel
   };
 
   return (
-    <main id="obsah" className="px-5 pt-[calc(76px+clamp(32px,4vw,56px))] md:px-8 xl:px-12">
-      <article className="mx-auto max-w-[1400px]">
+    <main id="obsah" className={`${sectionX} ${pageTop}`}>
+      <article className={inner}>
         <Breadcrumbs items={[{ label: "Vzdelávanie", href: ROUTES.education }, { label: article.title }]} />
 
-        <header className="mt-[clamp(32px,4vw,56px)] max-w-[980px]">
-          <p className="flex flex-wrap items-center gap-x-2 text-[15px] font-semibold text-[var(--color-blue)]">
+        <header className="mt-[clamp(40px,5vw,72px)] max-w-[980px]">
+          <p className={`flex flex-wrap items-center gap-x-2 ${eyebrow}`}>
             {articleKindLabel[article.kind]}
             <span aria-hidden="true" className="text-[var(--color-line-dark)]">·</span>
-            <span className="font-medium text-[var(--color-muted)]">
-              Publikované <time dateTime={article.publishedOn}>{formatLongDate(article.publishedOn)}</time>
-            </span>
+            <time dateTime={article.publishedOn} className="text-[var(--color-muted)]">{formatLongDate(article.publishedOn)}</time>
           </p>
-          <h1 className="mt-4 text-[clamp(38px,4.8vw,72px)] leading-[1] font-bold tracking-[-.04em] text-balance">{article.title}</h1>
-          <p className="mt-6 max-w-[60ch] text-[clamp(18px,1.6vw,22px)] text-[var(--color-copy)] text-pretty">{article.excerpt}</p>
+          <h1 className={`mt-4 max-w-[20ch] ${display}`}>{article.title}</h1>
+          <p className={`mt-6 max-w-[56ch] ${lead}`}>{article.excerpt}</p>
         </header>
 
         {article.image && (
@@ -80,7 +79,7 @@ export default async function EducationArticlePage({ params }: PageProps<"/vzdel
             <PortableTextBody blocks={article.body} />
             {article.relatedOffer && (
               <p className="mt-10">
-                <Link href={article.relatedOffer.href} className="text-[17px] font-semibold text-[var(--color-blue)]">
+                <Link href={article.relatedOffer.href} className={textLink}>
                   {article.relatedOffer.label} ↗
                 </Link>
               </p>
@@ -89,19 +88,19 @@ export default async function EducationArticlePage({ params }: PageProps<"/vzdel
 
           {event && (
             <aside aria-labelledby="podujatie-nadpis" className="rounded-[28px] bg-[var(--color-surface)] p-8 lg:sticky lg:top-[108px]">
-              <h2 id="podujatie-nadpis" className="text-[15px] font-semibold text-[var(--color-muted)]">
+              <h2 id="podujatie-nadpis" className={eyebrow}>
                 {isPast ? "Podujatie sa uskutočnilo" : "Podujatie"}
               </h2>
               <dl className="mt-5 grid gap-5">
                 <div>
-                  <dt className="text-sm text-[var(--color-muted)]">Termín</dt>
+                  <dt className={meta}>Termín</dt>
                   <dd className="mt-1 text-[19px] leading-snug font-bold">
                     <time dateTime={event.start.date}>{formatEventRange(event)}</time>
                   </dd>
                 </div>
                 {event.location && (
                   <div>
-                    <dt className="text-sm text-[var(--color-muted)]">Miesto</dt>
+                    <dt className={meta}>Miesto</dt>
                     <dd className="mt-1 text-[17px] font-semibold">{event.location}</dd>
                   </div>
                 )}
@@ -109,25 +108,27 @@ export default async function EducationArticlePage({ params }: PageProps<"/vzdel
               {!isPast && event.registration && (
                 <Link
                   href={event.registration.href}
-                  className="mt-7 inline-flex h-[52px] w-full items-center justify-center rounded-full bg-[var(--color-navy)] px-6 text-[15px] font-semibold text-white no-underline transition-colors hover:bg-[var(--color-blue)] hover:text-white"
+                  className={`mt-8 w-full ${buttonPrimary}`}
                 >
                   {event.registration.label} ↗
                 </Link>
               )}
-              <Link href={LINKS.email} className="mt-4 block text-center text-[15px] font-semibold text-[var(--color-blue)]">
-                Otázky? Napíšte nám
-              </Link>
+              <p className="mt-5 text-center">
+                <Link href={LINKS.email} className={textLink}>
+                  Otázky? Napíšte nám
+                </Link>
+              </p>
             </aside>
           )}
         </div>
 
         {related.length > 0 && (
-          <section aria-labelledby="dalsie-nadpis" className="mt-[clamp(88px,10vw,150px)]">
-            <div className="flex flex-wrap items-end justify-between gap-6">
-              <h2 id="dalsie-nadpis" className="text-[clamp(32px,3.6vw,52px)] leading-none font-bold tracking-[-.035em]">Ďalšie zo vzdelávania</h2>
-              <Link href={ROUTES.education} className="text-base font-semibold text-[var(--color-blue)]">Všetky príspevky →</Link>
+          <section aria-labelledby="dalsie-nadpis" className={sectionTop}>
+            <div className="flex flex-wrap items-end justify-between gap-x-12 gap-y-6">
+              <h2 id="dalsie-nadpis" className={h2}>Ďalšie zo vzdelávania</h2>
+              <Link href={ROUTES.education} className={textLink}>Všetky príspevky →</Link>
             </div>
-            <ul className="mt-[clamp(32px,4vw,56px)] grid list-none gap-x-6 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className={`${headerGap} grid list-none gap-x-6 gap-y-16 sm:grid-cols-2 lg:grid-cols-3`}>
               {related.map((post) => (
                 <li key={post.slug}>
                   <ArticleCard article={post} today={today} />

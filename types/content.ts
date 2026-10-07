@@ -33,7 +33,6 @@ export interface MagazineTopic {
   key: string;
   title: string;
   description: string;
-  image?: ContentImage;
 }
 
 /** Per-magazine homepage hero presentation. Motion/layout stays in code. */
@@ -58,6 +57,11 @@ export interface MagazineSummary {
 
 export interface Magazine extends MagazineSummary {
   intro: string;
+  /** One-sentence statement of who the magazine is for. */
+  audienceStatement: string;
+  readerGroups: string[];
+  /** Representative photograph for the magazine page. */
+  image: ContentImage;
   topics: MagazineTopic[];
   hero: MagazineHeroContent;
   subscription: {

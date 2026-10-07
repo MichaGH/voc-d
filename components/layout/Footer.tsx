@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { NavMagazine } from "@/components/layout/Navbar";
 import { CONTACT, LINKS } from "@/constants";
-import { ROUTES } from "@/constants/routes";
+import { ROUTES, editionsPath, editorialPlanPath } from "@/constants/routes";
 
 const publisherLinks = [
   { label: "Vzdelávanie", href: ROUTES.education },
@@ -17,8 +17,8 @@ const linkClass =
 
 export default function Footer({ magazines }: { magazines: NavMagazine[] }) {
   return (
-    <footer className="mx-auto w-full max-w-[1400px] px-5 pt-[clamp(64px,7vw,104px)] pb-9 md:px-8 xl:px-12">
-      <div className="grid gap-x-10 gap-y-10 border-t border-[var(--color-line-light)] pt-12 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.3fr)_repeat(3,minmax(0,1fr))]">
+    <footer className="w-full px-5 pt-[clamp(64px,7vw,104px)] pb-9 md:px-8 xl:px-12">
+      <div className="mx-auto grid max-w-[1400px] gap-x-10 gap-y-10 border-t border-[var(--color-line-light)] pt-12 sm:grid-cols-2 lg:grid-cols-[minmax(0,1.3fr)_repeat(3,minmax(0,1fr))]">
         <div>
           <p className="text-lg font-bold tracking-[-.01em] text-[var(--color-navy)]">{CONTACT.company}</p>
           <p className="mt-2 max-w-[34ch] text-[15px] text-[var(--color-copy)] text-pretty">
@@ -41,7 +41,11 @@ export default function Footer({ magazines }: { magazines: NavMagazine[] }) {
           <nav key={magazine.key} aria-label={magazine.title}>
             <p className="text-[15px] font-semibold text-[var(--color-navy)] text-balance">{magazine.title}</p>
             <ul className="mt-3 grid list-none">
-              {magazine.links.map((link) => (
+              {[
+                { label: "O časopise", href: magazine.href },
+                { label: "Všetky vydania", href: editionsPath(magazine.key) },
+                { label: "Edičný plán", href: editorialPlanPath(magazine.key) },
+              ].map((link) => (
                 <li key={link.href}>
                   <Link href={link.href} className={linkClass}>
                     {link.label}
@@ -66,7 +70,7 @@ export default function Footer({ magazines }: { magazines: NavMagazine[] }) {
         </nav>
       </div>
 
-      <div className="mt-12 flex flex-wrap items-center justify-between gap-x-8 gap-y-2 border-t border-[var(--color-line-light)] pt-6 text-sm text-[var(--color-muted)]">
+      <div className="mx-auto mt-12 flex max-w-[1400px] flex-wrap items-center justify-between gap-x-8 gap-y-2 border-t border-[var(--color-line-light)] pt-6 text-sm text-[var(--color-muted)]">
         <p>© {new Date().getFullYear()} {CONTACT.company}</p>
         <Link href={LINKS.gdpr} className="text-[var(--color-muted)] no-underline hover:text-[var(--color-blue)]">
           Ochrana osobných údajov (GDPR)

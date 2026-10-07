@@ -59,7 +59,7 @@ export default function EditorialPlanView({ plans, defaultYear, nextEntryKey }: 
   return (
     <div>
       <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
-        <p id="plan-rok-label" className="text-[15px] font-semibold text-[var(--color-muted)]">Rok</p>
+        <p id="plan-rok-label" className="text-sm font-medium text-[var(--color-muted)]">Rok</p>
         <div
           role="tablist"
           aria-labelledby="plan-rok-label"

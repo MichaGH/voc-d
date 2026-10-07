@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { LINKS } from "@/constants";
+import { eyebrow, textLink } from "@/components/shared/ui";
 import { advertisingChannels, advertisingServices } from "@/data/homepage";
 
 function ServiceIcon({ name }: { name: string }) {
@@ -13,20 +14,20 @@ function ServiceIcon({ name }: { name: string }) {
 
 export default function AdvertisingSection() {
   return (
-    <section id="inzercia" aria-labelledby="inz-nadpis" className="mt-[clamp(88px,10vw,150px)] scroll-mt-[76px] bg-[var(--color-surface)]">
-      <div className="mx-auto grid max-w-[1400px] items-start gap-x-[clamp(48px,7vw,120px)] gap-y-12 px-5 pt-[clamp(80px,9vw,140px)] pb-[clamp(56px,6vw,88px)] md:px-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] xl:px-12">
+    <section id="inzercia" aria-labelledby="inz-nadpis" className="mt-[clamp(88px,10vw,150px)] scroll-mt-[76px] bg-[var(--color-surface)] px-5 md:px-8 xl:px-12">
+      <div className="mx-auto grid max-w-[1400px] items-start gap-x-[clamp(48px,7vw,120px)] gap-y-12 pt-[clamp(80px,9vw,140px)] pb-[clamp(56px,6vw,88px)] lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)]">
         <div className="lg:sticky lg:top-[108px]">
-          <p className="text-[15px] font-semibold text-[var(--color-blue)]">Inzercia</p>
-          <h2 id="inz-nadpis" className="mt-3 text-[clamp(36px,4.2vw,60px)] leading-none font-bold tracking-[-.035em] text-balance">Oslovte odborníkov, ktorí budovy spravujú, navrhujú a udržiavajú.</h2>
+          <p className={eyebrow}>Inzercia</p>
+          <h2 id="inz-nadpis" className="mt-4 text-[clamp(36px,4.2vw,60px)] leading-[1.02] font-bold tracking-[-.035em] text-balance">Oslovte odborníkov, ktorí budovy spravujú, navrhujú a udržiavajú.</h2>
           <p className="mt-[22px] max-w-[44ch] text-lg text-[var(--color-copy)] text-pretty">Viac ako 20 rokov prinášame recenzované informácie správcom budov a profesiám TZB. Vašu firmu predstavíme v tlači aj online — presne tým, ktorí o technike budov rozhodujú.</p>
           <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-3">
             <Link href={LINKS.advertise} className="inline-flex h-14 items-center rounded-full bg-[var(--color-navy)] px-7 text-base font-semibold whitespace-nowrap text-white no-underline hover:bg-[var(--color-blue)] hover:text-white">Dohodnúť inzerciu ↗</Link>
-            <Link href={LINKS.services} className="text-base font-semibold text-[var(--color-blue)]">Všetky služby ↗</Link>
+            <Link href={LINKS.services} className={textLink}>Všetky služby ↗</Link>
           </div>
         </div>
 
         <div>
-          <h3 className="text-[15px] font-semibold text-[var(--color-muted)]">Kde vás uvidia</h3>
+          <h3 className="text-sm font-medium text-[var(--color-muted)]">Kde vás uvidia</h3>
           <ul className="mt-2 list-none border-t border-[var(--color-line)]">
             {advertisingChannels.map((channel) => (
               <li key={channel.title} className="border-b border-[var(--color-line)]">
@@ -45,8 +46,8 @@ export default function AdvertisingSection() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-[1400px] px-5 pb-[clamp(80px,9vw,140px)] md:px-8 xl:px-12">
-        <h3 className="text-[15px] font-semibold text-[var(--color-muted)]">Ako vám pomôžeme</h3>
+      <div className="mx-auto max-w-[1400px] pb-[clamp(80px,9vw,140px)]">
+        <h3 className="text-sm font-medium text-[var(--color-muted)]">Ako vám pomôžeme</h3>
         <ul className="mt-5 grid list-none gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {advertisingServices.map((service) => (
             <li key={service.title} className="flex flex-col gap-7 rounded-3xl bg-white p-[clamp(24px,2.4vw,32px)] shadow-[0_1px_0_rgba(4,23,58,.04)]">

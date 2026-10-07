@@ -1,11 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
+import { body, eyebrow, h3 } from "@/components/shared/ui";
 import type { EducationOffer } from "@/types/content";
-
-const labelColor: Record<EducationOffer["kind"], string> = {
-  conference: "text-[var(--color-teal)]",
-  course: "text-[var(--color-blue)]",
-};
 
 /** Evergreen conference/course offer leading to its existing page. */
 export default function OfferCard({ offer, headingLevel = "h3" }: { offer: EducationOffer; headingLevel?: "h2" | "h3" }) {
@@ -28,9 +24,9 @@ export default function OfferCard({ offer, headingLevel = "h3" }: { offer: Educa
       </div>
       <div className="flex flex-1 items-end justify-between gap-6 p-[clamp(24px,3vw,40px)]">
         <div>
-          <p className={`text-[15px] font-semibold ${labelColor[offer.kind]}`}>{offer.label}</p>
-          <Heading className="mt-2 text-[clamp(24px,2.2vw,32px)] leading-[1.1] font-bold tracking-[-.02em]">{offer.title}</Heading>
-          <p className="mt-2.5 text-base text-[var(--color-copy)]">{offer.description}</p>
+          <p className={eyebrow}>{offer.label}</p>
+          <Heading className={`mt-3 ${h3}`}>{offer.title}</Heading>
+          <p className={`mt-3 max-w-[44ch] ${body}`}>{offer.description}</p>
         </div>
         <span aria-hidden="true" className="grid size-[52px] shrink-0 place-items-center rounded-full bg-[var(--color-navy)] text-xl text-white">↗</span>
       </div>

@@ -71,13 +71,17 @@ Record accepted interaction/content/template decisions here; route/data decision
 
 ## Feature 01 Prototype in Review
 
-Implemented direction awaiting user review — not approved:
+Implemented direction awaiting user review — not approved. Review round 1 feedback (cluttered, inconsistent eyebrows/spacing, dropdown unclear) is applied below.
+
+- **Shared scale (`components/shared/ui.ts`):** every section uses the same eyebrow (14px, medium, blue; blue-pale on navy — no magazine-coloured eyebrows), display/h2/h3/h4, lead/body/meta text, section spacing and button styles (`buttonPrimary`, `buttonSecondary`, `buttonOnDark`, `buttonOutlineOnDark`, `textLink`). Use these instead of ad-hoc sizes.
+- **Alignment:** horizontal padding sits outside the 1400px container everywhere (sections, footer), so all content shares one left edge. The contact panel stays a deliberately inset card.
 
 - **Hero:** one full-bleed media stage; small H1 kicker (`Odborné časopisy o správe a technike budov`) with a magazine-coloured rule, a per-magazine headline/summary/CTAs panel (`Otvoriť časopis`, `Všetky vydania`), and the two latest covers as tab selectors. Desktop: copy left, covers right. Mobile: compact cover-thumbnail selector row sits under the kicker so both choices are on the first screen. Selected cover scale 1, other 0.8 + navy dim; a 2px accent line under the selected title. Accents on navy: PVK cyan, SBD mint.
 - **Hero motion (GSAP):** crossfade with a slight settle (footage 1.05→1, still poster 1.08→1 slowly), panel copy rises in with a short stagger, outgoing copy lifts out. No intro animation; content is readable on first paint. Hover selects after a 140 ms intent delay; click/tap/arrow keys also select. No auto-cycling.
-- **Navigation:** transparent header only over navy heroes (home, magazine landings); solid navy elsewhere. `Časopisy` opens a white two-column panel with each magazine's links.
+- **Navigation:** transparent header only over navy heroes (home, magazine landings); solid navy elsewhere. `Časopisy` opens (hover or click) a small white list of the two magazines — cover thumbnail, title, audience, one link each. No secondary links or comparison entry.
 - **Subpage header:** white `PageIntro` (breadcrumb, eyebrow, large heading, lead). Magazine landing uses a navy poster hero with the latest cover.
-- **Magazine topics:** photo cards for topics with images, a bordered text list for the rest (no empty tiles for any count).
+- **Magazine landing = presentation:** navy identity hero with latest cover → "Pre koho" statement with reader groups → "Čo nájdete v časopise" (sticky heading + photo, bordered topic list) → latest covers on a light band → subscription and advertising panels → the sister magazine → contact. No issue contents or editorial-plan details on the landing.
+- **Homepage:** magazine cards show audience, title, description and two actions only; the education section shows the two offers and one link (no duplicate posts list).
 - **Editions:** covers in 2/3/5-column grids grouped by year with a year jump bar; detail page with sticky cover, `V tomto čísle nájdete`, Vkladačky cards and a print/subscription contact panel.
 - **Edičný plán:** year tabs; table on desktop, labelled cards on mobile; `Najbližšie vydanie` badge; linked editions show `Vyšlo – zobraziť`.
 - **Education:** evergreen offer cards plus dated post cards; image-less posts show an event-date tile.

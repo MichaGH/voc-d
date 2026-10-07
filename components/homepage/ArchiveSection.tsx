@@ -1,6 +1,6 @@
-import Link from "next/link";
 import EditionRail from "@/components/magazine/EditionRail";
-import { editionPath, editionsPath } from "@/constants/routes";
+import { eyebrow, h2 } from "@/components/shared/ui";
+import { editionPath } from "@/constants/routes";
 import { getLatestEditions, getMagazines } from "@/lib/content";
 
 export default async function ArchiveSection() {
@@ -14,8 +14,8 @@ export default async function ArchiveSection() {
           label="Posledné vydania časopisov"
           heading={
             <div>
-              <p className="text-[15px] font-semibold text-[var(--color-blue)]">Posledné čísla</p>
-              <h2 id="archiv-nadpis" className="mt-3 text-[clamp(36px,4.4vw,64px)] leading-none font-bold tracking-[-.035em]">Pozrite sa, čo vychádza.</h2>
+              <p className={eyebrow}>Posledné čísla</p>
+              <h2 id="archiv-nadpis" className={`mt-4 ${h2}`}>Pozrite sa, čo vychádza.</h2>
             </div>
           }
           editions={editions.map((edition) => ({
@@ -26,15 +26,6 @@ export default async function ArchiveSection() {
             cover: edition.cover,
           }))}
         />
-        <ul className="mt-8 flex list-none flex-wrap gap-x-8 gap-y-2">
-          {magazines.map((magazine) => (
-            <li key={magazine.key}>
-              <Link href={editionsPath(magazine.key)} className="text-base font-semibold text-[var(--color-blue)]">
-                Všetky vydania – {magazine.shortTitle} →
-              </Link>
-            </li>
-          ))}
-        </ul>
       </div>
     </section>
   );
