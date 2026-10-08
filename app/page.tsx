@@ -1,7 +1,6 @@
 import AboutSection from "@/components/homepage/AboutSection";
 import AdvertisingSection from "@/components/homepage/AdvertisingSection";
 import ArchiveSection from "@/components/homepage/ArchiveSection";
-import AudienceDividerSection from "@/components/homepage/AudienceDividerSection";
 import AudienceSection from "@/components/homepage/AudienceSection";
 import ContactSection from "@/components/homepage/ContactSection";
 import EducationSection from "@/components/homepage/EducationSection";
@@ -21,7 +20,6 @@ export default function Home() {
       <StatsSection />
       <MagazinesSection />
       <AboutSection />
-      <AudienceDividerSection />
       <AudienceSection />
       <EducationSection />
       <AdvertisingSection />

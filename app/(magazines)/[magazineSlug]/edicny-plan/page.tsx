@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import EditorialPlanView, { type PlanYearView } from "@/components/magazine/EditorialPlanView";
+import MagazineSwitcher from "@/components/magazine/MagazineSwitcher";
 import PageIntro from "@/components/shared/PageIntro";
 import { buttonOnDark, eyebrowOnDark, inner, meta, sectionX, textLinkOnDark } from "@/components/shared/ui";
 import { CONTACT } from "@/constants";
-import { ROUTES, editionPath, magazinePath } from "@/constants/routes";
+import { ROUTES, editionPath, editorialPlanPath, magazinePath } from "@/constants/routes";
 import { getEditorialPlan, getEditorialPlanYears, getMagazineBySlug, getMagazines } from "@/lib/content";
 import { findNextPlanEntry, pickDefaultPlanYear } from "@/lib/content/rules";
+import { getSwitcherItems } from "@/lib/content/switcher";
 import { todayInSiteZone } from "@/lib/format/dates";
 
 export const dynamicParams = false;
@@ -33,7 +35,7 @@ export default async function EditorialPlanPage({ params }: PageProps<"/[magazin
   if (!magazine) notFound();
   const { key } = magazine;
 
-  const years = await getEditorialPlanYears(key);
+  const [years, switcher] = await Promise.all([getEditorialPlanYears(key), getSwitcherItems(editorialPlanPath)]);
   const plans = (await Promise.all(years.map((year) => getEditorialPlan(key, year)))).filter((plan) => plan !== null);
   const today = todayInSiteZone();
   const defaultYear = pickDefaultPlanYear(years, Number(today.slice(0, 4)));
@@ -57,10 +59,15 @@ export default async function EditorialPlanPage({ params }: PageProps<"/[magazin
           { label: magazine.shortTitle, href: magazinePath(key) },
           { label: "Edičný plán" },
         ]}
-        eyebrow={magazine.title}
-        title="Edičný plán"
-        lead="Termíny vydaní a uzávierky podkladov pre inzerciu a odborné články."
-      />
+        title={
+          <>
+            Edičný plán<span className="sr-only"> časopisu {magazine.title}</span>
+          </>
+        }
+        lead="Kedy vychádzajú jednotlivé čísla a dokedy nám treba poslať podklady pre inzerciu a odborné články."
+      >
+        <MagazineSwitcher items={switcher} current={key} label="Edičný plán časopisu" />
+      </PageIntro>
 
       <div className={`${sectionX} pt-[clamp(56px,6vw,88px)]`}>
         <div className={inner}>

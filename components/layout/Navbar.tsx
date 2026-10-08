@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useRef, useState, type PointerEvent as ReactPointerEvent } from "react";
-import { LINKS } from "@/constants";
 import { ROUTES, hasOverlayHeader } from "@/constants/routes";
 import { navigation } from "@/data/navigation";
 import type { MagazineKey } from "@/types/content";
@@ -165,7 +164,6 @@ export default function Navbar({ magazines }: { magazines: NavMagazine[] }) {
                     className="flex min-h-11 items-center rounded-full px-3.5 text-[15px] font-medium text-white no-underline transition-colors hover:bg-white/12 hover:text-white aria-[current=page]:bg-white/12"
                   >
                     {item.label}
-                    {item.kind === "external" && <span aria-hidden="true" className="ml-1 text-white/60">↗</span>}
                   </Link>
                 </li>
               ),
@@ -174,10 +172,10 @@ export default function Navbar({ magazines }: { magazines: NavMagazine[] }) {
         </nav>
 
         <Link
-          href={LINKS.advertise}
+          href={ROUTES.advertising}
           className="hidden h-[46px] shrink-0 items-center gap-2 rounded-full bg-white px-5 text-[15px] font-semibold whitespace-nowrap text-[var(--color-navy)] no-underline transition-colors hover:bg-[var(--color-cyan)] hover:text-[var(--color-navy)] lg:inline-flex"
         >
-          Inzerovať u nás ↗
+          Inzerovať u nás
         </Link>
 
         <button
@@ -210,7 +208,6 @@ export default function Navbar({ magazines }: { magazines: NavMagazine[] }) {
                   className="flex min-h-14 items-center text-xl font-semibold text-white no-underline"
                 >
                   {item.label}
-                  {item.kind === "external" && <span aria-hidden="true" className="ml-2 text-white/50">↗</span>}
                 </Link>
                 {item.kind === "magazines" && (
                   <ul className="grid list-none gap-1 pb-4">
@@ -244,7 +241,7 @@ export default function Navbar({ magazines }: { magazines: NavMagazine[] }) {
             ))}
             <li className="pt-[18px]">
               <Link
-                href={LINKS.advertise}
+                href={ROUTES.advertising}
                 className="flex min-h-[54px] items-center justify-center rounded-full bg-white text-[17px] font-semibold text-[var(--color-navy)] no-underline"
               >
                 Inzerovať u nás

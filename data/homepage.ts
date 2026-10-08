@@ -1,5 +1,5 @@
 import { LINKS } from "@/constants";
-import { ROUTES, magazinePath, subscriptionPath } from "@/constants/routes";
+import { ROUTES, editorialPlanPath, magazinePath, subscriptionPath } from "@/constants/routes";
 
 export const stats = [
   { value: "20+", label: "rokov odborného publikovania" },
@@ -47,62 +47,12 @@ export const audienceGroups = [
     image: "/images/role-advertiser.jpg",
     alt: "Čitateľ s odborným časopisom",
     links: [
-      { label: "Inzercia v Správcovi bytových domov", href: LINKS.sbdAds, arrow: "↗" },
-      { label: "Inzercia v Plynár – Vodár – Kúrenár", href: LINKS.pvkAds, arrow: "↗" },
-      { label: "Všetky služby vydavateľstva", href: LINKS.services, arrow: "↗" },
+      { label: "Možnosti inzercie", href: ROUTES.advertising, arrow: "→" },
+      { label: "Edičný plán – Správca bytových domov", href: editorialPlanPath("sbd"), arrow: "→" },
+      { label: "Edičný plán – Plynár – Vodár – Kúrenár", href: editorialPlanPath("pvk"), arrow: "→" },
     ],
     cta: "Dohodnúť inzerciu",
     ctaHref: LINKS.advertise,
-  },
-] as const;
-
-export const advertisingChannels = [
-  {
-    href: LINKS.sbdAds,
-    image: "/images/sbd-2-2026.jpg",
-    title: "Správca bytových domov",
-    audience: "Správcovia, spoločenstvá a bytové družstvá · Slovensko",
-    formats: "Plošná inzercia · Odborný článok · Direct-mailing",
-    arrow: "↗",
-  },
-  {
-    href: LINKS.pvkAds,
-    image: "/images/pvk-4-2026.jpg",
-    title: "Plynár – Vodár – Kúrenár + Klimatizácia",
-    audience: "Projektanti, montážnici a firmy TZB · Slovensko a Česko",
-    formats: "Plošná inzercia · Odborný článok · Direct-mailing",
-    arrow: "↗",
-  },
-  {
-    href: LINKS.tzbPortal,
-    image: "/images/tzb-portal.jpg",
-    title: "TZBportal.sk a NEWS",
-    audience: "Online čitatelia z oblasti technických zariadení budov",
-    formats: "Odborné články · Prezentácia firmy online",
-    arrow: "↗",
-  },
-] as const;
-
-export const advertisingServices = [
-  {
-    icon: "document",
-    title: "Prezentácia v časopise",
-    description: "Plošná inzercia, odborný článok a pozvánky na výstavy či podujatia.",
-  },
-  {
-    icon: "design",
-    title: "Grafické návrhy",
-    description: "Inzercie a firemné materiály — letáky, plagáty, katalógy.",
-  },
-  {
-    icon: "online",
-    title: "Online na TZBportal.sk",
-    description: "Umiestnenie odborných článkov na portáli a v newslettri NEWS.",
-  },
-  {
-    icon: "send",
-    title: "Výtlačky pre vašich klientov",
-    description: "Až 100 výtlačkov s vašou inzerciou pošleme na náklady vydavateľstva.",
   },
 ] as const;
 

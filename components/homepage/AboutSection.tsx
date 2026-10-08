@@ -1,8 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { LINKS } from "@/constants";
+import { ROUTES } from "@/constants/routes";
 
-export default function AboutSection() {
+export default function AboutSection({ showLink = true }: { showLink?: boolean }) {
   return (
     <section aria-labelledby="onas-veta" className="relative mt-[clamp(112px,12vw,176px)] overflow-hidden bg-[var(--color-navy)] text-white">
       <Image src="/images/about.jpg" alt="" fill sizes="100vw" className="object-cover grayscale" />
@@ -11,9 +11,11 @@ export default function AboutSection() {
         <p id="onas-veta" className="max-w-[22em] text-[clamp(30px,3.9vw,62px)] leading-[1.16] tracking-[-.03em] text-[var(--color-about-copy)] text-pretty">
           Viac ako <strong className="font-bold text-white">20 rokov</strong> prinášame správcom budov a profesiám TZB <strong className="font-bold text-[var(--color-blue-light)]">overené odborné informácie</strong> — recenzované, z praxe a vždy <strong className="font-bold text-white">o krok pred zmenami</strong> v legislatíve a technológiách.
         </p>
-        <Link href={LINKS.about} className="mt-[clamp(40px,5vw,64px)] inline-flex h-[54px] items-center gap-3 rounded-full border border-white/40 px-[26px] text-base font-semibold text-white no-underline hover:bg-white hover:text-[var(--color-navy)]">
-          Spoznať vydavateľstvo ↗
-        </Link>
+        {showLink && (
+          <Link href={ROUTES.about} className="mt-[clamp(40px,5vw,64px)] inline-flex h-[54px] items-center gap-3 rounded-full border border-white/40 px-[26px] text-base font-semibold text-white no-underline hover:bg-white hover:text-[var(--color-navy)]">
+            Spoznať vydavateľstvo →
+          </Link>
+        )}
       </div>
     </section>
   );

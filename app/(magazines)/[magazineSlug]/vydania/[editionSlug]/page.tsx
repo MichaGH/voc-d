@@ -4,12 +4,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import InsertList from "@/components/magazine/InsertList";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
-import { body, buttonPrimary, display, eyebrow, h3, inner, meta, pageTop, sectionX, textLink } from "@/components/shared/ui";
+import { h3, inner, sectionX } from "@/components/shared/ui";
 import { CONTACT } from "@/constants";
 import { ROUTES, editionPath, editionsPath, magazinePath, subscriptionPath } from "@/constants/routes";
 import { getEdition, getEditions, getMagazineBySlug, getMagazines } from "@/lib/content";
-import { formatLongDate } from "@/lib/format/dates";
-import { INSERT_FORMS, plural } from "@/lib/format/plural";
+import { bindDashes } from "@/lib/format/text";
+import type { EditionSummary, MagazineKey } from "@/types/content";
 
 export const dynamicParams = false;
 
@@ -42,11 +42,33 @@ export async function generateMetadata({ params }: PageProps<"/[magazineSlug]/vy
   const { magazine, edition } = data;
   return {
     title: `${magazine.title} ${edition.label}`,
-    description: edition.highlights.length
-      ? `V čísle ${edition.label}: ${edition.highlights.map((h) => h.title).join(" · ")}`
-      : `Vydanie ${edition.label} časopisu ${magazine.title}.`,
+    description: edition.description ?? `Vydanie ${edition.label} časopisu ${magazine.title}.`,
     openGraph: { images: [{ url: edition.cover.src, width: edition.cover.width, height: edition.cover.height }] },
   };
+}
+
+function NeighbourCard({ magazineKey, edition, direction }: { magazineKey: MagazineKey; edition: EditionSummary; direction: "older" | "newer" }) {
+  return (
+    <Link
+      href={editionPath(magazineKey, edition.slug)}
+      className={`group flex items-center gap-5 rounded-[24px] bg-[var(--color-surface)] p-4 pr-6 text-[var(--color-navy)] no-underline transition-colors hover:bg-[var(--color-surface-hover)] hover:text-[var(--color-navy)] ${
+        direction === "newer" ? "flex-row-reverse text-right" : ""
+      }`}
+    >
+      <Image
+        src={edition.cover.src}
+        alt=""
+        width={edition.cover.width}
+        height={edition.cover.height}
+        sizes="64px"
+        className="h-auto w-16 shrink-0 rounded-[3px] shadow-[0_10px_18px_-10px_rgba(4,23,58,.5)]"
+      />
+      <span className="min-w-0 flex-1">
+        <span className="block text-sm text-[var(--color-muted)]">{direction === "older" ? "← Staršie číslo" : "Novšie číslo →"}</span>
+        <span className="mt-1 block text-lg font-semibold">{edition.label}</span>
+      </span>
+    </Link>
+  );
 }
 
 export default async function EditionPage({ params }: PageProps<"/[magazineSlug]/vydania/[editionSlug]">) {
@@ -63,114 +85,87 @@ export default async function EditionPage({ params }: PageProps<"/[magazineSlug]
   const orderSubject = encodeURIComponent(`Objednávka výtlačku – ${magazine.title} ${edition.label}`);
 
   return (
-    <main id="obsah" className={`${sectionX} ${pageTop}`}>
-      <div className={inner}>
-        <Breadcrumbs
-          items={[
-            { label: "Časopisy", href: ROUTES.magazines },
-            { label: magazine.shortTitle, href: magazinePath(key) },
-            { label: "Vydania", href: editionsPath(key) },
-            { label: edition.label },
-          ]}
-        />
+    <main id="obsah" className="pt-[76px]">
+      <div className={sectionX}>
+        <div className={`${inner} pt-[clamp(28px,3vw,40px)]`}>
+          <Breadcrumbs
+            items={[
+              { label: "Časopisy", href: ROUTES.magazines },
+              { label: magazine.shortTitle, href: magazinePath(key) },
+              { label: "Vydania", href: editionsPath(key) },
+              { label: edition.label },
+            ]}
+          />
 
-        <article className="mt-[clamp(40px,5vw,72px)] grid items-start gap-x-[clamp(40px,7vw,120px)] gap-y-12 lg:grid-cols-[minmax(0,.8fr)_minmax(0,1.2fr)]">
-          <div className="lg:sticky lg:top-[116px]">
-            <Image
-              src={edition.cover.src}
-              alt={edition.cover.alt}
-              width={edition.cover.width}
-              height={edition.cover.height}
-              sizes="(max-width: 1024px) 80vw, 460px"
-              preload
-              className="mx-auto aspect-[595/842] h-auto w-full max-w-[280px] rounded-md shadow-[0_44px_70px_-30px_rgba(4,23,58,.6)] sm:max-w-[380px] lg:mx-0 lg:max-w-[440px]"
-            />
-          </div>
+          <article className="mt-[clamp(28px,3.5vw,48px)] grid items-center gap-x-[clamp(40px,6vw,104px)] gap-y-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+            {/* Cover stage */}
+            <div className="grid place-items-center rounded-[36px] bg-[var(--color-surface)] px-[clamp(40px,8vw,120px)] py-[clamp(40px,6vw,88px)]">
+              <Image
+                src={edition.cover.src}
+                alt={edition.cover.alt}
+                width={edition.cover.width}
+                height={edition.cover.height}
+                sizes="(max-width: 1024px) 70vw, 420px"
+                preload
+                className="aspect-[595/842] h-auto w-full max-w-[420px] rounded-[6px] shadow-[0_50px_80px_-34px_rgba(4,23,58,.7)]"
+              />
+            </div>
 
-          <div className="min-w-0">
-            <h1>
-              <span className={`block ${eyebrow}`}>{magazine.title}</span>
-              <span className={`mt-4 block ${display}`}>Číslo {edition.label}</span>
-            </h1>
-            {edition.description && <p className={`mt-6 max-w-[52ch] ${body}`}>{edition.description}</p>}
+            <div className="min-w-0">
+              <Link
+                href={magazinePath(key)}
+                className="inline-flex items-center gap-2 text-lg font-semibold text-[var(--color-navy)] no-underline hover:text-[var(--color-blue)]"
+              >
+                {bindDashes(magazine.title)}
+              </Link>
+              <h1 className="mt-3 text-[clamp(56px,7.5vw,120px)] leading-[.9] font-bold tracking-[-.05em]">
+                <span className="sr-only">{magazine.title} – </span>
+                {edition.label}
+              </h1>
+              {edition.description && (
+                <p className="mt-6 max-w-[48ch] text-[clamp(17px,1.4vw,20px)] leading-[1.55] text-[var(--color-copy)] text-pretty">{edition.description}</p>
+              )}
 
-            <dl className="mt-10 grid grid-cols-2 gap-x-10 border-y border-[var(--color-line)] py-6">
-              <div>
-                <dt className={meta}>{edition.publishedOn ? "Vyšlo" : "Ročník"}</dt>
-                <dd className="mt-1 text-[17px] font-semibold">{edition.publishedOn ? formatLongDate(edition.publishedOn) : edition.year}</dd>
-              </div>
-              <div>
-                <dt className={meta}>Elektronická verzia</dt>
-                <dd className="mt-1 text-[17px] font-semibold">
-                  {edition.pdf ? "Čítanie na webe pripravujeme" : "Zatiaľ nie je dostupná"}
-                </dd>
-              </div>
-            </dl>
-
-            {edition.highlights.length > 0 && (
-              <section aria-labelledby="obsah-cisla" className="mt-16">
-                <h2 id="obsah-cisla" className={h3}>V tomto čísle nájdete</h2>
-                <ol className="mt-6 list-none border-t border-[var(--color-line)]">
-                  {edition.highlights.map((highlight) => (
-                    <li key={highlight.title} className="flex items-baseline justify-between gap-6 border-b border-[var(--color-line)] py-5">
-                      <span className="text-[17px] leading-snug font-semibold text-balance">{highlight.title}</span>
-                      {highlight.page && <span className={`shrink-0 ${meta}`}>str. {highlight.page}</span>}
-                    </li>
-                  ))}
-                </ol>
-              </section>
-            )}
-
-            {edition.inserts.length > 0 && (
-              <section aria-labelledby="vkladacky" className="mt-16">
-                <div className="flex items-baseline justify-between gap-4">
-                  <h2 id="vkladacky" className={h3}>Vkladačky</h2>
-                  <p className={meta}>
-                    {edition.inserts.length} {plural(edition.inserts.length, INSERT_FORMS)}
-                  </p>
-                </div>
-                <div className="mt-6">
-                  <InsertList inserts={edition.inserts} />
-                </div>
-              </section>
-            )}
-
-            <section aria-labelledby="objednat" className="mt-16 rounded-[28px] bg-[var(--color-surface)] p-[clamp(28px,3.5vw,48px)]">
-              <h2 id="objednat" className={h3}>Chcete tlačené vydanie?</h2>
-              <p className={`mt-3 max-w-[52ch] ${body}`}>
-                Výtlačky aj predplatné vybavujeme e-mailom alebo telefonicky na{" "}
-                <span className="whitespace-nowrap">{CONTACT.phoneDisplay}</span>. Dostupnosť staršieho čísla vám potvrdíme.
-              </p>
-              <div className="mt-8 flex flex-wrap items-center gap-x-7 gap-y-4">
-                <Link href={`mailto:${CONTACT.email}?subject=${orderSubject}`} className={buttonPrimary}>
-                  Objednať výtlačok ↗
+              {/* The one obvious action */}
+              <div className="mt-10 rounded-[28px] bg-[linear-gradient(135deg,var(--color-navy-light)_0%,var(--color-navy)_75%)] p-[clamp(28px,3.5vw,44px)] text-white">
+                <h2 className="text-[clamp(24px,2.2vw,32px)] leading-[1.1] font-bold tracking-[-.025em] text-balance">Chcete toto číslo?</h2>
+                <p className="mt-3 max-w-[44ch] text-base leading-[1.6] text-[var(--color-card-copy)] text-pretty">
+                  Pošleme vám tlačený výtlačok. Stačí nám napísať — dostupnosť staršieho čísla potvrdíme.
+                </p>
+                <Link
+                  href={`mailto:${CONTACT.email}?subject=${orderSubject}`}
+                  className="mt-8 flex h-16 w-full items-center justify-center gap-3 rounded-full bg-white px-8 text-lg font-semibold text-[var(--color-navy)] no-underline transition-colors hover:bg-[var(--color-cyan)] hover:text-[var(--color-navy)]"
+                >
+                  Objednať číslo {edition.label} <span aria-hidden="true">↗</span>
                 </Link>
-                <Link href={subscriptionPath(key)} className={textLink}>
-                  Predplatné časopisu →
-                </Link>
+                <div className="mt-5 flex flex-wrap items-center justify-between gap-x-6 gap-y-2 text-[15px]">
+                  <Link href={subscriptionPath(key)} className="font-semibold text-white no-underline hover:text-[var(--color-blue-pale)]">
+                    Radšej predplatné →
+                  </Link>
+                  <span className="text-[var(--color-stat-copy)]">
+                    {edition.pdf ? "Čítanie online pripravujeme" : `Telefón ${CONTACT.phoneDisplay}`}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          {edition.inserts.length > 0 && (
+            <section aria-labelledby="vkladacky" className="mt-[clamp(72px,8vw,120px)]">
+              <h2 id="vkladacky" className={h3}>Súčasťou čísla</h2>
+              <div className="mt-6">
+                <InsertList inserts={edition.inserts} />
               </div>
             </section>
+          )}
 
-            <nav aria-label="Ďalšie vydania" className="mt-16 grid grid-cols-2 gap-4 border-t border-[var(--color-line)] pt-6">
-              <div>
-                {older && (
-                  <Link href={editionPath(key, older.slug)} className="group inline-flex flex-col text-[var(--color-navy)] no-underline">
-                    <span className={meta}>← Staršie</span>
-                    <span className="text-[17px] font-semibold group-hover:text-[var(--color-blue)]">Číslo {older.label}</span>
-                  </Link>
-                )}
-              </div>
-              <div className="text-right">
-                {newer && (
-                  <Link href={editionPath(key, newer.slug)} className="group inline-flex flex-col items-end text-[var(--color-navy)] no-underline">
-                    <span className={meta}>Novšie →</span>
-                    <span className="text-[17px] font-semibold group-hover:text-[var(--color-blue)]">Číslo {newer.label}</span>
-                  </Link>
-                )}
-              </div>
+          {(older || newer) && (
+            <nav aria-label="Ďalšie vydania" className="mt-[clamp(72px,8vw,120px)] grid gap-4 sm:grid-cols-2">
+              <div>{older && <NeighbourCard magazineKey={key} edition={older} direction="older" />}</div>
+              <div>{newer && <NeighbourCard magazineKey={key} edition={newer} direction="newer" />}</div>
             </nav>
-          </div>
-        </article>
+          )}
+        </div>
       </div>
     </main>
   );

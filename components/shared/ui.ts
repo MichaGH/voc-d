@@ -13,8 +13,8 @@ export const headerGap = "mt-[clamp(40px,4.5vw,64px)]";
 export const pageTop = "pt-[calc(76px+clamp(36px,4.5vw,64px))]";
 
 /* Type */
-export const eyebrow = "text-sm font-medium text-[var(--color-blue)]";
-export const eyebrowOnDark = "text-sm font-medium text-[var(--color-blue-pale)]";
+export const eyebrow = "text-base font-semibold text-[var(--color-blue)]";
+export const eyebrowOnDark = "text-base font-semibold text-[var(--color-blue-pale)]";
 export const display = "text-[clamp(42px,5.4vw,84px)] leading-[.98] font-bold tracking-[-.04em] text-balance";
 export const h2 = "text-[clamp(36px,4.4vw,64px)] leading-[1.02] font-bold tracking-[-.035em] text-balance";
 export const h3 = "text-[clamp(24px,2.2vw,32px)] leading-[1.1] font-bold tracking-[-.025em] text-balance";

@@ -6,7 +6,7 @@ import { ROUTES, editionsPath, editorialPlanPath } from "@/constants/routes";
 const publisherLinks = [
   { label: "Vzdelávanie", href: ROUTES.education },
   { label: "Inzercia", href: ROUTES.advertising },
-  { label: "O nás ↗", href: LINKS.about },
+  { label: "O nás", href: ROUTES.about },
   { label: "História ↗", href: LINKS.history },
   { label: "Služby ↗", href: LINKS.services },
   { label: "TZBportal.sk ↗", href: LINKS.tzbPortal },

@@ -56,3 +56,15 @@ export function findNextPlanEntry(plans: EditorialPlan[], today: string): Editor
     .flatMap((plan) => [...plan.entries].sort((a, b) => a.order - b.order));
   return entries.find((entry) => !entry.editionSlug && isPlanDateUpcoming(entry.distribution, today)) ?? null;
 }
+
+/** First planned issue whose submission deadline (or, without one, distribution) has not passed. */
+export function findNextDeadlineEntry(plans: EditorialPlan[], today: string): EditorialPlanEntry | null {
+  const entries = [...plans]
+    .sort((a, b) => a.year - b.year)
+    .flatMap((plan) => [...plan.entries].sort((a, b) => a.order - b.order));
+  return (
+    entries.find(
+      (entry) => !entry.editionSlug && isPlanDateUpcoming(entry.submissionDeadline ?? entry.distribution, today),
+    ) ?? null
+  );
+}

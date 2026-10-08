@@ -1,4 +1,3 @@
-import { LINKS } from "@/constants";
 import { ROUTES } from "@/constants/routes";
 
 /**
@@ -8,13 +7,13 @@ import { ROUTES } from "@/constants/routes";
 export interface NavigationItem {
   label: string;
   href: string;
-  kind?: "magazines" | "external";
+  kind?: "magazines";
 }
 
 export const navigation: NavigationItem[] = [
   { label: "Časopisy", href: ROUTES.magazines, kind: "magazines" },
   { label: "Vzdelávanie", href: ROUTES.education },
   { label: "Inzercia", href: ROUTES.advertising },
-  { label: "O nás", href: LINKS.about, kind: "external" },
+  { label: "O nás", href: ROUTES.about },
   { label: "Kontakt", href: ROUTES.contact },
 ];

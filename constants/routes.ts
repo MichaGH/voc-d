@@ -16,10 +16,10 @@ export const ROUTES = {
   home: "/",
   magazines: "/casopisy",
   education: "/vzdelavanie",
+  advertising: "/inzercia",
+  about: "/o-nas",
   /** Homepage anchors must be absolute so they work from subpages. */
   contact: "/#kontakt",
-  advertising: "/#inzercia",
-  archive: "/#archiv",
 } as const;
 
 export function magazinePath(key: MagazineKey) {
@@ -53,7 +53,7 @@ export function magazineKeyFromSlug(slug: string): MagazineKey | null {
   return entry ? entry[0] : null;
 }
 
-/** Routes that open with a full-bleed navy hero, where the header starts transparent. */
+/** Only the homepage opens with a full-bleed navy hero, where the header starts transparent. */
 export function hasOverlayHeader(pathname: string) {
-  return pathname === ROUTES.home || Object.values(MAGAZINE_SLUGS).some((slug) => pathname === `/${slug}`);
+  return pathname === ROUTES.home;
 }

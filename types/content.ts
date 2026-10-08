@@ -33,6 +33,7 @@ export interface MagazineTopic {
   key: string;
   title: string;
   description: string;
+  image?: ContentImage;
 }
 
 /** Per-magazine homepage hero presentation. Motion/layout stays in code. */
@@ -59,6 +60,8 @@ export interface Magazine extends MagazineSummary {
   intro: string;
   /** One-sentence statement of who the magazine is for. */
   audienceStatement: string;
+  /** Optional part of the statement to emphasise; must occur in audienceStatement. */
+  audienceHighlight?: string;
   readerGroups: string[];
   /** Representative photograph for the magazine page. */
   image: ContentImage;
@@ -103,11 +106,6 @@ export interface EditionInsert {
   digital?: PdfAsset;
 }
 
-export interface EditionHighlight {
-  title: string;
-  page?: number;
-}
-
 export interface EditionSummary {
   magazineKey: MagazineKey;
   slug: string;
@@ -125,7 +123,6 @@ export interface Edition extends EditionSummary {
   description?: string;
   /** Exact publication date (YYYY-MM-DD) when confirmed. */
   publishedOn?: string;
-  highlights: EditionHighlight[];
   pdf?: PdfAsset;
   inserts: EditionInsert[];
 }

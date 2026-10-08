@@ -94,6 +94,8 @@ Use a consistent initial map; changes to these public paths are durable architec
 | /[magazineSlug]/edicny-plan | That magazine's annual editorial plans |
 | /vzdelavanie | Education posts listing |
 | /vzdelavanie/[postSlug] | Education announcement/article detail |
+| /inzercia | Advertising page (owner request, review round 2) |
+| /o-nas | Publisher page (owner request, review round 2) |
 
 Use known magazine slugs only; unknown/cross-magazine identities return proper not-found states. Working keys remain pvk/sbd, while the brief's SPD abbreviation awaits editorial confirmation. The edition detail page is normal HTML, not a reader.
 

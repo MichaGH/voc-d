@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 import { editionPath } from "@/constants/routes";
-import { INSERT_FORMS, plural } from "@/lib/format/plural";
 import type { EditionSummary } from "@/types/content";
 
 interface EditionCardProps {
@@ -21,9 +20,9 @@ export default function EditionCard({ edition, magazineTitle, headingLevel = "h3
         width={edition.cover.width}
         height={edition.cover.height}
         sizes={sizes ?? "(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 260px"}
-        className="aspect-[595/842] h-auto w-full rounded-md bg-[var(--color-surface)] shadow-[0_18px_30px_-20px_rgba(4,23,58,.45)] transition-transform duration-300 group-hover:-translate-y-1.5"
+        className="aspect-[595/842] h-auto w-full rounded-[5px] bg-[var(--color-surface)] shadow-[0_22px_36px_-22px_rgba(4,23,58,.5)] transition-transform duration-300 ease-out group-hover:-translate-y-2"
       />
-      <Heading className="mt-4 text-base leading-snug font-semibold">
+      <Heading className="mt-5 flex items-center justify-between gap-3 text-[17px] leading-snug font-semibold">
         <Link
           href={editionPath(edition.magazineKey, edition.slug)}
           className="text-[var(--color-navy)] no-underline after:absolute after:inset-0 group-hover:text-[var(--color-blue)]"
@@ -31,12 +30,10 @@ export default function EditionCard({ edition, magazineTitle, headingLevel = "h3
           <span className="sr-only">{magazineTitle} </span>
           Číslo {edition.label}
         </Link>
+        <span aria-hidden="true" className="text-[var(--color-steel)] transition-transform group-hover:translate-x-1 group-hover:text-[var(--color-blue)]">
+          →
+        </span>
       </Heading>
-      {edition.insertCount > 0 && (
-        <p className="mt-0.5 text-sm text-[var(--color-muted)]">
-          + {edition.insertCount} {plural(edition.insertCount, INSERT_FORMS)}
-        </p>
-      )}
     </article>
   );
 }

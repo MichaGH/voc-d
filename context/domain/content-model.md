@@ -8,8 +8,8 @@ Domain model implemented as TypeScript contracts (`types/content.ts`) with local
 
 | Entity | Fields | Relationships |
 | --- | --- | --- |
-| magazine | ID, key, title, slug, description/audience, audience statement, ordered reader groups, presentation image, ordered topics (title + description), hero presentation/media, subscription copy, optional confirmed publication identifiers | Independent reusable magazine identity; presentation behavior stays in code |
-| edition | ID, slug, issue label/title, year, numeric order, description, optional actual publication date, cover, ordered highlights (`V tomto čísle nájdete`: title + optional page), optional PDF, ordered inserts, verified print/inquiry information | Required reference to one magazine |
+| magazine | ID, key, title, slug, description/audience, audience statement with optional highlighted phrase, ordered reader groups, presentation image, ordered topics (title, description, optional image), hero presentation/media, subscription copy, optional confirmed publication identifiers | Independent reusable magazine identity; presentation behavior stays in code |
+| edition | ID, slug, issue label/title, year, numeric order, description, optional actual publication date, cover, optional PDF, ordered inserts, verified print/inquiry information | Required reference to one magazine |
 | editorialPlan | ID, year, ordered entries | Required magazine reference; one published plan per magazine/year |
 | advertisement | ID, internal title, advertiser name, desktop image, optional mobile image, accessible text, optional destination | Reusable creative |
 | readerAdPlacement | ID, enabled, ordered creative references, selected creative reference, optional fallback | One published reader placement per magazine |

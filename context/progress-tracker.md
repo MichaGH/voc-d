@@ -30,10 +30,18 @@ Update this file whenever the current phase, active feature, or implementation s
 - Navbar magazines menu rebuilt as a two-item cover list; `Porovnať oba časopisy` and the `/casopisy` comparison block removed.
 - Homepage: removed the duplicate `Novinky a pozvánky` list; simplified magazine cards and the latest-issues rail.
 
+## Review Round 2 (applied, awaiting review)
+
+- New pages `/o-nas` and `/inzercia`; navigation and CTAs point to them. The homepage "Pre tých, ktorí budovy…" section moved to `/o-nas` (component kept).
+- Edition `highlights` ("V tomto čísle nájdete") removed from the content model, fixtures and UI; no vkladačka counts on edition cards.
+- Magazine landing rebuilt (light cover hero, photographic audience band, topic explorer); edition detail rebuilt around one obvious order action; gallery/plan headers use a magazine switcher; plan shown as issue cards.
+- Topic images restored (two new stills extracted from the PVK footage: `topic-pvk-voda.jpg`, `topic-pvk-klima.jpg`).
+
 ## Next Up
 
 - Collect review feedback on the hero (composition, copy, motion intensity, optional auto-cycling) and the page templates.
 - Replace fixture placeholders with owner-approved content: editorial-plan dates, vkladačky, education copy, partner roster, magazine copy.
+- Owner content for `/o-nas` (history, team, company details) and `/inzercia` (formats, price list) to replace links to the old website.
 - Unit 6: cross-page consistency pass, sitemap/robots once the production origin is known, homepage copy migration into `getHomePageContent`/`getSiteSettings`.
 - Feature 02 (reader) after feature 01 acceptance.
 

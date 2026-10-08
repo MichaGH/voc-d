@@ -18,7 +18,7 @@ No Prisma/PostgreSQL, Clerk, Liveblocks, React Flow, Trigger.dev or Vercel Blob.
 
 ## System Boundaries
 
-- `app/` — public routes, metadata, layouts and server-side composition: homepage, `casopisy`, `(magazines)/[magazineSlug]` (landing, `vydania`, `vydania/[editionSlug]`, `edicny-plan`), `vzdelavanie` and `vzdelavanie/[postSlug]`. Root layout renders the navbar/footer.
+- `app/` — public routes, metadata, layouts and server-side composition: homepage, `casopisy`, `o-nas`, `inzercia`, `(magazines)/[magazineSlug]` (landing, `vydania`, `vydania/[editionSlug]`, `edicny-plan`), `vzdelavanie` and `vzdelavanie/[postSlug]`. Root layout renders the navbar/footer.
 - `components/layout/`, `components/homepage/`, `components/hero/`, `components/magazine/`, `components/education/`, `components/shared/` — presentation grouped by feature; future `components/pdf-reader/`.
 - `data/` — presentational homepage/navigation arrays; `data/mock/` holds domain fixtures.
 - `types/content.ts` — provider-independent interfaces (implemented).

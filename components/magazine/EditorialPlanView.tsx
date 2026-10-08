@@ -17,24 +17,6 @@ interface EditorialPlanViewProps {
   nextEntryKey: string | null;
 }
 
-function Status({ entry, isNext }: { entry: PlanYearView["entries"][number]; isNext: boolean }) {
-  if (entry.editionHref) {
-    return (
-      <Link href={entry.editionHref} className="text-[15px] font-semibold whitespace-nowrap text-[var(--color-blue)]">
-        Vyšlo – zobraziť →
-      </Link>
-    );
-  }
-  if (isNext) {
-    return (
-      <span className="inline-flex h-8 items-center rounded-full bg-[var(--color-blue-wash)] px-3.5 text-sm font-semibold whitespace-nowrap text-[var(--color-blue)]">
-        Najbližšie vydanie
-      </span>
-    );
-  }
-  return null;
-}
-
 export default function EditorialPlanView({ plans, defaultYear, nextEntryKey }: EditorialPlanViewProps) {
   const [year, setYear] = useState(defaultYear);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
@@ -59,7 +41,7 @@ export default function EditorialPlanView({ plans, defaultYear, nextEntryKey }: 
   return (
     <div>
       <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
-        <p id="plan-rok-label" className="text-sm font-medium text-[var(--color-muted)]">Rok</p>
+        <p id="plan-rok-label" className="text-[15px] font-medium text-[var(--color-muted)]">Rok</p>
         <div
           role="tablist"
           aria-labelledby="plan-rok-label"
@@ -95,70 +77,58 @@ export default function EditorialPlanView({ plans, defaultYear, nextEntryKey }: 
       <div id="plan-panel" role="tabpanel" aria-labelledby={`plan-tab-${plan.year}`} className="mt-10">
         <h2 className="sr-only">Edičný plán {plan.year}</h2>
         {plan.entries.length === 0 ? (
-          <p className="rounded-3xl bg-[var(--color-surface)] p-10 text-lg text-[var(--color-copy)]">Edičný plán na rok {plan.year} pripravujeme.</p>
+          <p className="rounded-[28px] bg-[var(--color-surface)] p-10 text-lg text-[var(--color-copy)]">Edičný plán na rok {plan.year} pripravujeme.</p>
         ) : (
-          <>
-            {/* Desktop table */}
-            <table className="hidden w-full border-collapse text-left md:table">
-              <caption className="sr-only">Vydania, termíny a uzávierky v roku {plan.year}</caption>
-              <thead>
-                <tr className="border-b border-[var(--color-line-dark)] text-sm text-[var(--color-muted)]">
-                  <th scope="col" className="py-4 pr-6 font-semibold">Číslo</th>
-                  <th scope="col" className="py-4 pr-6 font-semibold">Vychádza</th>
-                  <th scope="col" className="py-4 pr-6 font-semibold">Uzávierka podkladov</th>
-                  <th scope="col" className="py-4 pr-6 font-semibold">Téma</th>
-                  <th scope="col" className="py-4 font-semibold"><span className="sr-only">Stav</span></th>
-                </tr>
-              </thead>
-              <tbody>
-                {plan.entries.map((entry) => (
-                  <tr key={entry.key} className="border-b border-[var(--color-line)] align-top">
-                    <th scope="row" className="py-6 pr-6 text-[clamp(22px,2vw,28px)] leading-none font-bold tracking-[-.02em] whitespace-nowrap">{entry.issueLabel}</th>
-                    <td className="py-6 pr-6 text-[17px] font-semibold whitespace-nowrap">{formatPlanDate(entry.distribution)}</td>
-                    <td className="py-6 pr-6 text-[17px] whitespace-nowrap text-[var(--color-copy)]">
-                      {entry.submissionDeadline ? formatPlanDate(entry.submissionDeadline) : "upresníme"}
-                    </td>
-                    <td className="py-6 pr-6 text-[17px] text-[var(--color-copy)]">
-                      {entry.theme ?? "—"}
-                      {entry.note && <span className="mt-1 block text-[15px] text-[var(--color-muted)]">{entry.note}</span>}
-                    </td>
-                    <td className="py-6 text-right"><Status entry={entry} isNext={entry.key === nextEntryKey} /></td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            {/* Mobile cards keep every label visible */}
-            <ul className="grid list-none gap-3 md:hidden">
-              {plan.entries.map((entry) => (
-                <li key={entry.key} className="rounded-3xl bg-[var(--color-surface)] p-6">
-                  <div className="flex items-start justify-between gap-4">
-                    <p className="text-[26px] leading-none font-bold tracking-[-.02em]">{entry.issueLabel}</p>
-                    <Status entry={entry} isNext={entry.key === nextEntryKey} />
+          <ul className="grid list-none gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            {plan.entries.map((entry) => {
+              const isNext = entry.key === nextEntryKey;
+              return (
+                <li
+                  key={entry.key}
+                  className={`flex flex-col rounded-[28px] p-7 ${
+                    isNext ? "bg-[linear-gradient(135deg,var(--color-navy-light)_0%,var(--color-navy)_75%)] text-white" : "bg-[var(--color-surface)]"
+                  }`}
+                >
+                  <div className="flex min-h-8 items-start justify-between gap-3">
+                    <p className="text-[clamp(36px,3vw,44px)] leading-none font-bold tracking-[-.04em]">{entry.issueLabel}</p>
+                    {isNext && (
+                      <span className="inline-flex h-8 items-center rounded-full bg-white/14 px-3 text-sm font-semibold whitespace-nowrap">
+                        Najbližšie
+                      </span>
+                    )}
                   </div>
-                  <dl className="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 text-[15px]">
+                  <dl className="mt-8 grid gap-4">
                     <div>
-                      <dt className="text-sm text-[var(--color-muted)]">Vychádza</dt>
-                      <dd className="font-semibold">{formatPlanDate(entry.distribution)}</dd>
+                      <dt className={`text-sm ${isNext ? "text-[var(--color-stat-copy)]" : "text-[var(--color-muted)]"}`}>Vychádza</dt>
+                      <dd className="mt-0.5 text-lg font-semibold">{formatPlanDate(entry.distribution)}</dd>
                     </div>
                     <div>
-                      <dt className="text-sm text-[var(--color-muted)]">Uzávierka</dt>
-                      <dd className="font-semibold">{entry.submissionDeadline ? formatPlanDate(entry.submissionDeadline) : "upresníme"}</dd>
+                      <dt className={`text-sm ${isNext ? "text-[var(--color-stat-copy)]" : "text-[var(--color-muted)]"}`}>Uzávierka podkladov</dt>
+                      <dd className="mt-0.5 text-lg font-semibold">
+                        {entry.submissionDeadline ? formatPlanDate(entry.submissionDeadline) : "upresníme"}
+                      </dd>
                     </div>
                     {(entry.theme || entry.note) && (
-                      <div className="col-span-2">
-                        <dt className="text-sm text-[var(--color-muted)]">Téma</dt>
-                        <dd className="text-[var(--color-copy)]">
-                          {entry.theme}
-                          {entry.note && <span className="block text-[var(--color-muted)]">{entry.note}</span>}
+                      <div>
+                        <dt className={`text-sm ${isNext ? "text-[var(--color-stat-copy)]" : "text-[var(--color-muted)]"}`}>Téma</dt>
+                        <dd className={`mt-0.5 text-base leading-snug ${isNext ? "text-[var(--color-card-copy)]" : "text-[var(--color-copy)]"}`}>
+                          {[entry.theme, entry.note].filter(Boolean).join(". ")}
                         </dd>
                       </div>
                     )}
                   </dl>
+                  {entry.editionHref && (
+                    <Link
+                      href={entry.editionHref}
+                      className="mt-auto inline-flex items-center gap-1.5 pt-8 text-[15px] font-semibold text-[var(--color-blue)] no-underline hover:text-[var(--color-navy)]"
+                    >
+                      Pozrieť vydanie →
+                    </Link>
+                  )}
                 </li>
-              ))}
-            </ul>
-          </>
+              );
+            })}
+          </ul>
         )}
       </div>
     </div>
