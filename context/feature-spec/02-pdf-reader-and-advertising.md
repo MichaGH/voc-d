@@ -8,6 +8,15 @@ Use React-PDF (the existing-PDF display package, react-pdf) backed by PDF.js, in
 
 Implement with typed local fixtures and public assets first. Sanity remains the final integration stage. This task does not install dependencies, implement routes or change the current website design.
 
+## Confirmed Owner Decisions
+
+- **Spread turn, like a printed magazine (decision A):** cover alone, then 2–3 → 4–5 → 6–7; one click on "next" replaces both pages. A one-page slide (2–3 → 3–4) was considered and rejected.
+- No page-turn animation; navigation by arrows (previous/next) plus keyboard.
+- Banner is HTML above the reader, never inside the PDF; until Sanity is connected a local placeholder/house banner from `public/` is used.
+- Legacy voc.sk material (PDFs, covers, copy) may be downloaded and reused as source/fixture data. The new website must still never *link* to the legacy site.
+
+Still open (see review `.ai/reviews/02-pdf-reader-and-advertising/spec/R01.md`): default zoom that fits the whole spread on screen, arrow placement (sides/bottom), banner strip size, download button, real PDF sizes and host behaviour.
+
 ## Purpose
 
 Visitors read PVK or Správca bytových domov editions without leaving the website. The owner selects an advertisement once for a magazine, and every edition of that title displays it after content refresh.

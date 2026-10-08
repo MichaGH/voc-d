@@ -53,6 +53,8 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Open Questions
 
+- **Feature 02 reader (in planning):** owner confirmed the magazine spread turn (2–3 → 4–5), no animation. Spec reviewed in `.ai/reviews/02-pdf-reader-and-advertising/spec/R01.md`. Open: default fit-whole-spread zoom, arrow placement, banner strip size, download button. Real issues to be downloaded from voc.sk once the environment's network policy allows `voc.sk`.
+
 - **GDPR / privacy policy page** is needed (the footer link to the old site was removed); owner must supply the text.
 
 - **SBD hero footage:** no SBD-specific video exists; the SBD slide uses a still poster (`public/images/hero-sbd.jpg`, cropped from the former hero image). Approved footage needed.
