@@ -5,7 +5,7 @@ import EditorialPlanView, { type PlanYearView } from "@/components/magazine/Edit
 import MagazineSwitcher from "@/components/magazine/MagazineSwitcher";
 import PageIntro from "@/components/shared/PageIntro";
 import { buttonOnDark, eyebrowOnDark, inner, meta, sectionX, textLinkOnDark } from "@/components/shared/ui";
-import { CONTACT } from "@/constants";
+import { mailto } from "@/constants";
 import { ROUTES, editionPath, editorialPlanPath, magazinePath } from "@/constants/routes";
 import { getEditorialPlan, getEditorialPlanYears, getMagazineBySlug, getMagazines } from "@/lib/content";
 import { findNextPlanEntry, pickDefaultPlanYear } from "@/lib/content/rules";
@@ -49,7 +49,6 @@ export default async function EditorialPlanPage({ params }: PageProps<"/[magazin
     })),
   }));
 
-  const adSubject = encodeURIComponent(`Inzercia – ${magazine.title}`);
 
   return (
     <main id="obsah">
@@ -87,11 +86,11 @@ export default async function EditorialPlanPage({ params }: PageProps<"/[magazin
               <p className="mt-3 text-[clamp(26px,2.6vw,38px)] leading-[1.1] font-bold tracking-[-.025em] text-balance">Rezervujte si miesto v ďalšom čísle.</p>
             </div>
             <div className="flex flex-wrap items-center gap-x-7 gap-y-4">
-              <Link href={`mailto:${CONTACT.email}?subject=${adSubject}`} className={buttonOnDark}>
+              <Link href={mailto(`Inzercia – ${magazine.title}`)} className={buttonOnDark}>
                 Dohodnúť inzerciu ↗
               </Link>
-              <Link href={magazine.advertisingInfoUrl} className={textLinkOnDark}>
-                Cenník a formáty ↗
+              <Link href={mailto(`Cenník inzercie – ${magazine.title}`)} className={textLinkOnDark}>
+                Vyžiadať cenník ↗
               </Link>
             </div>
           </div>

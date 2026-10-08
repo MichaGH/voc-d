@@ -6,8 +6,8 @@ import AudienceDividerSection from "@/components/homepage/AudienceDividerSection
 import ContactSection from "@/components/homepage/ContactSection";
 import StatsSection from "@/components/homepage/StatsSection";
 import PageIntro from "@/components/shared/PageIntro";
-import { body, h2, h3, headerGap, inner, sectionTop, sectionX, textLink } from "@/components/shared/ui";
-import { LINKS } from "@/constants";
+import { body, h2, h3, headerGap, inner, sectionTop, sectionX } from "@/components/shared/ui";
+import { LINKS, mailto } from "@/constants";
 import { ROUTES } from "@/constants/routes";
 import { getLatestEditions } from "@/lib/content";
 
@@ -63,8 +63,8 @@ export default async function AboutPage() {
     {
       title: "Publikácia Správca budov",
       description: "Učebnica pre správcov bytových domov, ktorá vás pripraví na prax.",
-      href: LINKS.publication,
-      linkLabel: "Objednávkový leták (PDF) ↗",
+      href: mailto("Objednávka – publikácia Správca budov"),
+      linkLabel: "Objednať e-mailom ↗",
       visual: <Image src="/images/role-advertiser.jpg" alt="" fill sizes="(max-width: 1024px) 100vw, 50vw" className="object-cover" />,
     },
     {
@@ -86,11 +86,7 @@ export default async function AboutPage() {
         breadcrumbs={[{ label: "O nás" }]}
         title="Vydavateľstvo pre správu a techniku budov."
         lead="V.O.Č. SLOVAKIA s.r.o. vydáva odborné časopisy a publikácie a organizuje vzdelávanie pre správcov bytových domov a profesie technických zariadení budov."
-      >
-        <Link href={LINKS.history} className={textLink}>
-          História vydavateľstva ↗
-        </Link>
-      </PageIntro>
+      />
 
       <AboutSection showLink={false} />
 

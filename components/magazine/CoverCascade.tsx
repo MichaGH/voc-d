@@ -27,7 +27,7 @@ export default function CoverCascade({ editions, preload = false }: { editions: 
             height={edition.cover.height}
             sizes="(max-width: 1024px) 45vw, 300px"
             preload={preload && isFront}
-            className={`absolute bottom-[19%] aspect-[595/842] h-auto origin-bottom rounded-[5px] ${slots[index + offset]}`}
+            className={`absolute bottom-0 aspect-[595/842] h-auto origin-bottom rounded-[5px] ${slots[index + offset]}`}
           />
         );
       })}

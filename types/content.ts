@@ -71,8 +71,6 @@ export interface Magazine extends MagazineSummary {
     title: string;
     text: string;
   };
-  /** Existing advertising information on the current VOC website. */
-  advertisingInfoUrl: string;
 }
 
 /* ------------------------------------------------------------------ */
@@ -220,8 +218,6 @@ export interface ArticleSummary {
 
 export interface Article extends ArticleSummary {
   body: PortableTextBlock[];
-  /** Evergreen offer this post relates to (e.g. the course page). */
-  relatedOffer?: ContentLink;
 }
 
 export interface ArticlePage {
@@ -229,7 +225,7 @@ export interface ArticlePage {
   nextCursor: string | null;
 }
 
-/** Evergreen conference/course offers linking to their existing pages. */
+/** Evergreen conference/course offers linking to their pages on this site. */
 export interface EducationOffer {
   key: string;
   kind: Exclude<ArticleKind, "article">;

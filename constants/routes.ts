@@ -9,7 +9,7 @@ export const MAGAZINE_SLUGS: Record<MagazineKey, string> = {
   sbd: "spravca-bytovych-domov",
 };
 
-/** Public origin of this website (not the legacy WordPress SITE_URL). Override per deployment. */
+/** Public origin of this website, used for metadata and structured data. Override per deployment. */
 export const SITE_ORIGIN = process.env.NEXT_PUBLIC_SITE_ORIGIN ?? "https://voc.sk";
 
 export const ROUTES = {

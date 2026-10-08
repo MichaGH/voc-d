@@ -28,7 +28,7 @@ export default function OfferCard({ offer, headingLevel = "h3" }: { offer: Educa
           <Heading className={`mt-3 ${h3}`}>{offer.title}</Heading>
           <p className={`mt-3 max-w-[44ch] ${body}`}>{offer.description}</p>
         </div>
-        <span aria-hidden="true" className="grid size-[52px] shrink-0 place-items-center rounded-full bg-[var(--color-navy)] text-xl text-white">↗</span>
+        <span aria-hidden="true" className="grid size-[52px] shrink-0 place-items-center rounded-full bg-[var(--color-navy)] text-xl text-white">→</span>
       </div>
     </Link>
   );

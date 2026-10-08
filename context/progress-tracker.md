@@ -37,6 +37,12 @@ Update this file whenever the current phase, active feature, or implementation s
 - Magazine landing rebuilt (light cover hero, photographic audience band, topic explorer); edition detail rebuilt around one obvious order action; gallery/plan headers use a magazine switcher; plan shown as issue cards.
 - Topic images restored (two new stills extracted from the PVK footage: `topic-pvk-voda.jpg`, `topic-pvk-klima.jpg`).
 
+## Review Round 3 (applied, awaiting review)
+
+- All links to the legacy voc.sk removed (constants pruned; conference/course offers open their article pages; publication, price list and registration are pre-filled e-mails). Footer GDPR, História and Služby links removed until those pages exist.
+- Magazine page: covers without panel, new current-issue caption, cinematic scroll statement, photographic topic cards.
+- `/inzercia` rebuilt: centred hero, three cards, one section per medium, offer band.
+
 ## Next Up
 
 - Collect review feedback on the hero (composition, copy, motion intensity, optional auto-cycling) and the page templates.
@@ -46,6 +52,8 @@ Update this file whenever the current phase, active feature, or implementation s
 - Feature 02 (reader) after feature 01 acceptance.
 
 ## Open Questions
+
+- **GDPR / privacy policy page** is needed (the footer link to the old site was removed); owner must supply the text.
 
 - **SBD hero footage:** no SBD-specific video exists; the SBD slide uses a still poster (`public/images/hero-sbd.jpg`, cropped from the former hero image). Approved footage needed.
 - **Fixtures needing owner data:** editorial-plan dates/themes are illustrative; the two vkladačky records are illustrative; education article bodies are neutral drafts; partner names are unverified.

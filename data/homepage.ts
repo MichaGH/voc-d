@@ -1,5 +1,5 @@
-import { LINKS } from "@/constants";
-import { ROUTES, editorialPlanPath, magazinePath, subscriptionPath } from "@/constants/routes";
+import { LINKS, mailto } from "@/constants";
+import { ROUTES, articlePath, editorialPlanPath, magazinePath, subscriptionPath } from "@/constants/routes";
 
 export const stats = [
   { value: "20+", label: "rokov odborného publikovania" },
@@ -18,8 +18,8 @@ export const audienceGroups = [
     alt: "Moderný bytový dom",
     links: [
       { label: "Časopis Správca bytových domov", href: magazinePath("sbd"), arrow: "→" },
-      { label: "Publikácia Správca budov (PDF)", href: LINKS.publication, arrow: "↗" },
-      { label: "Kurz Správa bytového fondu", href: LINKS.course, arrow: "↗" },
+      { label: "Objednať publikáciu Správca budov", href: mailto("Objednávka – publikácia Správca budov"), arrow: "↗" },
+      { label: "Kurz Správa bytového fondu", href: articlePath("kurz-sprava-bytoveho-fondu"), arrow: "→" },
     ],
     cta: "Predplatiť Správcu bytových domov",
     ctaHref: subscriptionPath("sbd"),
@@ -70,7 +70,7 @@ export const faqs = [
   {
     question: "Kde kúpim publikáciu Správca budov?",
     answer:
-      "Publikáciu si objednáte prostredníctvom objednávkového letáka (PDF) na tejto stránke alebo e-mailom.",
+      "Publikáciu si objednáte e-mailom na voc@voc.sk alebo telefonicky na +421 55 678 28 08.",
   },
   {
     question: "Pre koho je kurz Správa bytového fondu?",

@@ -5,7 +5,8 @@ import { notFound } from "next/navigation";
 import ContactSection from "@/components/homepage/ContactSection";
 import CoverCascade from "@/components/magazine/CoverCascade";
 import EditionCard from "@/components/magazine/EditionCard";
-import TopicExplorer from "@/components/magazine/TopicExplorer";
+import CinematicStatement from "@/components/magazine/CinematicStatement";
+import TopicCards from "@/components/magazine/TopicCards";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
 import {
   body,
@@ -13,9 +14,7 @@ import {
   buttonPrimary,
   buttonSecondary,
   display,
-  eyebrowOnDark,
   h2,
-  h3,
   headerGap,
   inner,
   lead,
@@ -23,11 +22,10 @@ import {
   sectionX,
   textLink,
 } from "@/components/shared/ui";
-import { CONTACT } from "@/constants";
+import { mailto } from "@/constants";
 import { ROUTES, editionPath, editionsPath, editorialPlanPath, magazinePath } from "@/constants/routes";
 import { getLatestEditions, getMagazine, getMagazineBySlug, getMagazines } from "@/lib/content";
 import { bindDashes } from "@/lib/format/text";
-import type { Magazine } from "@/types/content";
 
 export const dynamicParams = false;
 
@@ -40,20 +38,6 @@ export async function generateMetadata({ params }: PageProps<"/[magazineSlug]">)
   const magazine = await getMagazineBySlug((await params).magazineSlug);
   if (!magazine) return {};
   return { title: magazine.title, description: magazine.description };
-}
-
-/** Renders the audience statement with its optional highlighted part. */
-function AudienceStatement({ magazine }: { magazine: Magazine }) {
-  const { audienceStatement: text, audienceHighlight: highlight } = magazine;
-  const at = highlight ? text.indexOf(highlight) : -1;
-  if (!highlight || at < 0) return <>{text}</>;
-  return (
-    <>
-      {text.slice(0, at)}
-      <span className="text-[var(--color-blue-light)]">{highlight}</span>
-      {text.slice(at + highlight.length)}
-    </>
-  );
 }
 
 export default async function MagazinePage({ params }: PageProps<"/[magazineSlug]">) {
@@ -91,17 +75,21 @@ export default async function MagazinePage({ params }: PageProps<"/[magazineSlug
             </div>
 
             {latest && (
-              <Link
-                href={editionPath(key, latest.slug)}
-                aria-label={`Aktuálne číslo ${latest.label}`}
-                className="group relative block aspect-[1/.86] overflow-hidden rounded-[36px] bg-[var(--color-surface)] no-underline"
-              >
-                <span className="absolute inset-0 transition-transform duration-500 ease-out group-hover:-translate-y-2">
+              <Link href={editionPath(key, latest.slug)} className="group block text-[var(--color-navy)] no-underline">
+                <span className="relative block aspect-[1/.74] transition-transform duration-500 ease-out group-hover:-translate-y-1.5">
                   <CoverCascade editions={editions} preload />
                 </span>
-                <span className="absolute bottom-6 left-6 inline-flex h-10 items-center gap-2 rounded-full bg-white px-4 text-sm font-semibold text-[var(--color-navy)] shadow-[0_8px_20px_-12px_rgba(4,23,58,.4)]">
-                  Aktuálne číslo {latest.label}
-                  <span aria-hidden="true" className="transition-transform group-hover:translate-x-0.5">→</span>
+                <span className="mt-8 flex items-center justify-between gap-6 pl-[47%] pr-[9%]">
+                  <span>
+                    <span className="block text-[15px] text-[var(--color-muted)]">Aktuálne číslo</span>
+                    <span className="mt-0.5 block text-[clamp(24px,2vw,30px)] leading-none font-bold tracking-[-.03em]">{latest.label}</span>
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="grid size-12 shrink-0 place-items-center rounded-full bg-[var(--color-navy)] text-lg text-white transition-transform duration-300 group-hover:translate-x-1"
+                  >
+                    →
+                  </span>
                 </span>
               </Link>
             )}
@@ -109,35 +97,15 @@ export default async function MagazinePage({ params }: PageProps<"/[magazineSlug
         </div>
       </section>
 
-      {/* Who we write for */}
-      <section
-        aria-labelledby="pre-koho-nadpis"
-        className="relative isolate mt-[clamp(96px,10vw,152px)] flex min-h-[min(82vh,780px)] items-end overflow-hidden bg-[var(--color-navy)] text-white"
-      >
-        <Image src={magazine.image.src} alt={magazine.image.alt} fill sizes="100vw" className="-z-10 object-cover" />
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(0deg,rgba(4,23,58,.94)_0%,rgba(4,23,58,.55)_55%,rgba(4,23,58,.2)_100%)]" />
-        <div className={`${sectionX} w-full`}>
-          <div className={`${inner} py-[clamp(56px,7vw,112px)]`}>
-            <p className={eyebrowOnDark}>Pre koho píšeme</p>
-            <h2
-              id="pre-koho-nadpis"
-              className="mt-5 max-w-[19ch] text-[clamp(34px,4.6vw,72px)] leading-[1.03] font-bold tracking-[-.04em] text-balance"
-            >
-              <AudienceStatement magazine={magazine} />
-            </h2>
-            <ul aria-label="Čitatelia" className="mt-10 flex list-none flex-wrap gap-2.5">
-              {magazine.readerGroups.map((group) => (
-                <li
-                  key={group}
-                  className="inline-flex h-11 items-center rounded-full border border-white/25 bg-white/10 px-5 text-[15px] font-medium backdrop-blur-sm"
-                >
-                  {group}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
+      {/* Who we write for — a cinematic, full-screen statement */}
+      <div className="mt-[clamp(96px,10vw,152px)]">
+        <CinematicStatement
+          id="pre-koho-nadpis"
+          image={magazine.image}
+          text={magazine.audienceStatement}
+          highlight={magazine.audienceHighlight}
+        />
+      </div>
 
       {/* What is inside */}
       {magazine.topics.length > 0 && (
@@ -148,7 +116,7 @@ export default async function MagazinePage({ params }: PageProps<"/[magazineSlug
               <p className={`max-w-[46ch] ${lead}`}>{magazine.intro}</p>
             </div>
             <div className={headerGap}>
-              <TopicExplorer topics={magazine.topics} fallbackImage={magazine.image} />
+              <TopicCards topics={magazine.topics} fallbackImage={magazine.image} />
             </div>
           </div>
         </section>
@@ -178,26 +146,24 @@ export default async function MagazinePage({ params }: PageProps<"/[magazineSlug
       {/* Subscription & advertising */}
       <section id="predplatne" aria-label="Predplatné a inzercia" className={`${sectionX} ${sectionTop} scroll-mt-[76px]`}>
         <div className={`${inner} grid gap-5 lg:grid-cols-2`}>
-          <div className="flex flex-col justify-between gap-12 rounded-[32px] bg-[linear-gradient(135deg,var(--color-navy-light)_0%,var(--color-navy)_75%)] p-[clamp(32px,4vw,56px)] text-white">
+          <div className="flex flex-col justify-between gap-14 rounded-[32px] bg-[var(--color-navy)] p-[clamp(32px,4.5vw,64px)] text-white">
             <div>
-              <p className={eyebrowOnDark}>Predplatné</p>
-              <h2 className={`mt-4 max-w-[16ch] ${h3}`}>{magazine.subscription.title}</h2>
-              <p className="mt-4 max-w-[44ch] text-base leading-[1.6] text-[var(--color-card-copy)] text-pretty">{magazine.subscription.text}</p>
+              <h2 className="text-[clamp(36px,3.6vw,52px)] leading-[1.02] font-bold tracking-[-.035em]">Predplatné</h2>
+              <p className="mt-5 max-w-[40ch] text-[17px] leading-[1.6] text-[var(--color-card-copy)] text-pretty">
+                {magazine.subscription.title}. {magazine.subscription.text}
+              </p>
             </div>
             <div>
-              <Link
-                href={`mailto:${CONTACT.email}?subject=${encodeURIComponent(`Predplatné – ${magazine.title}`)}`}
-                className={`${buttonOnDark} h-14 px-7 text-base`}
-              >
+              <Link href={mailto(`Predplatné – ${magazine.title}`)} className={`${buttonOnDark} h-14 px-7 text-base`}>
                 Objednať predplatné ↗
               </Link>
             </div>
           </div>
-          <div className="flex flex-col justify-between gap-12 rounded-[32px] bg-[var(--color-surface)] p-[clamp(32px,4vw,56px)]">
+          <div className="flex flex-col justify-between gap-14 rounded-[32px] bg-[var(--color-surface)] p-[clamp(32px,4.5vw,64px)]">
             <div>
-              <p className="text-base font-semibold text-[var(--color-blue)]">Inzercia</p>
-              <h2 className={`mt-4 max-w-[16ch] ${h3}`}>Predstavte svoju firmu čitateľom časopisu</h2>
-              <p className={`mt-4 max-w-[44ch] ${body}`}>{magazine.readers}</p>
+              <h2 className="text-[clamp(36px,3.6vw,52px)] leading-[1.02] font-bold tracking-[-.035em]">Inzercia</h2>
+              <p className={`mt-5 max-w-[40ch] ${body} text-[17px]`}>Predstavte svoju firmu ľuďom, ktorí časopis čítajú.</p>
+              <p className="mt-2 text-[15px] text-[var(--color-muted)]">{magazine.readers}</p>
             </div>
             <div className="flex flex-wrap items-center gap-x-7 gap-y-4">
               <Link href={`${ROUTES.advertising}#${key}`} className={`${buttonPrimary} h-14 px-7 text-base`}>
@@ -229,8 +195,8 @@ export default async function MagazinePage({ params }: PageProps<"/[magazineSlug
               />
             )}
             <span className="min-w-0">
-              <span className="block text-base font-semibold text-[var(--color-blue)]">Vydávame aj</span>
-              <span id="dalsi-casopis-nadpis" className={`mt-2 block ${h3}`}>
+              <span className="block text-[15px] text-[var(--color-muted)]">Vydávame aj</span>
+              <span id="dalsi-casopis-nadpis" className="mt-1.5 block text-[clamp(24px,2.2vw,32px)] leading-[1.1] font-bold tracking-[-.025em] text-balance">
                 {bindDashes(other.title)}
               </span>
               <span className={`mt-2 block max-w-[56ch] ${body}`}>{other.description}</span>

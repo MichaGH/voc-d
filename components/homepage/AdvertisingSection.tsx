@@ -3,7 +3,7 @@ import Link from "next/link";
 import { buttonPrimary, eyebrow, textLink } from "@/components/shared/ui";
 import { LINKS } from "@/constants";
 import { ROUTES } from "@/constants/routes";
-import { advertisingChannels } from "@/data/advertising";
+import { advertisingMedia } from "@/data/advertising";
 
 export default function AdvertisingSection() {
   return (
@@ -24,7 +24,7 @@ export default function AdvertisingSection() {
         </div>
 
         <ul aria-label="Kde vás uvidia" className="grid list-none gap-3">
-          {advertisingChannels.map((channel) => (
+          {advertisingMedia.map((channel) => (
             <li key={channel.key}>
               <Link
                 href={`${ROUTES.advertising}#${channel.key}`}

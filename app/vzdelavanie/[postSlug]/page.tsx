@@ -77,13 +77,6 @@ export default async function EducationArticlePage({ params }: PageProps<"/vzdel
         <div className="mt-[clamp(40px,5vw,72px)] grid items-start gap-x-[clamp(40px,6vw,96px)] gap-y-10 lg:grid-cols-[minmax(0,1fr)_360px]">
           <div className="max-w-[70ch]">
             <PortableTextBody blocks={article.body} />
-            {article.relatedOffer && (
-              <p className="mt-10">
-                <Link href={article.relatedOffer.href} className={textLink}>
-                  {article.relatedOffer.label} ↗
-                </Link>
-              </p>
-            )}
           </div>
 
           {event && (

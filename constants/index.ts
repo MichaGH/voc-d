@@ -1,5 +1,3 @@
-export const SITE_URL = "https://voc.sk";
-
 export const CONTACT = {
   email: "voc@voc.sk",
   phoneDisplay: "+421 55 678 28 08",
@@ -9,19 +7,18 @@ export const CONTACT = {
   city: "040 11 Košice",
 } as const;
 
+/** Builds a pre-filled e-mail link to the publisher. */
+export function mailto(subject?: string) {
+  return subject ? `mailto:${CONTACT.email}?subject=${encodeURIComponent(subject)}` : `mailto:${CONTACT.email}`;
+}
+
+/**
+ * Shared non-route destinations. The legacy voc.sk website is deliberately not
+ * linked from anywhere: every destination is a page of this site, an e-mail,
+ * or TZBportal.sk (a separate portal of the publisher).
+ */
 export const LINKS = {
-  sbd: `${SITE_URL}/spravca-bytovych-domov/zakladne-informacie/`,
-  pvk: `${SITE_URL}/plynar-vodar-kurenar-klimatizacia/zakladne-informacie/`,
-  sbdAds: `${SITE_URL}/spravca-bytovych-domov/inzercia/`,
-  pvkAds: `${SITE_URL}/plynar-vodar-kurenar-klimatizacia/inzercia/`,
-  about: `${SITE_URL}/uvod/o-nas/`,
-  history: `${SITE_URL}/uvod/historia/`,
-  services: `${SITE_URL}/uvod/sluzby/`,
-  gdpr: `${SITE_URL}/uvod/ochrana-osobnych-udajov-gdpr/`,
-  conference: `${SITE_URL}/konferencia-sprava-budov/`,
-  course: `${SITE_URL}/kurz-sprava-bytoveho-fondu/`,
-  publication: `${SITE_URL}/wp-content/uploads/LetakUcebnica.pdf`,
-  tzbPortal: "http://www.tzbportal.sk/",
-  advertise: "mailto:voc@voc.sk?subject=Inzercia",
-  email: "mailto:voc@voc.sk",
+  tzbPortal: "https://www.tzbportal.sk/",
+  advertise: mailto("Inzercia"),
+  email: mailto(),
 } as const;

@@ -1,4 +1,5 @@
-import { LINKS } from "@/constants";
+import { mailto } from "@/constants";
+import { articlePath } from "@/constants/routes";
 import type { Article, EducationOffer, PortableTextBlock } from "@/types/content";
 
 /**
@@ -45,10 +46,9 @@ export const mockArticles: Article[] = [
       end: { date: "2026-11-06" },
       timeZone: BRATISLAVA,
       location: "Hotel Galeria Thermal Bešeňová",
-      registration: { label: "Program a prihláška", href: LINKS.conference },
+      registration: { label: "Prihlásiť sa e-mailom", href: mailto("Prihláška – Konferencia Správa budov jeseň 2026") },
     },
     magazines: ["sbd", "pvk"],
-    relatedOffer: { label: "Stránka konferencie Správa budov", href: LINKS.conference },
     body: [
       p("Konferencia Správa budov je stretnutím správcov bytových domov, zástupcov spoločenstiev vlastníkov, bytových družstiev a odborníkov z oblasti technických zariadení budov. Jesenný ročník 2026 je v poradí dvadsiaty."),
       h2("Pre koho je konferencia určená"),
@@ -56,7 +56,7 @@ export const mockArticles: Article[] = [
       li("bytové družstvá a vlastníci nehnuteľností,"),
       li("projektanti, dodávatelia a firmy z oblasti TZB."),
       h2("Program a prihlásenie"),
-      p("Podrobný program, podmienky účasti a prihlášku zverejňujeme na stránke konferencie. S otázkami vám radi pomôžeme aj e-mailom alebo telefonicky."),
+      p("O programe, podmienkach účasti a prihlásení vás radi budeme informovať e-mailom alebo telefonicky."),
     ],
   },
   {
@@ -69,14 +69,13 @@ export const mockArticles: Article[] = [
     image: { src: "/images/education-course.jpg", alt: "Štúdium pri pracovnom stole", width: 1400, height: 1750 },
     publishedOn: "2026-06-15",
     magazines: ["sbd"],
-    relatedOffer: { label: "Stránka kurzu Správa bytového fondu", href: LINKS.course },
     body: [
       p("Akreditovaný kurz Správa bytového fondu pripravuje účastníkov na výkon činnosti správcu bytových domov. Rozsah kurzu je 96 hodín."),
       h2("Čo kurz pokrýva"),
       li("právne predpisy upravujúce správu bytových domov,"),
       li("hospodárenie s fondom prevádzky, údržby a opráv,"),
       li("technické zariadenia budov a ich prevádzku."),
-      p("Termíny najbližších behov a podmienky prihlásenia nájdete na stránke kurzu."),
+      p("Termíny najbližších behov a podmienky prihlásenia vám pošleme e-mailom."),
     ],
   },
   {
@@ -109,10 +108,9 @@ export const mockArticles: Article[] = [
       location: "Hotel Galeria Thermal Bešeňová",
     },
     magazines: ["sbd", "pvk"],
-    relatedOffer: { label: "Stránka konferencie Správa budov", href: LINKS.conference },
     body: [
       p("Pozývame vás na 19. medzinárodnú konferenciu Správa budov, ktorá sa uskutoční 15.\u00a0–\u00a017.\u00a0apríla\u00a02026 v Hoteli Galeria Thermal Bešeňová."),
-      p("Program a prihlášku zverejňujeme na stránke konferencie."),
+      p("Program a prihlášku vám radi pošleme e-mailom."),
     ],
   },
   {
@@ -140,7 +138,7 @@ export const mockEducationOffers: EducationOffer[] = [
     title: "Konferencia Správa budov",
     description: "Riešenia pre správu bytových domov a nehnuteľností. Jarný a jesenný ročník.",
     image: { src: "/images/conference.jpg", alt: "", width: 1980, height: 300 },
-    href: LINKS.conference,
+    href: articlePath("konferencia-sprava-budov-jesen-2026"),
   },
   {
     key: "kurz",
@@ -149,6 +147,6 @@ export const mockEducationOffers: EducationOffer[] = [
     title: "Kurz Správa bytového fondu",
     description: "Kvalifikácia podľa zákona č. 246/2015 Z. z. o správcoch bytových domov.",
     image: { src: "/images/education-course.jpg", alt: "Štúdium pri pracovnom stole", width: 1400, height: 1750 },
-    href: LINKS.course,
+    href: articlePath("kurz-sprava-bytoveho-fondu"),
   },
 ];

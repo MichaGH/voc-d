@@ -1,4 +1,3 @@
-import { LINKS } from "@/constants";
 import { MAGAZINE_SLUGS } from "@/constants/routes";
 import type { Magazine } from "@/types/content";
 
@@ -82,7 +81,6 @@ export const mockMagazines: Magazine[] = [
       title: "Každé nové číslo poštou hneď po vyjdení",
       text: "Napíšte nám a pripravíme predplatné pre vás alebo pre celú firmu.",
     },
-    advertisingInfoUrl: LINKS.pvkAds,
   },
   {
     key: "sbd",
@@ -159,6 +157,5 @@ export const mockMagazines: Magazine[] = [
       title: "Každé nové číslo poštou hneď po vyjdení",
       text: "Napíšte nám a pripravíme predplatné pre vás, vaše spoločenstvo alebo družstvo.",
     },
-    advertisingInfoUrl: LINKS.sbdAds,
   },
 ];

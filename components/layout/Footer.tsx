@@ -7,8 +7,6 @@ const publisherLinks = [
   { label: "Vzdelávanie", href: ROUTES.education },
   { label: "Inzercia", href: ROUTES.advertising },
   { label: "O nás", href: ROUTES.about },
-  { label: "História ↗", href: LINKS.history },
-  { label: "Služby ↗", href: LINKS.services },
   { label: "TZBportal.sk ↗", href: LINKS.tzbPortal },
 ];
 
@@ -72,9 +70,6 @@ export default function Footer({ magazines }: { magazines: NavMagazine[] }) {
 
       <div className="mx-auto mt-12 flex max-w-[1400px] flex-wrap items-center justify-between gap-x-8 gap-y-2 border-t border-[var(--color-line-light)] pt-6 text-sm text-[var(--color-muted)]">
         <p>© {new Date().getFullYear()} {CONTACT.company}</p>
-        <Link href={LINKS.gdpr} className="text-[var(--color-muted)] no-underline hover:text-[var(--color-blue)]">
-          Ochrana osobných údajov (GDPR)
-        </Link>
       </div>
     </footer>
   );
