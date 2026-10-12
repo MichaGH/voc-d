@@ -33,6 +33,7 @@ export async function getReaderPageDataFrom(
       year: edition.year,
       cover: edition.cover,
       ...(edition.pdf ? { pdf: edition.pdf } : {}),
+      inserts: edition.inserts,
     },
     ad,
   };

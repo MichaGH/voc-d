@@ -87,14 +87,14 @@ function dimensions(image: ReaderAdCreative["image"]) {
 /** Built-in banner: text only, so it cannot fail to load. */
 function HouseBanner({ magazineTitle }: { magazineTitle: string }) {
   return (
-    <div className="flex h-full w-full flex-col justify-center gap-2 bg-[linear-gradient(120deg,var(--color-navy-light)_0%,var(--color-navy)_70%)] px-5 text-white sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-7">
+    <div className="flex h-full w-full flex-col justify-center gap-2 bg-[var(--color-primary)] px-5 text-white sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-7">
       <p className="min-w-0 text-[15px] leading-tight font-semibold sm:text-[clamp(15px,1.6vw,19px)]">
         Inzerujte v časopise {magazineTitle}
-        <span className="hidden font-normal text-[var(--color-card-copy)] lg:inline"> – váš banner uvidia čitatelia každého vydania.</span>
+        <span className="hidden font-normal text-[var(--color-primary-copy)] lg:inline"> – váš banner uvidia čitatelia každého vydania.</span>
       </p>
       <a
         href={mailto(`Inzercia v online čítačke – ${magazineTitle}`)}
-        className="inline-flex h-9 shrink-0 items-center gap-2 self-start rounded-full bg-white px-4 text-[14px] font-semibold text-[var(--color-navy)] no-underline transition-colors hover:bg-[var(--color-cyan)] hover:text-[var(--color-navy)] sm:self-auto sm:h-10"
+        className="inline-flex h-9 shrink-0 items-center gap-2 self-start rounded-full bg-white px-4 text-[14px] font-semibold text-[var(--color-primary)] no-underline transition-colors hover:bg-[var(--color-cyan)] hover:text-[var(--color-navy)] sm:self-auto sm:h-10"
       >
         Dohodnúť inzerciu <span aria-hidden="true">↗</span>
       </a>

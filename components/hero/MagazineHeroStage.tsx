@@ -20,7 +20,9 @@ export interface HeroSlide {
   poster: ContentImage;
   video?: ContentVideo;
   href: string;
-  editionsHref: string;
+  subscribeHref: string;
+  /** Reader of the latest issue, when it has a PDF. */
+  readHref?: string;
   latest?: { label: string; cover: ContentImage };
 }
 
@@ -380,18 +382,32 @@ export default function MagazineHeroStage({ slides }: { slides: HeroSlide[] }) {
                 >
                   {slide.summary}
                 </p>
-                <div data-hero-reveal className="mt-9 flex flex-wrap gap-3">
+                <div data-hero-reveal className="mt-9 flex flex-wrap items-center gap-3">
+                  {slide.readHref && slide.latest && (
+                    <Link
+                      href={slide.readHref}
+                      prefetch={false}
+                      className="inline-flex h-14 items-center gap-3 rounded-[12px] bg-white px-7 text-base font-semibold whitespace-nowrap text-[var(--color-primary)] no-underline transition-colors hover:bg-[var(--color-cyan)] hover:text-[var(--color-navy)]"
+                    >
+                      Čítať číslo {slide.latest.label}
+                      <span className="sr-only"> {slide.title}</span>
+                    </Link>
+                  )}
                   <Link
-                    href={slide.href}
-                    className="inline-flex h-14 items-center gap-3 rounded-full bg-white px-7 text-base font-semibold whitespace-nowrap text-[var(--color-navy)] no-underline transition-colors hover:bg-[var(--color-cyan)] hover:text-[var(--color-navy)]"
+                    href={slide.subscribeHref}
+                    className={`inline-flex h-14 items-center rounded-[12px] px-7 text-base font-semibold whitespace-nowrap no-underline transition-colors ${
+                      slide.readHref
+                        ? "border border-white/45 text-white hover:bg-white/12 hover:text-white"
+                        : "bg-white text-[var(--color-primary)] hover:bg-[var(--color-cyan)] hover:text-[var(--color-navy)]"
+                    }`}
                   >
-                    Otvoriť časopis<span className="sr-only"> {slide.title}</span> <span aria-hidden="true">→</span>
+                    Predplatiť<span className="sr-only"> {slide.title}</span>
                   </Link>
                   <Link
-                    href={slide.editionsHref}
-                    className="inline-flex h-14 items-center rounded-full border border-white/45 px-7 text-base font-semibold whitespace-nowrap text-white no-underline transition-colors hover:bg-white/12 hover:text-white"
+                    href={slide.href}
+                    className="ml-2 inline-flex h-14 items-center gap-2 text-base font-semibold whitespace-nowrap text-white no-underline transition-colors hover:text-[var(--color-cyan)]"
                   >
-                    Všetky vydania<span className="sr-only"> časopisu {slide.title}</span>
+                    O časopise<span className="sr-only"> {slide.title}</span> <span aria-hidden="true">→</span>
                   </Link>
                 </div>
               </div>

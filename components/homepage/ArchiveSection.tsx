@@ -6,6 +6,7 @@ import { getLatestEditions, getMagazines } from "@/lib/content";
 export default async function ArchiveSection() {
   const [magazines, editions] = await Promise.all([getMagazines(), getLatestEditions({ limit: 10 })]);
   const titles = Object.fromEntries(magazines.map((magazine) => [magazine.key, magazine.shortTitle]));
+  const names = Object.fromEntries(magazines.map((magazine) => [magazine.key, magazine.title]));
 
   return (
     <section id="archiv" aria-labelledby="archiv-nadpis" className="scroll-mt-[76px] px-5 pt-[clamp(88px,10vw,150px)] md:px-8 xl:px-12">
@@ -21,6 +22,10 @@ export default async function ArchiveSection() {
           editions={editions.map((edition) => ({
             key: `${edition.magazineKey}-${edition.slug}`,
             href: editionPath(edition.magazineKey, edition.slug),
+            magazineKey: edition.magazineKey,
+            slug: edition.slug,
+            hasDigitalVersion: edition.hasDigitalVersion,
+            magazineName: names[edition.magazineKey] ?? "",
             magazineTitle: titles[edition.magazineKey] ?? "",
             label: edition.label,
             cover: edition.cover,

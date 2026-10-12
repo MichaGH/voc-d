@@ -1,9 +1,11 @@
 import Link from "next/link";
+import SiteChrome from "@/components/layout/SiteChrome";
 import { buttonPrimary, buttonSecondary, display, eyebrow, lead } from "@/components/shared/ui";
 import { ROUTES } from "@/constants/routes";
 
 export default function NotFound() {
   return (
+    <SiteChrome>
     <main id="obsah" className="flex flex-1 items-center px-5 pt-[calc(76px+64px)] pb-16 md:px-8 xl:px-12">
       <div className="mx-auto w-full max-w-[1400px]">
         <p className={eyebrow}>Chyba 404</p>
@@ -23,5 +25,6 @@ export default function NotFound() {
         </div>
       </div>
     </main>
+    </SiteChrome>
   );
 }

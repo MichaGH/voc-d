@@ -30,12 +30,11 @@ export function editionsPath(key: MagazineKey) {
   return `${magazinePath(key)}/vydania`;
 }
 
+/**
+ * An edition's page is its reader: the PDF opened full screen (or the
+ * cover with an order action when no PDF exists). Every cover links here.
+ */
 export function editionPath(key: MagazineKey, editionSlug: string) {
-  return `${editionsPath(key)}/${editionSlug}`;
-}
-
-/** On-site reader of an edition's PDF. Link to it only when the edition has a PDF. */
-export function readerPath(key: MagazineKey, editionSlug: string) {
   return `${magazinePath(key)}/citat/${editionSlug}`;
 }
 

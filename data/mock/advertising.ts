@@ -36,6 +36,12 @@ const firmaB: AdCreative = {
     width: 1940,
     height: 180,
   },
+  mobileImage: {
+    src: "/images/ads/ukazka-firma-b-320x100.jpg",
+    alt: "Ukážková firma B – správa bytových domov",
+    width: 640,
+    height: 200,
+  },
   // No destination: the banner is shown but not clickable.
 };
 
@@ -48,6 +54,12 @@ const firmaC: AdCreative = {
     alt: "Ukážková firma C – meranie a rozúčtovanie tepla",
     width: 1940,
     height: 180,
+  },
+  mobileImage: {
+    src: "/images/ads/ukazka-firma-c-320x100.jpg",
+    alt: "Ukážková firma C – rozúčtovanie tepla",
+    width: 640,
+    height: 200,
   },
   href: "https://www.tzbportal.sk/",
 };

@@ -35,7 +35,7 @@ export default function MagazineCard({ magazine, editions, headingLevel = "h3" }
       <p className={`mt-4 max-w-[40ch] ${body} sm:text-[17px]`}>{magazine.description}</p>
       <div className="mt-auto flex flex-wrap items-center justify-center gap-x-7 gap-y-4 pt-8">
         <Link href={magazinePath(magazine.key)} className={buttonPrimary}>
-          Otvoriť časopis<span className="sr-only"> {magazine.title}</span> →
+          O časopise<span className="sr-only"> {magazine.title}</span> →
         </Link>
         <Link href={editionsPath(magazine.key)} className={textLink}>
           Všetky vydania<span className="sr-only"> časopisu {magazine.title}</span>

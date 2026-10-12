@@ -186,7 +186,7 @@ export default async function AdvertisingPage() {
                       </span>
                       <span
                         aria-hidden="true"
-                        className="grid size-12 shrink-0 place-items-center rounded-full bg-[var(--color-navy)] text-lg text-white transition-transform duration-300 group-hover:translate-y-0.5"
+                        className="grid size-12 shrink-0 place-items-center rounded-full bg-[var(--color-primary)] text-lg text-white transition-transform duration-300 group-hover:translate-y-0.5"
                       >
                         ↓
                       </span>

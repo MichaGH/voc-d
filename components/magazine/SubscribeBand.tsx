@@ -11,7 +11,7 @@ const hoverAccent: Record<MagazineSummary["key"], string> = {
 /** Subscription call to action (moved from the former topics section). */
 export default function SubscribeBand({ magazines }: { magazines: MagazineSummary[] }) {
   return (
-    <div className="flex flex-wrap items-center justify-between gap-x-12 gap-y-6 rounded-[28px] bg-[linear-gradient(135deg,var(--color-navy-light)_0%,var(--color-navy)_75%)] px-[clamp(28px,4vw,56px)] py-[clamp(32px,4vw,52px)] text-white">
+    <div className="flex flex-wrap items-center justify-between gap-x-12 gap-y-6 rounded-[28px] bg-[var(--color-primary)] px-[clamp(28px,4vw,56px)] py-[clamp(32px,4vw,52px)] text-white">
       <div className="min-w-0 flex-[1_1_420px]">
         <p className={eyebrowOnDark}>Predplatné</p>
         <p className="mt-3 text-[clamp(26px,2.6vw,38px)] leading-[1.1] font-bold tracking-[-.025em] text-balance">

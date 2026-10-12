@@ -4,6 +4,7 @@ import {
   adjacentViews,
   chooseLayout,
   clampPage,
+  jumpPage,
   nextPage,
   parsePageInput,
   previousPage,
@@ -112,6 +113,17 @@ describe("bounds and labels", () => {
   test("chooseLayout uses the stage width", () => {
     assert.equal(chooseLayout(959), "single");
     assert.equal(chooseLayout(960), "spread");
+  });
+});
+
+describe("fast jumps", () => {
+  test("±10 pages, normalised to the view and clamped", () => {
+    assert.equal(jumpPage(1, 36, "spread", 10), 10); // 11 → spread 10–11
+    assert.equal(jumpPage(12, 36, "spread", 10), 22);
+    assert.equal(jumpPage(30, 36, "spread", 10), 36);
+    assert.equal(jumpPage(3, 36, "spread", -10), 1);
+    assert.equal(jumpPage(15, 36, "single", -10), 5);
+    assert.equal(jumpPage(36, 36, "single", 10), 36);
   });
 });
 

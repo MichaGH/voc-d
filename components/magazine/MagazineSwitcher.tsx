@@ -23,7 +23,7 @@ export default function MagazineSwitcher({ items, current, label }: { items: Swi
                 aria-current={selected ? "page" : undefined}
                 className={`flex h-14 items-center gap-3 rounded-[22px] pr-5 pl-2 text-[15px] font-semibold no-underline transition-colors ${
                   selected
-                    ? "bg-[var(--color-navy)] text-white shadow-[0_8px_20px_-12px_rgba(4,23,58,.6)] hover:text-white"
+                    ? "bg-[var(--color-primary)] text-white shadow-[0_8px_20px_-12px_rgba(10,63,181,.7)] hover:text-white"
                     : "text-[var(--color-navy)] hover:bg-white hover:text-[var(--color-navy)]"
                 }`}
               >

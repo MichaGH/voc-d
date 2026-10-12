@@ -14,7 +14,7 @@ export const pageTop = "pt-[calc(76px+clamp(36px,4.5vw,64px))]";
 
 /* Type */
 export const eyebrow = "text-base font-semibold text-[var(--color-blue)]";
-export const eyebrowOnDark = "text-base font-semibold text-[var(--color-blue-pale)]";
+export const eyebrowOnDark = "text-base font-semibold text-[var(--color-primary-copy)]";
 export const display = "text-[clamp(42px,5.4vw,84px)] leading-[.98] font-bold tracking-[-.04em] text-balance";
 export const h2 = "text-[clamp(36px,4.4vw,64px)] leading-[1.02] font-bold tracking-[-.035em] text-balance";
 export const h3 = "text-[clamp(24px,2.2vw,32px)] leading-[1.1] font-bold tracking-[-.025em] text-balance";
@@ -27,7 +27,7 @@ export const meta = "text-sm text-[var(--color-muted)]";
 /* Actions */
 const button =
   "inline-flex h-[52px] items-center justify-center gap-2.5 rounded-full px-6 text-[15px] font-semibold whitespace-nowrap no-underline transition-colors";
-export const buttonPrimary = `${button} bg-[var(--color-navy)] text-white hover:bg-[var(--color-blue)] hover:text-white`;
+export const buttonPrimary = `${button} bg-[var(--color-primary)] text-white hover:bg-[var(--color-navy)] hover:text-white`;
 export const buttonSecondary = `${button} border border-[var(--color-line-button)] bg-white text-[var(--color-navy)] hover:border-[var(--color-navy)] hover:text-[var(--color-navy)]`;
 export const buttonOnDark = `${button} bg-white text-[var(--color-navy)] hover:bg-[var(--color-cyan)] hover:text-[var(--color-navy)]`;
 export const buttonOutlineOnDark = `${button} border border-white/40 text-white hover:bg-white/12 hover:text-white`;

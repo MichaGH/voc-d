@@ -1,5 +1,5 @@
 import MagazineHeroStage, { type HeroSlide } from "@/components/hero/MagazineHeroStage";
-import { editionsPath, magazinePath } from "@/constants/routes";
+import { editionPath, magazinePath, subscriptionPath } from "@/constants/routes";
 import { getLatestEditions, getMagazine, getMagazines } from "@/lib/content";
 
 export default async function HeroSection() {
@@ -20,7 +20,8 @@ export default async function HeroSection() {
         poster: magazine.hero.poster,
         video: magazine.hero.video,
         href: magazinePath(key),
-        editionsHref: editionsPath(key),
+        subscribeHref: subscriptionPath(key),
+        readHref: latest?.hasDigitalVersion ? editionPath(key, latest.slug) : undefined,
         latest: latest ? { label: latest.label, cover: latest.cover } : undefined,
       };
     }),

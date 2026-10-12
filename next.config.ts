@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    // Edition detail pages were merged into the reader.
+    return [{ source: "/:magazineSlug/vydania/:editionSlug", destination: "/:magazineSlug/citat/:editionSlug", permanent: true }];
+  },
   async headers() {
     return [
       {

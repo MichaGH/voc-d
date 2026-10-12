@@ -100,7 +100,13 @@ Extend existing typography, palette, spacing, buttons and cover treatment. Magaz
 
 Plans have an explicit year selector and clearly labeled issue, publication/distribution date, submission deadline and optional theme/note. Mobile rows may stack without losing labels. Future years remain accessible. Dates come from content, not fixed decorative months. Final layout is chosen during implementation.
 
-## PDF Reader (implemented, awaiting review)
+## Part B direction (owner revision, awaiting review)
+
+- Primary brand surface is `--color-primary` (#0a3fb5): navbar (solid state), mobile menu, stats band, subscribe/plan bands, next-issue card, primary buttons, switchers, reader bar. Navy stays for text and photo/video overlays.
+- Covers everywhere carry two cover-width rectangular buttons (10px radius): `Čítať` (primary) / `Objednať` for print-only, and `Predplatiť` (outlined). Hero/landing CTAs are 12px-radius rectangles.
+- The reader is described in feature 02 Part B (full screen, no navbar, blue bottom bar, side arrows, page turn, inserts panel). The paragraph below describes the superseded Part A layout.
+
+## PDF Reader (Part A, superseded by Part B)
 
 Route `/[magazine]/citat/[edition]` on a light surface page: compact identity row (magazine title link + bold issue label, `← Späť na vydanie` pill), then the `Inzercia` label and banner slot (970×90 desktop, 320×100 mobile, 14px corners, non-sticky), then the stage and the bottom controls. Pages sit on the surface with a soft shadow; spreads touch at the fold with a light fold shading. Large white round side arrows beside the spread on pointer devices. Bottom bar: white pill with `← Predchádzajúca`, `Strana 1 z 36` / `Strany 2–3 z 36`, navy `Nasledujúca →`, `Prejsť na stranu` + OK, zoom `−`/`100 %`/`+`/`Prispôsobiť`; sticky; on phones only the navigation row is sticky and the tools sit below the page. Loading hints ("Načítavam časopis…", "Načítavam stranu…") appear after a short delay; the cover image stands in for page 1 while the PDF opens. Error and cover-only states are white rounded panels with navy primary and outlined secondary actions. The edition detail page shows a blue full-width `Čítať online →` button above the `Chcete toto číslo?` panel when a PDF exists. Native/raw PDF viewing cannot guarantee a website banner.
 

@@ -64,6 +64,8 @@ export const mockEditions: Edition[] = [
         description: "Program a prihláška na 20. konferenciu v Bešeňovej.",
         paperFormat: { kind: "A4" },
         physicalSheetCount: 1,
+        // FIXTURE: sample digital version of the insert (opens inside the reader).
+        digital: localPdf("pvk-4-2026-pozvanka.pdf", 327_238, 2),
       },
     ],
   }),

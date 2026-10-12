@@ -183,7 +183,7 @@ export interface ReaderAd {
 /** Everything the reader route needs; PDF bytes are never part of it. */
 export interface ReaderPageData {
   magazine: MagazineSummary;
-  edition: Pick<Edition, "magazineKey" | "slug" | "label" | "year" | "cover" | "pdf">;
+  edition: Pick<Edition, "magazineKey" | "slug" | "label" | "year" | "cover" | "pdf" | "inserts">;
   ad: ReaderAd;
 }
 

@@ -77,3 +77,12 @@ export function parsePageInput(raw: string, pageCount: number): PageInputResult 
   }
   return { ok: true, page };
 }
+
+/** Pages skipped by the fast back/forward controls (« »). */
+export const JUMP_STEP = 10;
+
+/** Focused page after jumping `delta` pages from the current view, clamped to the issue. */
+export function jumpPage(page: number, pageCount: number, layout: ReaderLayout, delta: number): number {
+  const start = viewForPage(page, pageCount, layout)[0];
+  return viewForPage(clampPage(start + delta, pageCount), pageCount, layout)[0];
+}

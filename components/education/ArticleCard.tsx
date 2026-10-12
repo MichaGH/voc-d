@@ -30,7 +30,7 @@ export default function ArticleCard({ article, today, headingLevel = "h3" }: Art
             className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           />
         ) : (
-          <span aria-hidden="true" className="absolute inset-0 flex flex-col justify-end bg-[linear-gradient(135deg,var(--color-navy-light)_0%,var(--color-navy)_75%)] p-[clamp(24px,2.4vw,32px)] text-white">
+          <span aria-hidden="true" className="absolute inset-0 flex flex-col justify-end bg-[var(--color-primary)] p-[clamp(24px,2.4vw,32px)] text-white">
             <span className={eyebrowOnDark}>{articleKindLabel[article.kind]}</span>
             <span className="mt-1.5 text-[clamp(24px,2.2vw,32px)] leading-[1.05] font-bold tracking-[-.025em] text-balance">
               {article.event ? formatEventRange(article.event) : article.title}

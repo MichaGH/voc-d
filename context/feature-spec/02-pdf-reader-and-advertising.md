@@ -322,3 +322,15 @@ Findings that shape the reading-export rules (see delivery-and-costs.md):
 ### Remaining for launch
 
 Representative real issues measured on the production asset host (range/CORS/cache headers), Safari and Firefox checks, owner sign-off on banner geometry/side arrows/default fit, and unit 6 (Sanity).
+
+## Part B — Owner revision (reader redesign and link structure)
+
+After reviewing Part A the owner asked for a reading-first product. Implemented changes, superseding Part A where they conflict:
+
+- **Edition page = reader.** `/[magazine]/vydania/[edition]` was removed (permanent redirect to `/[magazine]/citat/[edition]`). Every cover links to the reader; `editionPath()` now returns the reader URL. Indexable, canonical to itself.
+- **Direct actions under covers.** Shared `EditionActions` (rectangular, cover-width): `Čítať` → reader (or `Objednať` e-mail for print-only issues) and `Predplatiť` → subscription section. Used in the archive gallery, homepage "Posledné čísla" rail and magazine landing; the hero and landing lead with `Čítať číslo X/YYYY`. `Otvoriť časopis` renamed `O časopise`.
+- **Full-screen reader without site chrome.** Routes are split into `app/(site)` (navbar/footer via `SiteChrome`) and `app/(reader)`. The reader is a white `100dvh` page: `← Všetky vydania` top-left, `Predplatiť` top-right, the ad banner, the stage (fills the rest; whole spread or page contained), translucent square side arrows positioned just outside the pages (drifting to the screen edge, at most 120 px from the pages), and a primary-blue bottom bar: home icon, `VOC / magazine title issue` left; zoom −/+ (md+), `«` (−10 pages), `‹`, editable `12–13 / 36`, `›`, `»` (+10) right.
+- **Page-turn animation** (reverses the earlier "no animation" decision): CSS 3D leaf over the spine using copies of already-prepared bitmaps (no re-render, no download), ~0.7 s; short slide for cover/last-page/single-page turns; off under reduced motion, while zoomed, and for jumps. Zoom re-renders from data already in memory (verified: 0 PDF requests).
+- **Vkladačky inside the reader.** Bar button `Súčasťou čísla (n)` opens a panel listing the issue's inserts; an insert with a digital PDF opens in the same reader (`← Späť na časopis` returns to the remembered issue page).
+- **Primary colour.** `--color-primary` (#0a3fb5, the contact-panel blue) replaces the navy gradients on navbar, bands, plan/next-issue cards, primary buttons, switchers and the reader bar; navy remains for text and photo/video overlays.
+- Verified with 41 unit tests and 22 Playwright checks (desktop/mobile layout, turn overlay, reduced motion, ±10 jumps, input, keyboard, zoom without requests, inserts, print-only state, redirects, no reader code on other pages, failure states, 1/2/6/7-page files).

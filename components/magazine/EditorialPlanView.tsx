@@ -64,7 +64,7 @@ export default function EditorialPlanView({ plans, defaultYear, nextEntryKey }: 
                 tabIndex={selected ? 0 : -1}
                 onClick={() => setYear(item.year)}
                 className={`h-11 cursor-pointer rounded-full border-0 px-5 text-[15px] font-semibold transition-colors ${
-                  selected ? "bg-[var(--color-navy)] text-white shadow-[0_6px_16px_-8px_rgba(4,23,58,.5)]" : "bg-transparent text-[var(--color-navy)] hover:bg-white"
+                  selected ? "bg-[var(--color-primary)] text-white shadow-[0_6px_16px_-8px_rgba(10,63,181,.6)]" : "bg-transparent text-[var(--color-navy)] hover:bg-white"
                 }`}
               >
                 {item.year}
@@ -86,7 +86,7 @@ export default function EditorialPlanView({ plans, defaultYear, nextEntryKey }: 
                 <li
                   key={entry.key}
                   className={`flex flex-col rounded-[28px] p-7 ${
-                    isNext ? "bg-[linear-gradient(135deg,var(--color-navy-light)_0%,var(--color-navy)_75%)] text-white" : "bg-[var(--color-surface)]"
+                    isNext ? "bg-[var(--color-primary)] text-white" : "bg-[var(--color-surface)]"
                   }`}
                 >
                   <div className="flex min-h-8 items-start justify-between gap-3">
@@ -99,18 +99,18 @@ export default function EditorialPlanView({ plans, defaultYear, nextEntryKey }: 
                   </div>
                   <dl className="mt-8 grid gap-4">
                     <div>
-                      <dt className={`text-sm ${isNext ? "text-[var(--color-stat-copy)]" : "text-[var(--color-muted)]"}`}>Vychádza</dt>
+                      <dt className={`text-sm ${isNext ? "text-[var(--color-primary-copy)]" : "text-[var(--color-muted)]"}`}>Vychádza</dt>
                       <dd className="mt-0.5 text-lg font-semibold">{formatPlanDate(entry.distribution)}</dd>
                     </div>
                     <div>
-                      <dt className={`text-sm ${isNext ? "text-[var(--color-stat-copy)]" : "text-[var(--color-muted)]"}`}>Uzávierka podkladov</dt>
+                      <dt className={`text-sm ${isNext ? "text-[var(--color-primary-copy)]" : "text-[var(--color-muted)]"}`}>Uzávierka podkladov</dt>
                       <dd className="mt-0.5 text-lg font-semibold">
                         {entry.submissionDeadline ? formatPlanDate(entry.submissionDeadline) : "upresníme"}
                       </dd>
                     </div>
                     {(entry.theme || entry.note) && (
                       <div>
-                        <dt className={`text-sm ${isNext ? "text-[var(--color-stat-copy)]" : "text-[var(--color-muted)]"}`}>Téma</dt>
+                        <dt className={`text-sm ${isNext ? "text-[var(--color-primary-copy)]" : "text-[var(--color-muted)]"}`}>Téma</dt>
                         <dd className={`mt-0.5 text-base leading-snug ${isNext ? "text-[var(--color-card-copy)]" : "text-[var(--color-copy)]"}`}>
                           {[entry.theme, entry.note].filter(Boolean).join(". ")}
                         </dd>
@@ -120,6 +120,7 @@ export default function EditorialPlanView({ plans, defaultYear, nextEntryKey }: 
                   {entry.editionHref && (
                     <Link
                       href={entry.editionHref}
+                      prefetch={false}
                       className="mt-auto inline-flex items-center gap-1.5 pt-8 text-[15px] font-semibold text-[var(--color-blue)] no-underline hover:text-[var(--color-navy)]"
                     >
                       Pozrieť vydanie →

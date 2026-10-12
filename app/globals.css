@@ -9,6 +9,10 @@
   --color-blue-pale: #7fb6ff;
   --color-blue-wash: #e8f1ff;
   --color-cta: #0a3fb5;
+  /* Primary brand surface: the vivid blue of the contact panel. Navy stays for text and photo overlays. */
+  --color-primary: #0a3fb5;
+  --color-primary-bright: #1d58e8;
+  --color-primary-copy: #dcebff;
   --color-cyan: #00c2e8;
   --color-green: #0b7a5e;
   --color-mint: #1cc49a;

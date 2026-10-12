@@ -80,7 +80,7 @@ export default async function EditorialPlanPage({ params }: PageProps<"/[magazin
             Termíny uvedené mesiacom upresníme. Presný dátum uzávierky vám potvrdíme pri objednávke inzercie.
           </p>
 
-          <div className="mt-[clamp(80px,9vw,128px)] flex flex-wrap items-center justify-between gap-6 rounded-[28px] bg-[linear-gradient(135deg,var(--color-navy-light)_0%,var(--color-navy)_75%)] px-[clamp(28px,4vw,56px)] py-[clamp(32px,4vw,52px)] text-white">
+          <div className="mt-[clamp(80px,9vw,128px)] flex flex-wrap items-center justify-between gap-6 rounded-[28px] bg-[var(--color-primary)] px-[clamp(28px,4vw,56px)] py-[clamp(32px,4vw,52px)] text-white">
             <div className="min-w-0 flex-[1_1_420px]">
               <p className={eyebrowOnDark}>Inzercia</p>
               <p className="mt-3 text-[clamp(26px,2.6vw,38px)] leading-[1.1] font-bold tracking-[-.025em] text-balance">Rezervujte si miesto v ďalšom čísle.</p>

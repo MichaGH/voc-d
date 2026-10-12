@@ -65,17 +65,25 @@ export default async function MagazinePage({ params }: PageProps<"/[magazineSlug
               </h1>
               <p className={`mt-7 max-w-[42ch] ${lead}`}>{magazine.description}</p>
               <div className="mt-10 flex flex-wrap items-center gap-3">
-                <Link href="#predplatne" className={`${buttonPrimary} h-14 px-7 text-base`}>
+                {latest?.hasDigitalVersion && (
+                  <Link href={editionPath(key, latest.slug)} prefetch={false} className={`${buttonPrimary} h-14 px-7 text-base`}>
+                    Čítať číslo {latest.label}
+                  </Link>
+                )}
+                <Link
+                  href="#predplatne"
+                  className={`${latest?.hasDigitalVersion ? buttonSecondary : buttonPrimary} h-14 px-7 text-base`}
+                >
                   Predplatiť časopis
                 </Link>
-                <Link href={editionsPath(key)} className={`${buttonSecondary} h-14 px-7 text-base`}>
-                  Všetky vydania
+                <Link href={editionsPath(key)} className={`${textLink} ml-2`}>
+                  Všetky vydania →
                 </Link>
               </div>
             </div>
 
             {latest && (
-              <Link href={editionPath(key, latest.slug)} className="group block text-[var(--color-navy)] no-underline">
+              <Link href={editionPath(key, latest.slug)} prefetch={false} className="group block text-[var(--color-navy)] no-underline">
                 <span className="relative block aspect-[1/.74] transition-transform duration-500 ease-out group-hover:-translate-y-1.5">
                   <CoverCascade editions={editions} preload />
                 </span>
@@ -86,7 +94,7 @@ export default async function MagazinePage({ params }: PageProps<"/[magazineSlug
                   </span>
                   <span
                     aria-hidden="true"
-                    className="grid size-12 shrink-0 place-items-center rounded-full bg-[var(--color-navy)] text-lg text-white transition-transform duration-300 group-hover:translate-x-1"
+                    className="grid size-12 shrink-0 place-items-center rounded-full bg-[var(--color-primary)] text-lg text-white transition-transform duration-300 group-hover:translate-x-1"
                   >
                     →
                   </span>

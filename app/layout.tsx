@@ -2,10 +2,7 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import Link from "next/link";
 import Script from "next/script";
-import Footer from "@/components/layout/Footer";
-import Navbar, { type NavMagazine } from "@/components/layout/Navbar";
-import { SITE_ORIGIN, magazinePath } from "@/constants/routes";
-import { getLatestEditions, getMagazines } from "@/lib/content";
+import { SITE_ORIGIN } from "@/constants/routes";
 import "./globals.css";
 
 const geist = Geist({
@@ -24,21 +21,7 @@ export const metadata: Metadata = {
     "V.O.Č. SLOVAKIA vydáva časopisy Správca bytových domov a Plynár – vodár – kúrenár + klimatizácia, publikáciu Správca budov a organizuje odborné vzdelávanie.",
 };
 
-export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const magazines = await getMagazines();
-  const navMagazines: NavMagazine[] = await Promise.all(
-    magazines.map(async (magazine) => {
-      const [latest] = await getLatestEditions({ magazineKey: magazine.key, limit: 1 });
-      return {
-        key: magazine.key,
-        title: magazine.title,
-        audience: magazine.audience,
-        href: magazinePath(magazine.key),
-        cover: latest?.cover,
-      };
-    }),
-  );
-
+export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="sk" className={`${geist.variable} h-full antialiased`}>
       <body className="flex min-h-full flex-col">
@@ -48,9 +31,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         >
           Preskočiť na obsah
         </Link>
-        <Navbar magazines={navMagazines} />
         {children}
-        <Footer magazines={navMagazines} />
         <Script src={`https://zvoncek.thegrandpoints.com/p.js`} strategy="afterInteractive" />
       </body>
     </html>

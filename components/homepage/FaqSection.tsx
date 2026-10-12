@@ -22,7 +22,7 @@ export default function FaqSection() {
               <div key={faq.question} className="border-b border-[var(--color-line-light)]">
                 <button type="button" aria-expanded={open} aria-controls={`faq-answer-${index}`} onClick={() => setOpenIndex(open ? -1 : index)} className="flex w-full cursor-pointer items-center justify-between gap-6 border-0 bg-transparent py-6 text-left text-[clamp(18px,1.5vw,21px)] leading-[1.35] font-semibold text-[var(--color-navy)]">
                   <span>{faq.question}</span>
-                  <span aria-hidden="true" className={`grid size-9 shrink-0 place-items-center rounded-full text-xl font-medium ${open ? "bg-[var(--color-navy)] text-white" : "bg-[var(--color-surface)] text-[var(--color-navy)]"}`}>{open ? "−" : "+"}</span>
+                  <span aria-hidden="true" className={`grid size-9 shrink-0 place-items-center rounded-full text-xl font-medium ${open ? "bg-[var(--color-primary)] text-white" : "bg-[var(--color-surface)] text-[var(--color-navy)]"}`}>{open ? "−" : "+"}</span>
                 </button>
                 {open && <p id={`faq-answer-${index}`} className="pr-0 pb-[26px] text-[17px] text-[var(--color-copy)] text-pretty sm:pr-16">{faq.answer}</p>}
               </div>

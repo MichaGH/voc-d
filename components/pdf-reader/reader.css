@@ -81,3 +81,10 @@
 @keyframes reader-appear {
   to { opacity: 1; }
 }
+
+/* Page-turn overlay copies fill their page boxes. */
+.reader-turn-page canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}

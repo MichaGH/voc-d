@@ -5,7 +5,7 @@ Update this file whenever the current phase, active feature, or implementation s
 ## Current Phase
 
 - Feature 01 — iterative design and website structure: **active, first complete prototype implemented and in review.** Not approved; not complete.
-- Feature 02 — PDF reader and advertising: **units 1–5 implemented with fixtures, awaiting owner review.** Unit 6 (Sanity) not started. Not approved; not complete.
+- Feature 02 — PDF reader and advertising: **units 1–5 implemented with fixtures; Part B owner revision applied (full-screen reader, page turn, edition page = reader, Čítať/Predplatiť under covers, primary blue), awaiting review.** Unit 6 (Sanity) not started. Not approved; not complete.
 
 ## Current Goal
 
@@ -24,6 +24,13 @@ Update this file whenever the current phase, active feature, or implementation s
 - **Navigation:** navbar/footer in root layout; overlay header only on routes with a navy hero (`hasOverlayHeader`), solid elsewhere; accessible `Časopisy` disclosure with per-magazine links; expanded footer.
 - **Pages (units 2–5):** `/casopisy`, both magazine landings, `/[magazine]/vydania`, edition detail with Vkladačky, `/[magazine]/edicny-plan` with year tabs, `/vzdelavanie` listing and article detail, styled `not-found`. Unknown and cross-magazine slugs return 404 (`dynamicParams = false`).
 - **Verification done:** `tsc`, `eslint`, `next build` (all routes static/SSG), Playwright checks at 1440px and 390px (no overflow, no broken images, 404s), hero interaction/video/reduced-motion checks.
+
+## Feature 02 — Part B revision (applied, awaiting review)
+
+- Routes split into `app/(site)` (SiteChrome: navbar/footer) and `app/(reader)`; edition detail page removed with a redirect to the reader; `editionPath()` = reader.
+- `EditionActions` (Čítať/Objednať + Predplatiť) under covers in gallery, homepage rail, landing; hero/landing lead with `Čítať číslo …`; `O časopise` naming.
+- Reader rebuilt full screen: top back/Predplatiť, banner, contained stage, side arrows, blue bottom bar (`ReaderBar`: home, VOC / title issue, zoom, « ‹ input › »), `PageTurn` 3D animation, inserts panel with in-reader insert PDFs (sample `pvk-4-2026-pozvanka.pdf`), ±10 jumps (`jumpPage`).
+- `--color-primary` applied site-wide to primary surfaces/buttons. Sample mobile creatives for all ad fixtures.
 
 ## Feature 02 — Reader (implemented, awaiting review)
 

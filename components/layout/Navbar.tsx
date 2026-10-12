@@ -83,7 +83,7 @@ export default function Navbar({ magazines }: { magazines: NavMagazine[] }) {
   return (
     <header
       className={`fixed inset-x-0 top-0 z-60 border-b transition-colors duration-300 ${
-        solid ? "border-white/10 bg-[rgba(4,23,58,.94)] backdrop-blur-md" : "border-transparent bg-transparent"
+        solid ? "border-white/12 bg-[rgba(10,63,181,.97)] backdrop-blur-md" : "border-transparent bg-transparent"
       }`}
     >
       <div className="mx-auto flex h-[76px] max-w-[1400px] items-center gap-7 px-5 md:px-8 xl:px-12">
@@ -197,7 +197,7 @@ export default function Navbar({ magazines }: { magazines: NavMagazine[] }) {
         <nav
           id="mobilne-menu"
           aria-label="Hlavná navigácia"
-          className="max-h-[calc(100svh-76px)] overflow-y-auto border-t border-white/12 bg-[var(--color-navy)] lg:hidden"
+          className="max-h-[calc(100svh-76px)] overflow-y-auto border-t border-white/12 bg-[var(--color-primary)] lg:hidden"
         >
           <ul className="grid list-none px-5 pt-2 pb-6 md:px-8">
             {navigation.map((item) => (

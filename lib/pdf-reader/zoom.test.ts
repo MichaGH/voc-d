@@ -33,9 +33,9 @@ describe("fit scale", () => {
     assert.ok(Math.abs(2 * A4.width * scale - 1000) < 1e-6);
   });
 
-  test("single page fits the width, capped for very wide stages", () => {
-    assert.ok(Math.abs(fitScale({ layout: "single", stageWidth: 358, stageHeight: 400, page: A4 }) * A4.width - 358) < 1e-6);
-    assert.ok(Math.abs(fitScale({ layout: "single", stageWidth: 2000, stageHeight: 400, page: A4 }) * A4.width - 900) < 1e-6);
+  test("single page is contained: width-bound on phones, height-bound on short stages", () => {
+    assert.ok(Math.abs(fitScale({ layout: "single", stageWidth: 358, stageHeight: 560, page: A4 }) * A4.width - 358) < 1e-6);
+    assert.ok(Math.abs(fitScale({ layout: "single", stageWidth: 900, stageHeight: 500, page: A4 }) * A4.height - 500) < 1e-6);
   });
 
   test("tiny stage heights fall back to the minimum", () => {

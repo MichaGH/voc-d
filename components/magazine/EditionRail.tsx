@@ -3,10 +3,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRef, type ReactNode } from "react";
+import EditionActions from "@/components/magazine/EditionActions";
+import type { MagazineKey } from "@/types/content";
 
 export interface RailEdition {
   key: string;
   href: string;
+  magazineKey: MagazineKey;
+  slug: string;
+  hasDigitalVersion: boolean;
+  /** Full title, for accessible names. */
+  magazineName: string;
   magazineTitle: string;
   label: string;
   cover: { src: string; width: number; height: number };
@@ -42,7 +49,7 @@ export default function EditionRail({ editions, label, heading }: EditionRailPro
       <ul ref={railRef} aria-label={label} className="archive-rail mt-10 flex list-none gap-5 overflow-x-auto pb-2 [scroll-snap-type:x_mandatory] [scrollbar-width:none]">
         {editions.map((edition) => (
           <li key={edition.key} className="w-[62%] shrink-0 snap-start sm:w-[30%] lg:w-[calc((100%_-_80px)/5)]">
-            <Link href={edition.href} className="group block text-[var(--color-navy)] no-underline hover:text-[var(--color-blue)]">
+            <Link href={edition.href} prefetch={false} className="group block text-[var(--color-navy)] no-underline hover:text-[var(--color-blue)]">
               <Image
                 src={edition.cover.src}
                 alt=""
@@ -51,9 +58,20 @@ export default function EditionRail({ editions, label, heading }: EditionRailPro
                 sizes="(max-width: 640px) 62vw, (max-width: 1024px) 30vw, 260px"
                 className="aspect-[595/842] h-auto w-full rounded-md shadow-[0_18px_30px_-20px_rgba(4,23,58,.45)] transition-transform duration-300 group-hover:-translate-y-1.5"
               />
-              <span className="mt-3.5 block text-[15px] font-semibold">{edition.magazineTitle}</span>
-              <span className="block text-sm text-[var(--color-muted)]">{edition.label}</span>
+              <span className="mt-3.5 flex items-baseline justify-between gap-3">
+                <span className="min-w-0 truncate text-[15px] font-semibold">{edition.magazineTitle}</span>
+                <span className="shrink-0 text-sm text-[var(--color-muted)]">{edition.label}</span>
+              </span>
             </Link>
+            <div className="mt-3">
+              <EditionActions
+                magazineKey={edition.magazineKey}
+                slug={edition.slug}
+                label={edition.label}
+                magazineTitle={edition.magazineName}
+                hasDigitalVersion={edition.hasDigitalVersion}
+              />
+            </div>
           </li>
         ))}
       </ul>

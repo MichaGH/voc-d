@@ -3,10 +3,9 @@ import type { ReaderLayout } from "./navigation.ts";
 /**
  * Pure sizing rules for the reader stage.
  *
- * "Fit" (zoom 100 %) shows the whole spread inside the available stage on
- * wide screens, so banner, both pages and controls fit one desktop viewport;
- * single-page layouts fit the page to the stage width (normal phone reading,
- * scrolling vertically). Zoom multiplies that fit scale.
+ * "Fit" (zoom 100 %) shows the whole view — both pages of a spread, or the
+ * single page — inside the full-screen stage. Zoom multiplies that fit scale;
+ * the stage then scrolls.
  */
 
 export const ZOOM_LEVELS = [1, 1.25, 1.5, 1.75, 2, 2.25, 2.5] as const;
@@ -15,8 +14,6 @@ export const MAX_ZOOM = ZOOM_LEVELS[ZOOM_LEVELS.length - 1];
 
 /** Gap between the two pages of a spread, in CSS pixels. */
 export const SPREAD_GAP = 0;
-/** A single page never grows wider than this at fit (very wide single-layout stages). */
-export const MAX_SINGLE_PAGE_WIDTH = 900;
 /** Smallest stage height used for fitting, so short landscape windows stay usable. */
 export const MIN_STAGE_HEIGHT = 360;
 
@@ -51,10 +48,8 @@ export interface FitInput {
 export function fitScale({ layout, stageWidth, stageHeight, page }: FitInput): number {
   if (!(page.width > 0 && page.height > 0) || !(stageWidth > 0)) return 1;
   const height = Math.max(stageHeight, MIN_STAGE_HEIGHT);
-  const scale =
-    layout === "spread"
-      ? Math.min(stageWidth / (2 * page.width + SPREAD_GAP), height / page.height)
-      : Math.min(stageWidth, MAX_SINGLE_PAGE_WIDTH) / page.width;
+  const pagesWide = layout === "spread" ? 2 * page.width + SPREAD_GAP : page.width;
+  const scale = Math.min(stageWidth / pagesWide, height / page.height);
   return Math.max(scale, 0.05);
 }
 
