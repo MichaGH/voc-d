@@ -11,6 +11,13 @@
 export type ReaderLayout = "single" | "spread";
 
 /**
+ * How the issue is shown: "book" turns spreads like a printed magazine,
+ * "grid" is the page overview, "scroll" stacks readable pages under each
+ * other like an ordinary PDF viewer.
+ */
+export type ReaderMode = "book" | "grid" | "scroll";
+
+/**
  * Two pages side by side need a reasonably wide stage. Measured on the
  * reader's own container (not the device type); tune during visual QA
  * without touching the pairing rules.

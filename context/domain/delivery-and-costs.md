@@ -35,7 +35,18 @@ Sanity file uploads are the initial candidate. If measured delivery exceeds affo
 
 ## Reader Measurements and Reading-Export Rules
 
-Measured with generated sample issues (see the feature 02 Implementation Record); repeat with real issues on the production host. With range loading, opening a 36-page 4.9 MB issue and drawing the cover transfers ~0.73 MB; reading on transfers only the pages viewed. PDF.js uses 8 KB range chunks, so one reading session makes roughly 40–100 range requests: if the asset host counts requests (CDN request quotas), count them per session alongside bytes.
+Measured with generated sample issues (see the feature 02 Implementation Record). The original 2026 issues are now the fixtures (44–52 pages, 5.0–7.9 MB); first local check: opening PVK 1/2026 and turning once transferred ~1.5 MB in ~75 range requests. Repeat the throttled measurements with them and on the production host.
+
+Transfer per reading session with the original issues (reader settings: 8 KB range chunks, no auto-fetch; measured by loading each page's resources through PDF.js, averages of PVK 1–4 and SBD 1–2/2026, 4.8–7.5 MB files):
+
+| Session | PDF data | Range requests |
+| --- | --- | --- |
+| Open, look at the cover (next spread is prepared automatically) | ~1.7 MB (0.5–3.4) | ~60 |
+| Browse ~5 spreads (11 pages) or open the page overview | ~2.5 MB (1.0–4.3) | ~115 |
+| Read half the issue | ~3.4 MB | ~180 |
+| Read the whole issue | ~5.9 MB (≈ file size) | ~300 |
+
+Working planning figure: ~3 MB per reading session. Sanity Free (100 GB/month, hard cap, no overage) then covers roughly 33,000 sessions a month (~16,000 if every visitor read whole issues). Site images go through `next/image`, so the host fetches them from Sanity once per size; PDFs go directly from the asset CDN and count in full. Asset CDN downloads reportedly do not count as API CDN requests; confirm in the Sanity Usage tab after launch. With range loading, opening a 36-page 4.9 MB issue and drawing the cover transfers ~0.73 MB; reading on transfers only the pages viewed. PDF.js uses 8 KB range chunks, so one reading session makes roughly 40–100 range requests: if the asset host counts requests (CDN request quotas), count them per session alongside bytes.
 
 Rules for the PDF uploaded for reading (to confirm with the publisher's exports):
 

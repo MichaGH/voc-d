@@ -28,7 +28,7 @@ See [editorial-content.md](editorial-content.md) for the editable field inventor
 ## Assets
 
 - ContentImage: URL, alt text, intrinsic width/height and optional responsive/placeholder data.
-- PdfAsset: URL, display filename and optional byte size/page count. Local/Sanity providers return the same shape. Fixtures point to `/pdfs/<file>` (sample issues in `public/pdfs/`); the Sanity adapter will return the file asset's CDN URL, which needs byte-range support and CORS for this site's origin.
+- PdfAsset: URL, display filename and optional byte size/page count. Local/Sanity providers return the same shape. Fixtures point to `/pdfs/<file>` (original issues in `public/pdfs/`); the Sanity adapter will return the file asset's CDN URL, which needs byte-range support and CORS for this site's origin.
 - Reader advertising: `AdCreative` (id, internal title, advertiser, desktop image with alt text, optional mobile image, optional destination), `ReaderAdPlacement` (magazine, enabled, ordered candidates, selected id, optional fallback) and the resolved `ReaderAd` chain in `types/content.ts`.
 - Actual page count comes from the loaded renderer; fixture metadata is not authoritative.
 - Upload covers separately from PDFs. Resolve Sanity references/crop/hotspot in the adapter.

@@ -5,7 +5,7 @@ Update this file whenever the current phase, active feature, or implementation s
 ## Current Phase
 
 - Feature 01 — iterative design and website structure: **active, first complete prototype implemented and in review.** Not approved; not complete.
-- Feature 02 — PDF reader and advertising: **units 1–5 implemented with fixtures; Part B owner revision applied (full-screen reader, page turn, edition page = reader, Čítať/Predplatiť under covers, primary blue), awaiting review.** Unit 6 (Sanity) not started. Not approved; not complete.
+- Feature 02 — PDF reader and advertising: **units 1–5 implemented with fixtures; Part B owner revision applied (full-screen reader, page turn, edition page = reader, Čítať/Predplatiť under covers, primary blue); Part C applied (reading modes, transparent top bar, hideable bottom bar), awaiting review.** Unit 6 (Sanity) not started. Not approved; not complete.
 
 ## Current Goal
 
@@ -25,6 +25,12 @@ Update this file whenever the current phase, active feature, or implementation s
 - **Pages (units 2–5):** `/casopisy`, both magazine landings, `/[magazine]/vydania`, edition detail with Vkladačky, `/[magazine]/edicny-plan` with year tabs, `/vzdelavanie` listing and article detail, styled `not-found`. Unknown and cross-magazine slugs return 404 (`dynamicParams = false`).
 - **Verification done:** `tsc`, `eslint`, `next build` (all routes static/SSG), Playwright checks at 1440px and 390px (no overflow, no broken images, 404s), hero interaction/video/reduced-motion checks.
 
+## Feature 02 — Part C revision (applied, awaiting review)
+
+- Top bar transparent (no background, no visible `Inzercia` label); spreads fitted below it, overview/continuous views scroll under it and under the bottom bar.
+- Three modes in the bar: Listovanie (book; pages are click targets — ring while the page renders, then continuous reading at that page; no text selection), Náhľad strán (fixed-size 282 px pages, 4/3/1 columns, spacing-only resize then brief shrink), Strany pod sebou (≈87 % width, no gaps, selectable text/links, arrow keys in small steps, zoom 50–200 %). Phone bar: single mode button with a menu, compact inserts button and page field.
+- Bottom bar hide tab (slides to a 4 px line). New pure modules `lib/pdf-reader/grid.ts`, `scroll.ts` (+ tests), views `GridView.tsx`, `ScrollView.tsx`.
+
 ## Feature 02 — Part B revision (applied, awaiting review)
 
 - Routes split into `app/(site)` (SiteChrome: navbar/footer) and `app/(reader)`; edition detail page removed with a redirect to the reader; `editionPath()` = reader.
@@ -34,7 +40,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 ## Feature 02 — Reader (implemented, awaiting review)
 
-- **Unit 1 — contracts/rules/fixtures:** `AdCreative`, `ReaderAdPlacement`, `ReaderAd` chain and `ReaderPageData` in `types/content.ts`; pure `lib/pdf-reader/navigation.ts` (pairing 1, 2–3, 4–5…, bounds, jumps, page input), `lib/pdf-reader/zoom.ts` (fit, zoom steps, density cap), `lib/advertising/resolve-reader-ad.ts`, `lib/url/safe-href.ts`; `getReaderAdPlacement` (provider) and `getReaderPageData` (facade); fixtures `data/mock/advertising.ts`, sample PDFs in `public/pdfs/` for PVK 4/2026, PVK 3/2026 (shared PVK ad) and SBD 2/2026; sample creatives in `public/images/ads/`. Legacy voc.sk PDF URLs removed. 40 unit tests (`npm test`).
+- **Unit 1 — contracts/rules/fixtures:** `AdCreative`, `ReaderAdPlacement`, `ReaderAd` chain and `ReaderPageData` in `types/content.ts`; pure `lib/pdf-reader/navigation.ts` (pairing 1, 2–3, 4–5…, bounds, jumps, page input), `lib/pdf-reader/zoom.ts` (fit, zoom steps, density cap), `lib/advertising/resolve-reader-ad.ts`, `lib/url/safe-href.ts`; `getReaderAdPlacement` (provider) and `getReaderPageData` (facade); fixtures `data/mock/advertising.ts`, PDFs in `public/pdfs/` (now the original issues PVK 1–4/2026 and SBD 1–2/2026; PVK editions share one ad); sample creatives in `public/images/ads/`. Legacy voc.sk PDF URLs removed. 40 unit tests (`npm test`).
 - **Unit 2 — engine:** PDF.js 6.3.289 used directly (legacy build), self-hosted worker/CMaps/fonts/decoders (`scripts/copy-pdfjs-assets.mjs`, immutable cache header), range loading with 8 KB chunks, prioritised render queue with cancellation, render-ahead of the next/previous view into a pixel-budgeted cache, text layer, safe link hotspots. Works in `next build`/`next start` and Turbopack `next dev`.
 - **Unit 3 — reader route:** `/[magazine]/citat/[edition]` (SSG, `dynamicParams = false`, noindex with the edition page canonical), spreads/single layout by stage width, whole-spread fit, zoom 100–250 %, sticky bottom controls, side arrows, keyboard, swipe, page input validation, loading/error/unsupported/cover-only states, retry.
 - **Unit 4 — banner:** magazine placement → paid → fallback → built-in house banner chain, browser image-error fallback with fixed slot geometry.
@@ -66,11 +72,11 @@ Update this file whenever the current phase, active feature, or implementation s
 - Replace fixture placeholders with owner-approved content: editorial-plan dates, vkladačky, education copy, partner roster, magazine copy.
 - Owner content for `/o-nas` (history, team, company details) and `/inzercia` (formats, price list) to replace links to the old website.
 - Unit 6: cross-page consistency pass, sitemap/robots once the production origin is known, homepage copy migration into `getHomePageContent`/`getSiteSettings`.
-- Feature 02: owner review of the reader; replace sample PDFs with real issues and re-measure; Safari/Firefox checks; then unit 6 (Sanity: PDF file uploads, placements/creatives, published reads, invalidation of all readers of a magazine on placement change).
+- Feature 02: owner review of the reader (Part C modes: grid breakpoints/sizes, reading width, ring feel, hide tab); re-measure with the original issues now in `public/pdfs/`; Safari/Firefox checks; then unit 6 (Sanity: PDF file uploads, placements/creatives, published reads, invalidation of all readers of a magazine on placement change).
 
 ## Open Questions
 
-- **Feature 02 reader (implemented, in review):** owner confirmed the magazine spread turn (2–3 → 4–5), no animation. Working choices to confirm: whole spread fits the screen at 100 %, side arrows plus bottom controls, banner 970×90 / 320×100, no download button. Real issues are still needed (voc.sk is blocked by this environment's network policy); the PDFs in `public/pdfs/` are generated samples with real covers.
+- **Feature 02 reader (implemented, in review):** owner confirmed the magazine spread turn (2–3 → 4–5), no animation. Working choices to confirm: whole spread fits the screen at 100 %, side arrows plus bottom controls, banner 970×90 / 320×100, no download button. The owner supplied the original 2026 issues (PVK 1–4, SBD 1–2), now used as fixtures; throttled measurements still need repeating with them. The PVK 4/2026 insert PDF is still a generated sample.
 - **Reader asset host:** production PDF URLs (Sanity file CDN or other) must support byte ranges and CORS for the site origin; verify, and check whether the host counts each range request against a request quota (~40–100 per reading session).
 - **Reading export:** confirm the publisher can supply web/screen exports (single pages, ~150–200 ppi images); print-resolution files are slow on mobile.
 

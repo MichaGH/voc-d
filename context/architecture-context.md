@@ -19,12 +19,12 @@ No Prisma/PostgreSQL, Clerk, Liveblocks, React Flow, Trigger.dev or Vercel Blob.
 ## System Boundaries
 
 - `app/` — public routes, metadata, layouts and server-side composition. `app/(site)/layout.tsx` wraps ordinary pages in `SiteChrome` (navbar/footer, also used by the root 404); `app/(reader)/[magazineSlug]/citat/[editionSlug]` is the full-screen edition page/reader without site chrome. Site routes: homepage, `casopisy`, `o-nas`, `inzercia`, `(magazines)/[magazineSlug]` (landing, `vydania`, `vydania/[editionSlug]`, `edicny-plan`), `vzdelavanie` and `vzdelavanie/[postSlug]`. Root layout renders the navbar/footer.
-- `components/layout/`, `components/homepage/`, `components/hero/`, `components/magazine/`, `components/education/`, `components/shared/` — presentation grouped by feature; `components/pdf-reader/` holds the reader (client) and its browser-only PDF session.
+- `components/layout/`, `components/homepage/`, `components/hero/`, `components/magazine/`, `components/education/`, `components/shared/` — presentation grouped by feature; `components/pdf-reader/` holds the reader (client: book spreads, `GridView` overview, `ScrollView` continuous reading) and its browser-only PDF session.
 - `data/` — presentational homepage/navigation arrays; `data/mock/` holds domain fixtures.
 - `types/content.ts` — provider-independent interfaces (implemented).
 - `lib/content/` — server-only read facade, provider contract, mock adapter and pure rules (implemented); Sanity adapter later. `lib/format/` — pure Slovak date/plural/text helpers.
-- `lib/advertising/` — pure reader-ad selection/fallback (`resolveReaderAd`). `lib/pdf-reader/` — pure page pairing, fit/zoom and render-density rules. `lib/url/` — destination validation for untrusted links (ads, PDF links). Pure modules have `*.test.ts` files run by `npm test` (Node test runner).
-- `public/` — current assets and local fixtures (`public/pdfs/` sample issues, `public/images/ads/` sample creatives); generated `public/pdfjs/` (git-ignored); never a runtime CMS upload directory.
+- `lib/advertising/` — pure reader-ad selection/fallback (`resolveReaderAd`). `lib/pdf-reader/` — pure page pairing, fit/zoom, render-density, overview-grid and continuous-reading layout rules. `lib/url/` — destination validation for untrusted links (ads, PDF links). Pure modules have `*.test.ts` files run by `npm test` (Node test runner).
+- `public/` — current assets and local fixtures (`public/pdfs/` the publisher's original 2026 issues, `public/images/ads/` sample creatives); generated `public/pdfjs/` (git-ignored); never a runtime CMS upload directory.
 - `scripts/` — build helpers (`copy-pdfjs-assets.mjs`, run by `predev`/`prebuild`).
 - `sanity/` — future schemas, queries, configuration and generated query types, added at final integration; Studio hosting/route chosen then.
 - `app/api/` — only justified integration handlers such as a verified publication webhook; Server Components normally read content directly.

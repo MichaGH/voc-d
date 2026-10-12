@@ -4,10 +4,10 @@ import type { ContentImage, Edition, MagazineKey, PdfAsset } from "@/types/conte
  * Edition fixtures limited to the covers actually supplied in public/images.
  * This is not a complete archive.
  *
- * FIXTURE PDFs: public/pdfs holds generated sample issues (real cover, sample
- * pages) standing in for Sanity file assets, because real issues cannot be
- * downloaded yet. Swap them for the publisher's reading exports; the Sanity
- * adapter will return the asset CDN URL in the same PdfAsset shape.
+ * PDFs: public/pdfs holds the publisher's original 2026 issues, standing in
+ * for Sanity file assets. The only generated sample left is the PVK 4/2026
+ * insert. The Sanity adapter will return the asset CDN URL in the same
+ * PdfAsset shape.
  */
 
 function cover(file: string, magazine: string, label: string): ContentImage {
@@ -50,11 +50,11 @@ function edition(
 }
 
 export const mockEditions: Edition[] = [
-  edition("pvk", 1, 2026),
-  edition("pvk", 2, 2026),
-  edition("pvk", 3, 2026, { pdf: localPdf("pvk-3-2026.pdf", 3_137_295, 28) }),
+  edition("pvk", 1, 2026, { pdf: localPdf("pvk-1-2026.pdf", 5_229_292, 44) }),
+  edition("pvk", 2, 2026, { pdf: localPdf("pvk-2-2026.pdf", 6_785_676, 44) }),
+  edition("pvk", 3, 2026, { pdf: localPdf("pvk-3-2026.pdf", 7_899_077, 44) }),
   edition("pvk", 4, 2026, {
-    pdf: localPdf("pvk-4-2026.pdf", 4_911_841, 36),
+    pdf: localPdf("pvk-4-2026.pdf", 6_754_793, 44),
     // FIXTURE: illustrative printed insert to exercise the vkladačky contract.
     // Replace with real insert records supplied by the publisher.
     inserts: [
@@ -71,6 +71,7 @@ export const mockEditions: Edition[] = [
   }),
   edition("sbd", 4, 2025),
   edition("sbd", 1, 2026, {
+    pdf: localPdf("sbd-1-2026.pdf", 4_987_188, 44),
     // FIXTURE: illustrative printed insert (several sheets, printed only).
     inserts: [
       {
@@ -83,6 +84,6 @@ export const mockEditions: Edition[] = [
     ],
   }),
   edition("sbd", 2, 2026, {
-    pdf: localPdf("sbd-2-2026.pdf", 2_791_457, 24),
+    pdf: localPdf("sbd-2-2026.pdf", 5_119_378, 52),
   }),
 ];

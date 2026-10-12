@@ -10,10 +10,13 @@ import {
   useSyncExternalStore,
   type PointerEvent,
 } from "react";
+import GridView from "@/components/pdf-reader/GridView";
 import PageTurn, { type PageTurnSpec } from "@/components/pdf-reader/PageTurn";
 import PdfPage, { COVER_SIZES } from "@/components/pdf-reader/PdfPage";
-import ReaderBar, { type ReaderIdentity } from "@/components/pdf-reader/ReaderBar";
+import ReaderBar, { HIDDEN_BAR_LINE, type ReaderIdentity, type ReaderNavigation } from "@/components/pdf-reader/ReaderBar";
+import ScrollView, { scrollBoxHeight } from "@/components/pdf-reader/ScrollView";
 import { PdfOpenError, PdfSession, type OpenErrorKind, type RenderRequest } from "@/components/pdf-reader/pdf-session";
+import { GRID_GAP, gridLayout, gridRow, gridRowPages, gridVisibleRows, type GridLayout } from "@/lib/pdf-reader/grid";
 import {
   JUMP_STEP,
   adjacentViews,
@@ -24,8 +27,10 @@ import {
   previousPage,
   viewForPage,
   viewLabel,
+  type ReaderMode,
 } from "@/lib/pdf-reader/navigation";
-import { canZoom, fitScale, renderScale, stepZoom, type PageSize } from "@/lib/pdf-reader/zoom";
+import { ARROW_SCROLL_STEP, SCROLL_ZOOM_LEVELS, pageAt, pageOffsets, scrollPageWidth, scrollSideMargin, visiblePages } from "@/lib/pdf-reader/scroll";
+import { ZOOM_LEVELS, canZoom, fitScale, needsRerender, renderScale, stepZoom, type PageSize } from "@/lib/pdf-reader/zoom";
 import type { ContentImage, EditionInsert, PdfAsset } from "@/types/content";
 import "./reader.css";
 
@@ -42,14 +47,17 @@ interface PdfReaderProps {
 }
 
 /**
- * Full-screen magazine reader: the stage fills everything between the banner
- * and the bottom bar. Owns which document is open — the issue or one of its
- * digital inserts — and remembers the issue page while an insert is open.
+ * Full-screen magazine reader below the transparent top bar (back link,
+ * banner, Predplatiť). Owns which document is open — the issue or one of its
+ * digital inserts — the view mode and whether the bottom bar is hidden, and
+ * remembers the issue page while an insert is open.
  */
 export default function PdfReader({ pdf, cover, identity, title, inserts, orderHref, subscribeHref }: PdfReaderProps) {
   const [insertKey, setInsertKey] = useState<string | null>(null);
   // The issue page to return to after viewing an insert.
   const [issuePage, setIssuePage] = useState(1);
+  const [mode, setMode] = useState<ReaderMode>("book");
+  const [barHidden, setBarHidden] = useState(false);
   const insert = inserts.find((item) => item.key === insertKey && item.digital);
   const barProps = {
     identity,
@@ -58,9 +66,10 @@ export default function PdfReader({ pdf, cover, identity, title, inserts, orderH
     viewingInsert: insert?.title,
     onCloseInsert: () => setInsertKey(null),
   };
+  const view = { mode, onModeChange: setMode, barHidden, onToggleBar: () => setBarHidden((value) => !value) };
 
   if (insert?.digital) {
-    return <ReaderDocument key={insert.digital.url} pdf={insert.digital} title={insert.title} initialPage={1} barProps={barProps} />;
+    return <ReaderDocument key={insert.digital.url} pdf={insert.digital} title={insert.title} initialPage={1} barProps={barProps} {...view} />;
   }
   if (!pdf) {
     return <CoverOnly cover={cover} title={title} orderHref={orderHref} subscribeHref={subscribeHref} barProps={barProps} />;
@@ -74,18 +83,32 @@ export default function PdfReader({ pdf, cover, identity, title, inserts, orderH
       initialPage={issuePage}
       onPageChange={setIssuePage}
       barProps={barProps}
+      {...view}
     />
   );
 }
 
-type BarProps = Omit<Parameters<typeof ReaderBar>[0], "navigation">;
+type BarProps = Omit<Parameters<typeof ReaderBar>[0], "navigation" | "modes" | "hidden" | "onToggleHidden">;
 
 type Status =
   | { kind: "loading" }
   | { kind: "ready"; session: PdfSession }
   | { kind: "error"; error: OpenErrorKind };
 
-/** Padding around the pages inside the stage. */
+/** Measured stage: the scroll box extends under the top bar and the bottom bar. */
+interface StageBox {
+  /** Scroll box client size (without scrollbars). */
+  width: number;
+  height: number;
+  /** Height of the top bar, which the stage runs beneath. */
+  top: number;
+  /** Area from the top bar to the bottom of the screen. */
+  below: number;
+  /** Bottom bar height when shown (including the safe-area inset). */
+  bar: number;
+}
+
+/** Padding around the pages inside the stage (spreads). */
 const STAGE_PADDING = 16;
 /** Room kept on each side of a spread for the side arrows. */
 const ARROW_GUTTER = 88;
@@ -93,6 +116,16 @@ const ARROW_GUTTER = 88;
 const ARROW_MAX_DISTANCE = 120;
 /** Delay before re-rendering at a new scale (zoom clicks, window resizing). */
 const SETTLE_MS = 140;
+/** Space between the top bar and the first page in continuous reading. */
+const SCROLL_TOP_GAP = 16;
+/** Bottom bar height before it is measured (h-16). */
+const BAR_HEIGHT = 64;
+/** A picked page keeps its ring at least this long, so the choice is seen… */
+const PICK_MIN_MS = 220;
+/** …and switches to reading after this long even if the page is still loading. */
+const PICK_TIMEOUT_MS = 10_000;
+/** Where the "current" page is read from, as a share of the visible height. */
+const CURRENT_LINE = 0.3;
 
 const noSubscribe = () => () => {};
 const zero = () => 0;
@@ -104,25 +137,43 @@ interface ReaderDocumentProps {
   initialPage: number;
   onPageChange?: (page: number) => void;
   barProps: BarProps;
+  mode: ReaderMode;
+  onModeChange: (mode: ReaderMode) => void;
+  barHidden: boolean;
+  onToggleBar: () => void;
 }
 
 /**
- * One open PDF: whole spreads on wide screens (1, 2–3, 4–5 …), single pages on
- * narrow ones; side arrows, keyboard, swipe and the bar's controls; a page
- * turn drawn from prepared bitmaps. Rendering, caching and cancellation live
- * in PdfSession; page turns and zoom never query content.
+ * One open PDF in three views:
+ * - book: whole spreads on wide screens (1, 2–3, 4–5 …), single pages on
+ *   narrow ones, page-turn animation, side arrows, swipe; clicking a page
+ *   rings it and opens it for reading once it is rendered;
+ * - grid: the page overview, pages open for reading the same way;
+ * - scroll: pages under each other at reading size, selectable text, links.
+ * Rendering, caching and cancellation live in PdfSession; nothing here
+ * queries content.
  */
-function ReaderDocument({ pdf, cover, title, initialPage, onPageChange, barProps }: ReaderDocumentProps) {
+function ReaderDocument({ pdf, cover, title, initialPage, onPageChange, barProps, mode, onModeChange, barHidden, onToggleBar }: ReaderDocumentProps) {
   const [attempt, setAttempt] = useState(0);
   const [status, setStatus] = useState<Status>({ kind: "loading" });
   const [focused, setFocused] = useState(initialPage);
-  const [zoom, setZoom] = useState(1);
-  const [stage, setStage] = useState<{ width: number; height: number } | null>(null);
-  const [renderCss, setRenderCss] = useState<number | null>(null);
+  const [bookZoom, setBookZoom] = useState(1);
+  const [scrollZoom, setScrollZoom] = useState(1);
+  const [stage, setStage] = useState<StageBox | null>(null);
+  const [settled, setSettled] = useState<{ mode: ReaderMode; css: number } | null>(null);
   const [turn, setTurn] = useState<PageTurnSpec | null>(null);
+  const [pick, setPick] = useState<number | null>(null);
+  // Pages intersecting the screen in the grid and scroll views.
+  const [visible, setVisible] = useState<{ first: number; last: number }>({ first: 1, last: 1 });
+  const sectionRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
   const bookRef = useRef<HTMLDivElement>(null);
   const pendingSlide = useRef<1 | -1 | null>(null);
+  // Where to scroll once a view is laid out (mode switches; reopening the issue after an insert).
+  const pendingScroll = useRef<{ mode: ReaderMode; page: number } | null>(mode === "book" ? null : { mode, page: initialPage });
+  const pickStarted = useRef(0);
+  const lastSwipe = useRef(0);
   const turnId = useRef(0);
 
   const session = status.kind === "ready" ? status.session : null;
@@ -155,88 +206,250 @@ function ReaderDocument({ pdf, cover, title, initialPage, onPageChange, barProps
     onPageChange?.(focused);
   }, [focused, onPageChange]);
 
-  /* The stage is a fixed box between banner and bar: measure it directly. */
+  /* Measure the stage, the top bar above it and the bottom bar over it. */
   useLayoutEffect(() => {
+    const section = sectionRef.current;
     const element = stageRef.current;
-    if (!element) return;
+    if (!section || !element) return;
     const measure = () => {
-      const width = element.clientWidth;
-      const height = element.clientHeight;
+      const next: StageBox = {
+        width: element.clientWidth,
+        height: element.clientHeight,
+        top: Math.max(0, Math.round(section.getBoundingClientRect().top)),
+        below: section.clientHeight,
+        bar: barRef.current?.offsetHeight ?? BAR_HEIGHT,
+      };
       setStage((previous) =>
-        previous && Math.abs(previous.width - width) < 1 && Math.abs(previous.height - height) < 1 ? previous : { width, height },
+        previous && (Object.keys(next) as (keyof StageBox)[]).every((key) => Math.abs(previous[key] - next[key]) < 1) ? previous : next,
       );
     };
     measure();
     const observer = new ResizeObserver(measure);
+    observer.observe(section);
     observer.observe(element);
+    if (barRef.current) observer.observe(barRef.current);
     return () => observer.disconnect();
   }, [status.kind]);
 
+  const topInset = stage?.top ?? 0;
+  const barInset = barHidden ? HIDDEN_BAR_LINE : (stage?.bar ?? BAR_HEIGHT);
+
+  /* Geometry of every view (cheap; all views share the same page sizes). */
   const layout = stage ? chooseLayout(stage.width) : "single";
   const reference: PageSize = session?.pageSize(1) ?? (cover ? { width: cover.width, height: cover.height } : { width: 595, height: 842 });
+  const sizeOf = (page: number) => session?.pageSize(page) ?? reference;
   const gutter = layout === "spread" ? ARROW_GUTTER : 0;
   const fit = stage
     ? fitScale({
         layout,
         stageWidth: stage.width - 2 * gutter - 2 * STAGE_PADDING,
-        stageHeight: stage.height - 2 * STAGE_PADDING,
+        stageHeight: stage.below - barInset - 2 * STAGE_PADDING,
         page: reference,
       })
     : 0;
-  const cssScale = fit * zoom;
+  const bookCss = fit * bookZoom;
+  const scrollCss = stage ? (scrollPageWidth(stage.width) * scrollZoom) / reference.width : 0;
+  const grid: GridLayout | null = stage ? gridLayout(stage.width, pageCount, reference) : null;
+  const gridCss = grid ? grid.pageWidth / reference.width : 0;
+  const cssScale = mode === "book" ? bookCss : mode === "grid" ? gridCss : scrollCss;
+
   const view = viewForPage(focused, pageCount, layout);
   const viewKey = view.join("-");
-  const sizeOf = (page: number) => session?.pageSize(page) ?? reference;
-  const bookWidth = view.reduce((sum, page) => sum + Math.round(sizeOf(page).width * cssScale), 0);
+  const bookWidth = view.reduce((sum, page) => sum + Math.round(sizeOf(page).width * bookCss), 0);
 
-  /* Re-render sharply only once zoom/size has settled; CSS stretches the old bitmap meanwhile. */
+  const scrollPadding = { top: topInset + SCROLL_TOP_GAP, bottom: barInset + SCROLL_TOP_GAP, side: stage ? scrollSideMargin(stage.width) : 0 };
+  const gridPadding = { top: topInset + GRID_GAP, bottom: barInset + GRID_GAP };
+  const offsets =
+    mode === "scroll" ? pageOffsets(Array.from({ length: pageCount }, (_, index) => scrollBoxHeight(sizeOf(index + 1), scrollCss))) : null;
+
+  /* Re-render sharply only once zoom/size has settled; CSS stretches the old bitmap meanwhile. A new mode settles at once. */
   useEffect(() => {
-    if (!cssScale) return;
-    const timer = window.setTimeout(() => setRenderCss(cssScale), renderCss === null ? 0 : SETTLE_MS);
+    if (!cssScale || (settled?.mode === mode && settled.css === cssScale)) return;
+    const immediate = settled === null || settled.mode !== mode;
+    const timer = window.setTimeout(() => setSettled({ mode, css: cssScale }), immediate ? 0 : SETTLE_MS);
     return () => window.clearTimeout(timer);
-  }, [cssScale, renderCss]);
+  }, [cssScale, mode, settled]);
+
+  /* Latest geometry for scroll handlers and imperative scrolling. */
+  const geometry = useRef({ mode, offsets, grid, gridPadding, scrollPadding, topInset, barInset, pageCount });
+  useLayoutEffect(() => {
+    geometry.current = { mode, offsets, grid, gridPadding, scrollPadding, topInset, barInset, pageCount };
+  });
+
+  /** Scroll position that puts a page (scroll) or its row (grid) right under the top bar. */
+  const scrollTargetFor = useCallback((page: number) => {
+    const { mode: current, offsets: tops, grid: overview } = geometry.current;
+    if (current === "scroll" && tops) return tops[clampPage(page, tops.length - 1) - 1];
+    if (current === "grid" && overview) return gridRow(page, overview.columns) * overview.rowStride;
+    return 0;
+  }, []);
+
+  // While a smooth scroll runs towards a page, that page stays current (bounded, in case it is interrupted).
+  const navTarget = useRef<{ page: number; top: number; until: number } | null>(null);
+  const scrollToPage = useCallback(
+    (page: number, smooth: boolean) => {
+      const element = stageRef.current;
+      if (!element) return;
+      const top = scrollTargetFor(page);
+      const animate = smooth && !prefersReducedMotion();
+      navTarget.current = animate ? { page, top, until: performance.now() + 900 } : null;
+      element.scrollTo({ top, behavior: animate ? "smooth" : "auto" });
+    },
+    [scrollTargetFor],
+  );
+
+  /** Which pages are on screen, and which one is current (grid: first page of the top row). */
+  const syncScroll = useCallback(() => {
+    const element = stageRef.current;
+    const g = geometry.current;
+    if (!element || g.mode === "book") return;
+    const top = element.scrollTop;
+    const height = element.clientHeight;
+    const readable = Math.max(1, height - g.topInset - g.barInset);
+    const atEnd = top >= element.scrollHeight - height - 2;
+    let range: { first: number; last: number };
+    let current: number;
+    if (g.mode === "scroll" && g.offsets) {
+      const local = top - g.scrollPadding.top;
+      range = visiblePages(g.offsets, local, local + height);
+      current = atEnd && top > 0 ? g.pageCount : pageAt(g.offsets, top - SCROLL_TOP_GAP + readable * CURRENT_LINE);
+    } else if (g.mode === "grid" && g.grid) {
+      const local = top - g.gridPadding.top;
+      const rows = gridVisibleRows(g.grid, local, local + height);
+      range = { first: rows.first * g.grid.columns + 1, last: Math.min(g.pageCount, (rows.last + 1) * g.grid.columns) };
+      const row = atEnd && top > 0 ? g.grid.rows - 1 : Math.min(g.grid.rows - 1, Math.round(top / g.grid.rowStride));
+      current = row * g.grid.columns + 1;
+    } else {
+      return;
+    }
+    setVisible((previous) => (previous.first === range.first && previous.last === range.last ? previous : range));
+    const target = navTarget.current;
+    if (target && Math.abs(top - target.top) > 2 && performance.now() < target.until) return;
+    navTarget.current = null;
+    setFocused(current);
+  }, []);
 
   /*
-   * Render plan: visible pages first, then the next view and the previous one
-   * (skipped with Data Saver). A layout effect, so it follows the pages' own
-   * canvas swaps within the same commit.
+   * After every commit: keep the reading position when the scale changes
+   * (zoom, resize, scrollbars appearing), apply a pending mode-entry scroll,
+   * then refresh what is on screen.
+   */
+  const anchor = useRef<{ mode: ReaderMode; scale: number } | null>(null);
+  useLayoutEffect(() => {
+    const element = stageRef.current;
+    if (!element || !stage) return;
+    const previous = anchor.current;
+    anchor.current = { mode, scale: cssScale };
+
+    const pending = pendingScroll.current;
+    // Grid and scroll positions depend on the real page count, known once the document is open.
+    if (pending && pending.mode === mode && (ready || mode === "book")) {
+      pendingScroll.current = null;
+      element.scrollTo({ top: scrollTargetFor(pending.page), left: 0 });
+      if (mode === "scroll") element.scrollLeft = (element.scrollWidth - element.clientWidth) / 2;
+    } else if (previous && previous.mode === mode && previous.scale !== cssScale && previous.scale > 0 && mode !== "grid") {
+      const ratio = cssScale / previous.scale;
+      const padTop = mode === "scroll" ? scrollPadding.top : topInset + STAGE_PADDING;
+      const padSide = mode === "scroll" ? scrollPadding.side : STAGE_PADDING;
+      const y = element.scrollTop + element.clientHeight / 2 - padTop;
+      const x = element.scrollLeft + element.clientWidth / 2 - padSide;
+      element.scrollTop = y * ratio + padTop - element.clientHeight / 2;
+      element.scrollLeft = x * ratio + padSide - element.clientWidth / 2;
+    }
+    syncScroll();
+  });
+
+  /* Columns changed (resize across a breakpoint): keep the current page's row at the top. */
+  const columns = grid?.columns ?? 0;
+  const previousColumns = useRef(columns);
+  useLayoutEffect(() => {
+    if (previousColumns.current === columns) return;
+    previousColumns.current = columns;
+    if (mode === "grid") stageRef.current?.scrollTo({ top: scrollTargetFor(focused) });
+    // Only the column count matters here; `focused` is read as of that change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [columns]);
+
+  /*
+   * Render plan: a page being opened for reading first, then the visible
+   * pages, then the next/previous ones (skipped with Data Saver). A layout
+   * effect, so it follows the pages' own canvas swaps within the same commit.
    */
   useLayoutEffect(() => {
-    if (!session || renderCss === null) return;
+    if (!session || !settled || settled.mode !== mode) return;
     const dpr = window.devicePixelRatio || 1;
-    const scaleFor = (page: number) =>
+    const scaleFor = (page: number, css: number) =>
       renderScale({
-        cssScale: renderCss,
+        cssScale: css,
         devicePixelRatio: dpr,
         page: session.pageSize(page) ?? session.pageSize(1)!,
         maxCanvasPixels: session.budget.maxCanvasPixels,
       });
-    const visible = viewKey.split("-").map(Number);
-    const requests: RenderRequest[] = visible.map((page) => ({ page, scale: scaleFor(page), visible: true }));
+
+    let shown: number[];
+    let ahead: number[];
+    if (mode === "book") {
+      shown = viewKey.split("-").map(Number);
+      const { next, previous } = adjacentViews(shown[0], session.pageCount, layout);
+      ahead = [...(next ?? []), ...(previous ?? [])];
+    } else if (mode === "scroll") {
+      shown = range(visible.first, visible.last);
+      ahead = [visible.last + 1, visible.first - 1];
+    } else {
+      shown = range(visible.first, visible.last);
+      ahead = columns > 0 ? gridRowPages(gridRow(visible.last, columns) + 1, columns, session.pageCount) : [];
+    }
+
+    const requests: RenderRequest[] = [];
+    if (pick !== null && scrollCss) requests.push({ page: pick, scale: scaleFor(pick, scrollCss), visible: true });
+    for (const page of shown) if (page !== pick) requests.push({ page, scale: scaleFor(page, settled.css), visible: true });
     if (!prefersReducedData()) {
-      const { next, previous } = adjacentViews(visible[0], session.pageCount, layout);
-      for (const page of [...(next ?? []), ...(previous ?? [])]) requests.push({ page, scale: scaleFor(page), visible: false });
+      for (const page of ahead) if (page !== pick) requests.push({ page, scale: scaleFor(page, settled.css), visible: false });
     }
     session.schedule(requests);
-  }, [session, renderCss, viewKey, layout]);
+  }, [session, settled, mode, viewKey, layout, visible, columns, pick, scrollCss]);
 
-  /* Keep the centre when zooming. */
-  const previousScale = useRef(cssScale);
+  /* A picked page opens for reading once it is rendered at reading size (or failed, or took too long). */
+  const enterReading = useRef<(page: number) => void>(() => {});
   useLayoutEffect(() => {
-    const element = stageRef.current;
-    const previous = previousScale.current;
-    previousScale.current = cssScale;
-    if (!element || !previous || previous === cssScale) return;
-    const ratio = cssScale / previous;
-    element.scrollLeft = (element.scrollLeft + element.clientWidth / 2) * ratio - element.clientWidth / 2;
-    element.scrollTop = (element.scrollTop + element.clientHeight / 2) * ratio - element.clientHeight / 2;
-  }, [cssScale]);
+    enterReading.current = (page: number) => {
+      setPick(null);
+      setTurn(null);
+      setFocused(page);
+      pendingScroll.current = { mode: "scroll", page };
+      onModeChange("scroll");
+    };
+  });
+  useEffect(() => {
+    if (pick === null || !session || !scrollCss) return;
+    const size = session.pageSize(pick) ?? session.pageSize(1)!;
+    const wanted = renderScale({
+      cssScale: scrollCss,
+      devicePixelRatio: window.devicePixelRatio || 1,
+      page: size,
+      maxCanvasPixels: session.budget.maxCanvasPixels,
+    });
+    const bitmap = session.bitmap(pick);
+    const done = session.pageError(pick) || (bitmap !== undefined && !needsRerender(bitmap.scale, wanted));
+    const elapsed = performance.now() - pickStarted.current;
+    const timer = window.setTimeout(() => enterReading.current(pick), Math.max(0, (done ? PICK_MIN_MS : PICK_TIMEOUT_MS) - elapsed));
+    return () => window.clearTimeout(timer);
+  }, [pick, session, version, scrollCss]);
 
-  /* After a turn: start at the top-left of the new view; play the slide for non-spread turns. */
+  const openForReading = useCallback((page: number) => {
+    // A swipe that ended on a page is a turn, not a click.
+    if (performance.now() - lastSwipe.current < 400) return;
+    pickStarted.current = performance.now();
+    setTurn(null);
+    setPick(page);
+  }, []);
+
+  /* Book: after a turn start at the top-left of the new view; play the slide for non-spread turns. */
   const previousView = useRef(viewKey);
   useLayoutEffect(() => {
     if (previousView.current === viewKey) return;
     previousView.current = viewKey;
+    if (mode !== "book") return;
     stageRef.current?.scrollTo({ left: 0, top: 0 });
     const direction = pendingSlide.current;
     pendingSlide.current = null;
@@ -249,18 +462,53 @@ function ReaderDocument({ pdf, cover, title, initialPage, onPageChange, barProps
         { duration: 280, easing: "cubic-bezier(.2,.7,.2,1)" },
       );
     }
-  }, [viewKey]);
+  }, [viewKey, mode]);
 
-  const next = nextPage(focused, pageCount, layout);
-  const previous = previousPage(focused, pageCount, layout);
+  const changeMode = (next: ReaderMode) => {
+    if (next === mode) return;
+    const page = mode === "book" ? view[0] : focused;
+    setPick(null);
+    setTurn(null);
+    setFocused(page);
+    pendingScroll.current = { mode: next, page };
+    onModeChange(next);
+  };
 
-  /** Next/previous with the page-turn animation when the target view is prepared. */
+  /* Navigation targets per view: spreads in the book, rows in the grid, pages when scrolling. */
+  const gridRowIndex = grid ? gridRow(focused, grid.columns) : 0;
+  const next =
+    mode === "book"
+      ? nextPage(focused, pageCount, layout)
+      : mode === "grid"
+        ? grid && gridRowIndex < grid.rows - 1
+          ? (gridRowIndex + 1) * grid.columns + 1
+          : null
+        : focused < pageCount
+          ? focused + 1
+          : null;
+  const previous =
+    mode === "book"
+      ? previousPage(focused, pageCount, layout)
+      : mode === "grid"
+        ? grid && gridRowIndex > 0
+          ? (gridRowIndex - 1) * grid.columns + 1
+          : null
+        : focused > 1
+          ? focused - 1
+          : null;
+
+  /** Book: next/previous with the page-turn animation when the target view is prepared. */
   const turnTo = (direction: 1 | -1) => {
     const target = direction === 1 ? next : previous;
     if (target === null) return;
+    if (mode !== "book") {
+      setFocused(target);
+      scrollToPage(target, true);
+      return;
+    }
     const to = viewForPage(target, pageCount, layout);
     let spec: PageTurnSpec | null = null;
-    if (session && zoom === 1 && !prefersReducedMotion()) {
+    if (session && bookZoom === 1 && !prefersReducedMotion()) {
       const fromBitmaps = view.map((page) => session.bitmap(page)?.canvas);
       const toBitmaps = to.map((page) => session.bitmap(page)?.canvas);
       if (layout === "spread" && view.length === 2 && to.length === 2 && [...fromBitmaps, ...toBitmaps].every(Boolean)) {
@@ -268,8 +516,8 @@ function ReaderDocument({ pdf, cover, title, initialPage, onPageChange, barProps
         spec = {
           id: ++turnId.current,
           direction,
-          pageWidth: Math.round(size.width * cssScale),
-          pageHeight: Math.round(size.height * cssScale),
+          pageWidth: Math.round(size.width * bookCss),
+          pageHeight: Math.round(size.height * bookCss),
           from: fromBitmaps as [HTMLCanvasElement, HTMLCanvasElement],
           to: toBitmaps as [HTMLCanvasElement, HTMLCanvasElement],
         };
@@ -284,32 +532,64 @@ function ReaderDocument({ pdf, cover, title, initialPage, onPageChange, barProps
 
   const goTo = useCallback(
     (page: number) => {
+      const target = clampPage(page, pageCount);
       setTurn(null);
-      setFocused(clampPage(page, pageCount));
+      setFocused(target);
+      if (mode !== "book") scrollToPage(target, false);
     },
-    [pageCount],
+    [pageCount, mode, scrollToPage],
   );
   const finishTurn = useCallback((id: number) => setTurn((current) => (current?.id === id ? null : current)), []);
 
-  /* Keyboard: the reader is the whole page. Never while typing; at a zoomed edge arrows scroll first. */
-  const turnRef = useRef(turnTo);
-  const goToRef = useRef(goTo);
+  const jump = (delta: number) => goTo(mode === "book" ? jumpPage(focused, pageCount, layout, delta) : focused + delta);
+
+  /*
+   * Keyboard: the reader is the whole page. Never while typing.
+   * Book: arrows turn (at a zoomed edge they scroll first).
+   * Grid/scroll: up/down scroll in small steps, left/right move by a page (row).
+   */
+  const keys = useRef({ turnTo, goTo, mode, pick });
   useLayoutEffect(() => {
-    turnRef.current = turnTo;
-    goToRef.current = goTo;
+    keys.current = { turnTo, goTo, mode, pick };
   });
   useEffect(() => {
     if (!ready) return;
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.defaultPrevented || event.altKey || event.ctrlKey || event.metaKey || isEditable(event.target)) return;
+      const { turnTo: turn, goTo: go, mode: current, pick: picking } = keys.current;
       const element = stageRef.current;
-      const forward = event.key === "ArrowRight" || event.key === "PageDown";
-      const backward = event.key === "ArrowLeft" || event.key === "PageUp";
-      if (event.key === "Home" || event.key === "End") {
-        event.preventDefault();
-        goToRef.current(event.key === "Home" ? 1 : Number.MAX_SAFE_INTEGER);
+      if (event.key === "Escape" && picking !== null) {
+        setPick(null);
         return;
       }
+      if (event.key === "Home" || event.key === "End") {
+        event.preventDefault();
+        go(event.key === "Home" ? 1 : Number.MAX_SAFE_INTEGER);
+        return;
+      }
+      const forward = event.key === "ArrowRight" || event.key === "PageDown";
+      const backward = event.key === "ArrowLeft" || event.key === "PageUp";
+
+      if (current !== "book" && element) {
+        const behavior: ScrollBehavior = prefersReducedMotion() ? "auto" : "smooth";
+        const { topInset: top, barInset: bottom } = geometry.current;
+        if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+          event.preventDefault();
+          element.scrollBy({ top: event.key === "ArrowDown" ? ARROW_SCROLL_STEP : -ARROW_SCROLL_STEP, behavior });
+        } else if (event.key === "PageDown" || event.key === "PageUp") {
+          event.preventDefault();
+          const step = Math.max(ARROW_SCROLL_STEP, (element.clientHeight - top - bottom) * 0.9);
+          element.scrollBy({ top: event.key === "PageDown" ? step : -step, behavior });
+        } else if (forward || backward) {
+          event.preventDefault();
+          const max = element.scrollWidth - element.clientWidth;
+          const canScroll = forward ? element.scrollLeft < max - 1 : element.scrollLeft > 1;
+          if (max > 1 && canScroll) element.scrollBy({ left: forward ? ARROW_SCROLL_STEP : -ARROW_SCROLL_STEP, behavior });
+          else turn(forward ? 1 : -1);
+        }
+        return;
+      }
+
       if (!forward && !backward) return;
       if (element && event.key.startsWith("Arrow")) {
         const max = element.scrollWidth - element.clientWidth;
@@ -317,16 +597,16 @@ function ReaderDocument({ pdf, cover, title, initialPage, onPageChange, barProps
         if (max > 1 && canScroll) return;
       }
       event.preventDefault();
-      turnRef.current(forward ? 1 : -1);
+      turn(forward ? 1 : -1);
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [ready]);
 
-  /* Horizontal swipe on touch screens, only when nothing is zoomed or selected. */
+  /* Book: horizontal swipe on touch screens, only when nothing is zoomed or selected. */
   const swipe = useRef<{ x: number; y: number; time: number } | null>(null);
   const onPointerDown = (event: PointerEvent) => {
-    swipe.current = event.pointerType === "touch" && event.isPrimary ? { x: event.clientX, y: event.clientY, time: event.timeStamp } : null;
+    swipe.current = mode === "book" && event.pointerType === "touch" && event.isPrimary ? { x: event.clientX, y: event.clientY, time: event.timeStamp } : null;
   };
   const onPointerUp = (event: PointerEvent) => {
     const start = swipe.current;
@@ -339,32 +619,50 @@ function ReaderDocument({ pdf, cover, title, initialPage, onPageChange, barProps
     const zoomed = element.scrollWidth > element.clientWidth + 1;
     const selecting = Boolean(window.getSelection()?.toString());
     if (pinched || zoomed || selecting || Math.abs(dx) < 56 || Math.abs(dx) < Math.abs(dy) * 1.5 || event.timeStamp - start.time > 700) return;
+    lastSwipe.current = performance.now();
     turnTo(dx < 0 ? 1 : -1);
   };
 
-  const navigation = {
+  const zoomLevels = mode === "scroll" ? SCROLL_ZOOM_LEVELS : ZOOM_LEVELS;
+  const zoomValue = mode === "scroll" ? scrollZoom : bookZoom;
+  const setZoom = mode === "scroll" ? setScrollZoom : setBookZoom;
+  const navigation: ReaderNavigation = {
     ready,
-    current: view.length === 2 ? `${view[0]}–${view[1]}` : String(view[0]),
+    current: mode === "book" ? (view.length === 2 ? `${view[0]}–${view[1]}` : String(view[0])) : String(focused),
     pageCount,
     canPrevious: previous !== null,
     canNext: next !== null,
-    onFirstJump: () => goTo(jumpPage(focused, pageCount, layout, -JUMP_STEP)),
+    onFirstJump: () => jump(-JUMP_STEP),
     onPrevious: () => turnTo(-1),
     onNext: () => turnTo(1),
-    onLastJump: () => goTo(jumpPage(focused, pageCount, layout, JUMP_STEP)),
+    onLastJump: () => jump(JUMP_STEP),
     onGoTo: goTo,
-    zoom,
-    canZoomIn: canZoom(zoom, 1),
-    canZoomOut: canZoom(zoom, -1),
-    onZoomIn: () => {
-      setTurn(null);
-      setZoom((value) => stepZoom(value, 1));
-    },
-    onZoomOut: () => {
-      setTurn(null);
-      setZoom((value) => stepZoom(value, -1));
-    },
+    zoom:
+      mode === "grid"
+        ? undefined
+        : {
+            value: zoomValue,
+            canZoomIn: canZoom(zoomValue, 1, zoomLevels),
+            canZoomOut: canZoom(zoomValue, -1, zoomLevels),
+            onZoomIn: () => {
+              setTurn(null);
+              setZoom((value) => stepZoom(value, 1, zoomLevels));
+            },
+            onZoomOut: () => {
+              setTurn(null);
+              setZoom((value) => stepZoom(value, -1, zoomLevels));
+            },
+          },
   };
+  const bar = (
+    <ReaderBar
+      {...barProps}
+      navigation={navigation}
+      modes={{ mode, onChange: changeMode }}
+      hidden={barHidden}
+      onToggleHidden={onToggleBar}
+    />
+  );
 
   if (status.kind === "error") {
     return (
@@ -378,24 +676,51 @@ function ReaderDocument({ pdf, cover, title, initialPage, onPageChange, barProps
     );
   }
 
-  // Side arrows: just outside the pages, drifting towards the screen edges on wide screens.
+  // Book side arrows: just outside the pages, drifting towards the screen edges on wide screens.
   const arrowSize = layout === "spread" ? 56 : 44;
   const contentLeft = stage ? Math.max(STAGE_PADDING, (stage.width - bookWidth) / 2) : 0;
   const arrowOffset = Math.max(10, contentLeft - arrowSize - Math.min(ARROW_MAX_DISTANCE, Math.max(0, contentLeft - arrowSize - 10)));
+  const arrowCenter = stage ? (stage.below - barInset) / 2 : 0;
+  const mounted = { first: Math.max(1, visible.first - 1), last: Math.min(pageCount, visible.last + 1) };
+  const gridMounted = grid
+    ? {
+        first: Math.max(1, visible.first - grid.columns),
+        last: Math.min(pageCount, visible.last + grid.columns),
+      }
+    : mounted;
 
   return (
-    <>
-      <section aria-label={`Čítačka: ${title}`} className="relative flex min-h-0 flex-1 flex-col">
-        <div
-          ref={stageRef}
-          tabIndex={0}
-          aria-label="Strany časopisu – listujte šípkami doľava a doprava"
-          onPointerDown={onPointerDown}
-          onPointerUp={onPointerUp}
-          onPointerCancel={() => (swipe.current = null)}
-          className={`relative min-h-0 flex-1 overflow-auto outline-offset-[-3px] [overscroll-behavior:contain] ${zoom === 1 ? "touch-pan-y" : ""}`}
-        >
-          <div className="flex min-h-full w-max min-w-full items-center justify-center" style={{ padding: STAGE_PADDING }}>
+    <section ref={sectionRef} aria-label={`Čítačka: ${title}`} className="relative min-h-0 flex-1">
+      <div
+        ref={stageRef}
+        tabIndex={0}
+        aria-label={
+          mode === "book"
+            ? "Strany časopisu – listujte šípkami doľava a doprava, stranu otvoríte kliknutím"
+            : mode === "grid"
+              ? "Náhľad strán – stranu otvoríte kliknutím"
+              : "Strany pod sebou – posúvajte šípkami hore a dole"
+        }
+        onScroll={mode === "book" ? undefined : syncScroll}
+        onPointerDown={onPointerDown}
+        onPointerUp={onPointerUp}
+        onPointerCancel={() => (swipe.current = null)}
+        className={`absolute inset-x-0 bottom-0 overflow-auto outline-offset-[-3px] [overscroll-behavior:contain] ${mode === "book" && bookZoom === 1 ? "touch-pan-y" : ""}`}
+        style={{ top: -topInset }}
+      >
+        {mode === "book" || !stage ? (
+          <div
+            className={
+              stage
+                ? "flex min-h-full w-max min-w-full items-center justify-center"
+                : "flex h-full items-center justify-center p-4 pb-[calc(80px+env(safe-area-inset-bottom))]"
+            }
+            style={
+              stage
+                ? { paddingTop: topInset + STAGE_PADDING, paddingBottom: barInset + STAGE_PADDING, paddingLeft: STAGE_PADDING, paddingRight: STAGE_PADDING }
+                : undefined
+            }
+          >
             {stage ? (
               <div ref={bookRef} className="relative flex shadow-[0_24px_60px_-28px_rgba(4,23,58,.45)]">
                 {view.map((page, index) => (
@@ -404,8 +729,11 @@ function ReaderDocument({ pdf, cover, title, initialPage, onPageChange, barProps
                     session={session}
                     page={page}
                     size={sizeOf(page)}
-                    cssScale={cssScale}
+                    cssScale={bookCss}
                     side={view.length === 2 ? (index === 0 ? "left" : "right") : "single"}
+                    interaction="pick"
+                    picked={pick === page}
+                    onPick={openForReading}
                     cover={page === 1 ? cover : undefined}
                     version={version}
                     onNavigate={goTo}
@@ -417,32 +745,71 @@ function ReaderDocument({ pdf, cover, title, initialPage, onPageChange, barProps
               cover && <CoverSkeleton cover={cover} />
             )}
           </div>
-        </div>
-
-        {!ready && (
-          <p className="reader-delayed pointer-events-none absolute inset-x-0 bottom-6 mx-auto w-fit rounded-full bg-[var(--color-navy)] px-5 py-2.5 text-[15px] font-semibold text-white shadow-lg">
-            Načítavam časopis…
-          </p>
+        ) : mode === "grid" && grid ? (
+          <GridView
+            session={session}
+            version={version}
+            pageCount={pageCount}
+            grid={grid}
+            cssScale={gridCss}
+            sizeOf={sizeOf}
+            mounted={gridMounted}
+            padding={gridPadding}
+            cover={cover}
+            picked={pick}
+            onPick={openForReading}
+            onNavigate={goTo}
+          />
+        ) : (
+          <ScrollView
+            session={session}
+            version={version}
+            pageCount={pageCount}
+            cssScale={scrollCss}
+            sizeOf={sizeOf}
+            mounted={mounted}
+            padding={scrollPadding}
+            cover={cover}
+            onNavigate={goTo}
+          />
         )}
+      </div>
 
-        {ready && stage && (
-          <>
-            <SideArrow direction="previous" hidden={previous === null} offset={arrowOffset} size={arrowSize} onClick={() => turnTo(-1)} />
-            <SideArrow direction="next" hidden={next === null} offset={arrowOffset} size={arrowSize} onClick={() => turnTo(1)} />
-          </>
-        )}
-
-        <p className="sr-only" aria-live="polite" aria-atomic="true">
-          {ready ? viewLabel(view, pageCount) : ""}
+      {!ready && (
+        <p
+          className="reader-delayed pointer-events-none absolute inset-x-0 mx-auto w-fit rounded-full bg-[var(--color-navy)] px-5 py-2.5 text-[15px] font-semibold text-white shadow-lg"
+          style={{ bottom: barInset + 24 }}
+        >
+          Načítavam časopis…
         </p>
-      </section>
-      <ReaderBar {...barProps} navigation={navigation} />
-    </>
+      )}
+
+      {ready && stage && mode === "book" && (
+        <>
+          <SideArrow direction="previous" hidden={previous === null} offset={arrowOffset} center={arrowCenter} size={arrowSize} onClick={() => turnTo(-1)} />
+          <SideArrow direction="next" hidden={next === null} offset={arrowOffset} center={arrowCenter} size={arrowSize} onClick={() => turnTo(1)} />
+        </>
+      )}
+
+      <p className="sr-only" aria-live="polite" aria-atomic="true">
+        {!ready ? "" : mode === "book" ? viewLabel(view, pageCount) : mode === "scroll" ? `Strana ${focused} z ${pageCount}` : ""}
+      </p>
+
+      <div ref={barRef} className="absolute inset-x-0 bottom-0 z-30">
+        {bar}
+      </div>
+    </section>
   );
 }
 
+function range(first: number, last: number) {
+  const pages: number[] = [];
+  for (let page = first; page <= last; page++) pages.push(page);
+  return pages;
+}
+
 /** Light translucent squares at the sides; pointer/touch convenience duplicating the bar's labelled controls. */
-function SideArrow({ direction, hidden, offset, size, onClick }: { direction: "previous" | "next"; hidden: boolean; offset: number; size: number; onClick: () => void }) {
+function SideArrow({ direction, hidden, offset, center, size, onClick }: { direction: "previous" | "next"; hidden: boolean; offset: number; center: number; size: number; onClick: () => void }) {
   if (hidden) return null;
   return (
     <button
@@ -450,8 +817,8 @@ function SideArrow({ direction, hidden, offset, size, onClick }: { direction: "p
       tabIndex={-1}
       aria-hidden="true"
       onClick={onClick}
-      className="absolute top-1/2 z-20 grid -translate-y-1/2 place-items-center rounded-[14px] bg-[rgba(15,30,60,.16)] text-white/95 backdrop-blur-[2px] transition-colors hover:bg-[rgba(15,30,60,.32)] active:bg-[rgba(15,30,60,.42)]"
-      style={{ width: size, height: size * 1.25, [direction === "previous" ? "left" : "right"]: offset }}
+      className="absolute z-20 grid -translate-y-1/2 place-items-center rounded-[14px] bg-[rgba(15,30,60,.16)] text-white/95 backdrop-blur-[2px] transition-colors hover:bg-[rgba(15,30,60,.32)] active:bg-[rgba(15,30,60,.42)]"
+      style={{ width: size, height: size * 1.25, top: center, [direction === "previous" ? "left" : "right"]: offset }}
     >
       <svg width={size * 0.5} height={size * 0.5} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true" className="drop-shadow-[0_1px_2px_rgba(4,23,58,.35)]">
         <path d={direction === "previous" ? "m15 5-7 7 7 7" : "m9 5 7 7-7 7"} />
@@ -460,11 +827,11 @@ function SideArrow({ direction, hidden, offset, size, onClick }: { direction: "p
   );
 }
 
-/** Server-rendered placeholder before the stage is measured: the cover, contained. */
+/** Server-rendered placeholder before the stage is measured: the cover, contained where page 1 will appear. */
 function CoverSkeleton({ cover }: { cover: ContentImage }) {
   return (
-    <div className="relative aspect-[595/842] h-[calc(100%-1px)] max-h-full max-w-full bg-white shadow-[0_24px_60px_-28px_rgba(4,23,58,.45)]">
-      <Image src={cover.src} alt="" fill sizes={COVER_SIZES} className="object-fill" loading="eager" />
+    <div className="relative h-full w-full">
+      <Image src={cover.src} alt="" fill sizes={COVER_SIZES} className="object-contain drop-shadow-[0_18px_30px_rgba(4,23,58,.22)]" loading="eager" />
     </div>
   );
 }

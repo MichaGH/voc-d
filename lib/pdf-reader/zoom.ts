@@ -23,13 +23,14 @@ export interface PageSize {
   height: number;
 }
 
-export function stepZoom(zoom: number, direction: 1 | -1): number {
-  if (direction === 1) return ZOOM_LEVELS.find((level) => level > zoom + 1e-6) ?? MAX_ZOOM;
-  return [...ZOOM_LEVELS].reverse().find((level) => level < zoom - 1e-6) ?? MIN_ZOOM;
+/** Next zoom level in a direction; `levels` ascending (the spread levels by default). */
+export function stepZoom(zoom: number, direction: 1 | -1, levels: readonly number[] = ZOOM_LEVELS): number {
+  if (direction === 1) return levels.find((level) => level > zoom + 1e-6) ?? levels[levels.length - 1];
+  return [...levels].reverse().find((level) => level < zoom - 1e-6) ?? levels[0];
 }
 
-export function canZoom(zoom: number, direction: 1 | -1) {
-  return direction === 1 ? zoom < MAX_ZOOM - 1e-6 : zoom > MIN_ZOOM + 1e-6;
+export function canZoom(zoom: number, direction: 1 | -1, levels: readonly number[] = ZOOM_LEVELS) {
+  return direction === 1 ? zoom < levels[levels.length - 1] - 1e-6 : zoom > levels[0] + 1e-6;
 }
 
 export function formatZoom(zoom: number) {

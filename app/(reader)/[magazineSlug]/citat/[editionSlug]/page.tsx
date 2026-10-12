@@ -37,7 +37,11 @@ export async function generateMetadata({ params }: PageProps<"/[magazineSlug]/ci
   };
 }
 
-/** The edition page: the magazine opened full screen, without the site navigation. */
+/**
+ * The edition page: the magazine opened full screen, without the site
+ * navigation. The top bar has no background of its own: the reader starts
+ * below it, and the overview/continuous views scroll underneath it.
+ */
 export default async function EditionReaderPage({ params }: PageProps<"/[magazineSlug]/citat/[editionSlug]">) {
   const data = await getReaderPageData(await params);
   if (!data) notFound();
@@ -45,13 +49,13 @@ export default async function EditionReaderPage({ params }: PageProps<"/[magazin
   const title = `${magazine.title} ${edition.label}`;
 
   return (
-    <main id="obsah" className="flex h-[100dvh] flex-col overflow-hidden bg-white">
+    <main id="obsah" className="relative flex h-[100dvh] flex-col overflow-hidden bg-white">
       <h1 className="sr-only">{title}</h1>
-      <div className="shrink-0 px-3 pt-3 sm:px-5 xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(0,970px)_minmax(0,1fr)] xl:items-center xl:gap-6">
+      <div className="pointer-events-none relative z-30 shrink-0 px-3 pt-3 sm:px-5 xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(0,970px)_minmax(0,1fr)] xl:items-center xl:gap-6">
         <div className="flex items-center justify-between gap-3 xl:contents">
           <Link
             href={editionsPath(magazine.key)}
-            className="inline-flex h-10 items-center gap-2 rounded-[10px] pr-3 pl-2 text-[15px] font-semibold text-[var(--color-navy)] no-underline transition-colors hover:bg-[var(--color-surface)] hover:text-[var(--color-primary)] xl:order-1 xl:justify-self-start"
+            className="pointer-events-auto inline-flex h-10 items-center gap-2 rounded-[10px] bg-white/80 pr-3 pl-2 text-[15px] font-semibold text-[var(--color-navy)] no-underline backdrop-blur-sm transition-colors hover:bg-[var(--color-surface)] hover:text-[var(--color-primary)] xl:order-1 xl:justify-self-start"
           >
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
               <path d="M19 12H5M11 18l-6-6 6-6" />
@@ -60,12 +64,12 @@ export default async function EditionReaderPage({ params }: PageProps<"/[magazin
           </Link>
           <Link
             href={subscriptionPath(magazine.key)}
-            className="inline-flex h-10 items-center rounded-[10px] bg-[var(--color-primary)] px-4 text-[15px] font-semibold text-white no-underline transition-colors hover:bg-[var(--color-navy)] hover:text-white xl:order-3 xl:justify-self-end"
+            className="pointer-events-auto inline-flex h-10 items-center rounded-[10px] bg-[var(--color-primary)] px-4 text-[15px] font-semibold text-white no-underline transition-colors hover:bg-[var(--color-navy)] hover:text-white xl:order-3 xl:justify-self-end"
           >
             Predplatiť<span className="sr-only"> {magazine.title}</span>
           </Link>
         </div>
-        <div className="mt-2 xl:order-2 xl:mt-0">
+        <div className="pointer-events-auto mt-2 xl:order-2 xl:mt-0">
           <ReaderAdBanner ad={ad} magazineTitle={magazine.title} />
         </div>
       </div>

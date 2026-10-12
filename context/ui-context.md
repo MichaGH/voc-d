@@ -104,7 +104,7 @@ Plans have an explicit year selector and clearly labeled issue, publication/dist
 
 - Primary brand surface is `--color-primary` (#0a3fb5): navbar (solid state), mobile menu, stats band, subscribe/plan bands, next-issue card, primary buttons, switchers, reader bar. Navy stays for text and photo/video overlays.
 - Covers everywhere carry two cover-width rectangular buttons (10px radius): `Čítať` (primary) / `Objednať` for print-only, and `Predplatiť` (outlined). Hero/landing CTAs are 12px-radius rectangles.
-- The reader is described in feature 02 Part B (full screen, no navbar, blue bottom bar, side arrows, page turn, inserts panel). The paragraph below describes the superseded Part A layout.
+- The reader is described in feature 02 Part B (full screen, no navbar, blue bottom bar, side arrows, page turn, inserts panel) and Part C (transparent top bar without a visible `Inzercia` label, three reading modes — Listovanie / Náhľad strán / Strany pod sebou — click-a-page-to-read with a selection ring, hideable bottom bar with a small tab). The paragraph below describes the superseded Part A layout.
 
 ## PDF Reader (Part A, superseded by Part B)
 

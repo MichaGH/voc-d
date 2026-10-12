@@ -28,9 +28,6 @@ export default function ReaderAdBanner({ ad, magazineTitle }: ReaderAdBannerProp
 
   return (
     <aside aria-label="Inzercia" className="w-full">
-      <p className="mx-auto mb-1.5 max-w-[970px] text-[12px] leading-none font-semibold tracking-[.08em] text-[var(--color-steel)] uppercase">
-        Inzercia
-      </p>
       <div className={slot}>
         {creative ? <Creative key={index} creative={creative} onFail={fail} /> : <HouseBanner magazineTitle={magazineTitle} />}
       </div>

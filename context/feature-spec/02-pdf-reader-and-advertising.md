@@ -301,7 +301,7 @@ Implemented with fixtures; awaiting owner review. Verified with `npm test` (40 u
 
 ### Fixtures
 
-`public/pdfs/` holds generated sample issues (real cover, sample Slovak pages, a photo across the 4–5 fold, linked contents page, ads with links, 6–7 pt captions and vector charts): PVK 4/2026 (36 p, 4.9 MB) and PVK 3/2026 (28 p, 3.1 MB) share the PVK placement, SBD 2/2026 (24 p, 2.8 MB) has its own. Real issues could not be downloaded (voc.sk is blocked by this environment's network policy) and must replace them. QA files (1, 2, 6, 7 pages; 96-page 102 MB print-style file, plain and linearized; password-protected; truncated) were used through request interception and are not committed.
+**Update (owner supplied originals):** `public/pdfs/` now holds the publisher's original issues — PVK 1–4/2026 (44 p each, 5.2–7.9 MB, sharing the PVK placement) and SBD 1/2026 (44 p, 5.0 MB) and 2/2026 (52 p, 5.1 MB) with the SBD placement; all A4 (595×842). SBD 4/2025 stays print-only (cover-only fixture). Only the PVK 4/2026 insert (`pvk-4-2026-pozvanka.pdf`) is still a generated sample. The measurements below were taken with the earlier generated samples (PVK 4/2026 36 p 4.9 MB, PVK 3/2026 28 p 3.1 MB, SBD 2/2026 24 p 2.8 MB) and must be repeated with the originals. QA files (1, 2, 6, 7 pages; 96-page 102 MB print-style file, plain and linearized; password-protected; truncated) were used through request interception and are not committed.
 
 ### Measurements (Chromium, `next start`, CDP throttling)
 
@@ -334,3 +334,23 @@ After reviewing Part A the owner asked for a reading-first product. Implemented 
 - **Vkladačky inside the reader.** Bar button `Súčasťou čísla (n)` opens a panel listing the issue's inserts; an insert with a digital PDF opens in the same reader (`← Späť na časopis` returns to the remembered issue page).
 - **Primary colour.** `--color-primary` (#0a3fb5, the contact-panel blue) replaces the navy gradients on navbar, bands, plan/next-issue cards, primary buttons, switchers and the reader bar; navy remains for text and photo/video overlays.
 - Verified with 41 unit tests and 22 Playwright checks (desktop/mobile layout, turn overlay, reduced motion, ±10 jumps, input, keyboard, zoom without requests, inserts, print-only state, redirects, no reader code on other pages, failure states, 1/2/6/7-page files).
+
+## Part C — Reading modes and reader chrome (owner revision 2, awaiting review)
+
+Owner feedback on Part B: the reader is right; refine the chrome and add reading modes inspired by the iflip reference (its `listovanie`, `náhľad strán` and `strany pod sebou` modes). Supersedes Part A/B where they conflict; "thumbnail panel" is no longer excluded — the page overview is a requested mode.
+
+**Top bar.** No background of its own and no visible `Inzercia` label (the ad keeps `aria-label="Inzercia"`). The reader never starts under it: spreads are fitted below it, and the overview/continuous views start below it and scroll underneath it. The `Všetky vydania` link has a small translucent white backing so it stays legible over pages. The bottom bar likewise overlays the overview/continuous views (content scrolls beneath it).
+
+**Three modes** (bar buttons with icons; on phones one button opening a small menu). The current page is kept when switching.
+
+| Mode | Icon | Behaviour |
+| --- | --- | --- |
+| Listovanie (book, default) | open book | Part B spreads/turns/side arrows/swipe/zoom. Text is **not** selectable and links are inactive here: each page is one button. Clicking a page draws a ring around it (gently pulsing) that stays while that page renders at reading size, then switches to continuous reading opened at the top of that page. |
+| Náhľad strán (grid) | 2×2 squares | Pages at a fixed 282 px width. Equal columns with each page centred, so resizing changes only the space between columns; once that space equals the 30 px row gap, pages shrink briefly until the next breakpoint drops a column. 4 columns from a 1200 px stage, 3 from 768 px, 1 column of the same small pages below. At 1920×1080 two rows show under the banner, the bar covering part of the second. Clicking a page opens it for reading exactly as in the book. ‹ › move by a row. |
+| Strany pod sebou (scroll) | page with folded corner | Pages directly under each other (no gap), ~87 % of the stage width on desktop (≈1660 px at 1920, about a third of a page visible), 8 px margins below 768 px, capped at 1800 px. Selectable text and working links. ↑/↓ scroll in small 64 px steps, PageUp/PageDown by a screen, ←/→ and ‹ › go to the previous/next page top, Home/End to the ends. Zoom 50–200 %. |
+
+**Hideable bottom bar.** A small tab (52×22 px, rounded top corners, chevron) sits above the bar's left end. It slides the bar down to a 4 px line, leaving only the tab (chevron flips); the hidden controls are `inert`. Spreads grow into the freed space.
+
+**Implementation.** Pure rules in `lib/pdf-reader/grid.ts` (columns, page box, rows) and `lib/pdf-reader/scroll.ts` (reading width, page offsets, current/visible pages), tested in `layout-modes.test.ts`. `GridView`/`ScrollView` render live pages only near the screen (other pages are same-size empty boxes); the existing session renders visible pages first and the next row/page ahead, within the same pixel budget. `PdfPage` has `interaction: "read" | "pick"`. Mode and bar visibility live in `PdfReader`, so they persist across inserts; reopening the issue after an insert restores its page in every mode.
+
+Verified: 50 unit tests, `tsc`, `eslint`, `next build`; in-browser checks at 1920×960, 1210×900 and 375×812 (grid geometry identical to the reference at 1920, breakpoints, pick → reading position, ring timing, hide/show, zoom keeps the page, insert round trip, print-only state). Smooth-scroll keys need a manual check in a visible browser window.
