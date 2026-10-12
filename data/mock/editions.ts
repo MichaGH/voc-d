@@ -1,9 +1,13 @@
-import type { ContentImage, Edition, MagazineKey } from "@/types/content";
+import type { ContentImage, Edition, MagazineKey, PdfAsset } from "@/types/content";
 
 /**
  * Edition fixtures limited to the covers actually supplied in public/images.
- * Only the two PDFs already linked from the current website are referenced.
  * This is not a complete archive.
+ *
+ * FIXTURE PDFs: public/pdfs holds generated sample issues (real cover, sample
+ * pages) standing in for Sanity file assets, because real issues cannot be
+ * downloaded yet. Swap them for the publisher's reading exports; the Sanity
+ * adapter will return the asset CDN URL in the same PdfAsset shape.
  */
 
 function cover(file: string, magazine: string, label: string): ContentImage {
@@ -13,6 +17,11 @@ function cover(file: string, magazine: string, label: string): ContentImage {
     width: 595,
     height: 842,
   };
+}
+
+/** Local stand-in for an uploaded PDF file asset. */
+function localPdf(filename: string, byteSize: number, pageCount: number): PdfAsset {
+  return { url: `/pdfs/${filename}`, filename, byteSize, pageCount };
 }
 
 const PVK = "Plynár – Vodár – Kúrenár + Klimatizácia";
@@ -43,9 +52,9 @@ function edition(
 export const mockEditions: Edition[] = [
   edition("pvk", 1, 2026),
   edition("pvk", 2, 2026),
-  edition("pvk", 3, 2026),
+  edition("pvk", 3, 2026, { pdf: localPdf("pvk-3-2026.pdf", 3_137_295, 28) }),
   edition("pvk", 4, 2026, {
-    pdf: { url: "https://voc.sk/wp-content/uploads/PVK4_2026.pdf", filename: "PVK4_2026.pdf" },
+    pdf: localPdf("pvk-4-2026.pdf", 4_911_841, 36),
     // FIXTURE: illustrative printed insert to exercise the vkladačky contract.
     // Replace with real insert records supplied by the publisher.
     inserts: [
@@ -72,6 +81,6 @@ export const mockEditions: Edition[] = [
     ],
   }),
   edition("sbd", 2, 2026, {
-    pdf: { url: "https://voc.sk/wp-content/uploads/SBD2_2026.pdf", filename: "SBD2_2026.pdf" },
+    pdf: localPdf("sbd-2-2026.pdf", 2_791_457, 24),
   }),
 ];

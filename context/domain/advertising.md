@@ -30,6 +30,10 @@ Missing/failed placement reads use the local fallback. Broken paid images switch
 
 No impression/click persistence, tracking pixels or reporting in this scope.
 
+## Implementation (fixtures)
+
+`resolveReaderAd(placement)` (`lib/advertising/`) returns an ordered creative chain — the usable selected paid creative, then the usable magazine fallback — and an empty chain means the built-in house banner. The browser shows the first entry and moves to the next on an image error, ending at the text banner ("Inzerujte v časopise …", "Dohodnúť inzerciu" pre-filled e-mail); no re-fetching or retries. Usable = image source, positive intrinsic size, non-empty alt text (the banner's accessible text) and advertiser name; an invalid mobile image is dropped; unsafe destinations (anything but internal paths or HTTP(S)) make the banner non-clickable. External banner links open in a new tab with `rel="noopener noreferrer sponsored"`. A failed placement read logs server-side and uses the house banner. Working slot geometry: 970×90 desktop, 320×100 below 640 px, artwork contained. Fixture creatives are marked "Ukážková firma A/B/C".
+
 ## Future Rotation
 
 Keep placement/creative separation, candidate references and a pure reusable resolveReaderAd function. A later spec may add cadence, ordering/weights, visibility and reduced-motion rules. Reuse a fetched candidate set instead of fetching from Sanity on each switch. No future rotation state belongs on editions.

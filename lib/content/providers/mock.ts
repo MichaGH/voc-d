@@ -1,3 +1,4 @@
+import { mockReaderAdPlacements } from "@/data/mock/advertising";
 import { mockArticles, mockEducationOffers } from "@/data/mock/articles";
 import { mockEditions } from "@/data/mock/editions";
 import { mockEditorialPlans } from "@/data/mock/editorial-plans";
@@ -109,5 +110,9 @@ export const mockProvider: ContentProvider = {
 
   async getEducationOffers() {
     return mockEducationOffers;
+  },
+
+  async getReaderAdPlacement(magazineKey) {
+    return mockReaderAdPlacements.find((placement) => placement.magazineKey === magazineKey) ?? null;
   },
 };

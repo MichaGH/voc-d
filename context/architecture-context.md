@@ -10,7 +10,7 @@
 | Content now | Typed fixtures in `data/mock/` behind `lib/content` | Implemented: server-only facade, provider contract, mock provider; presentational homepage arrays remain in `data/homepage.ts` |
 | Content later | Sanity Content Lake and Studio | Planned; install/connect last |
 | Complex UI motion | gsap and @gsap/react | Installed; used by the homepage hero (`components/hero/`); simple motion uses CSS |
-| PDF rendering | React-PDF backed by PDF.js | Selected for feature 02; implementation and version/worker compatibility check pending |
+| PDF rendering | `pdfjs-dist` 6.3.289 (legacy build), used directly | Implemented (feature 02): on-demand import on reader routes only; worker/CMaps/fonts/decoders self-hosted in `public/pdfjs/<version>/` by `scripts/copy-pdfjs-assets.mjs` |
 | Delivery | Cached server reads, direct asset delivery | Planned; policy depends on installed Next.js and chosen host |
 | Authentication | Sanity editor authentication | Future Studio only; no visitor accounts |
 
@@ -19,12 +19,13 @@ No Prisma/PostgreSQL, Clerk, Liveblocks, React Flow, Trigger.dev or Vercel Blob.
 ## System Boundaries
 
 - `app/` — public routes, metadata, layouts and server-side composition: homepage, `casopisy`, `o-nas`, `inzercia`, `(magazines)/[magazineSlug]` (landing, `vydania`, `vydania/[editionSlug]`, `edicny-plan`), `vzdelavanie` and `vzdelavanie/[postSlug]`. Root layout renders the navbar/footer.
-- `components/layout/`, `components/homepage/`, `components/hero/`, `components/magazine/`, `components/education/`, `components/shared/` — presentation grouped by feature; future `components/pdf-reader/`.
+- `components/layout/`, `components/homepage/`, `components/hero/`, `components/magazine/`, `components/education/`, `components/shared/` — presentation grouped by feature; `components/pdf-reader/` holds the reader (client) and its browser-only PDF session.
 - `data/` — presentational homepage/navigation arrays; `data/mock/` holds domain fixtures.
 - `types/content.ts` — provider-independent interfaces (implemented).
 - `lib/content/` — server-only read facade, provider contract, mock adapter and pure rules (implemented); Sanity adapter later. `lib/format/` — pure Slovak date/plural/text helpers.
-- `lib/advertising/` — planned pure ad selection/fallback rules.
-- `public/` — current assets and future local PDF/banner fixtures; never a runtime CMS upload directory.
+- `lib/advertising/` — pure reader-ad selection/fallback (`resolveReaderAd`). `lib/pdf-reader/` — pure page pairing, fit/zoom and render-density rules. `lib/url/` — destination validation for untrusted links (ads, PDF links). Pure modules have `*.test.ts` files run by `npm test` (Node test runner).
+- `public/` — current assets and local fixtures (`public/pdfs/` sample issues, `public/images/ads/` sample creatives); generated `public/pdfjs/` (git-ignored); never a runtime CMS upload directory.
+- `scripts/` — build helpers (`copy-pdfjs-assets.mjs`, run by `predev`/`prebuild`).
 - `sanity/` — future schemas, queries, configuration and generated query types, added at final integration; Studio hosting/route chosen then.
 - `app/api/` — only justified integration handlers such as a verified publication webhook; Server Components normally read content directly.
 - `constants/` — links/contact configuration; `constants/routes.ts` is the central route registry and `SITE_ORIGIN` (`NEXT_PUBLIC_SITE_ORIGIN`).
@@ -55,7 +56,9 @@ Query types, rich-text mapping, caching and provider errors stay behind the boun
 
 Server Components load magazine, edition, plan, article and ad metadata. Small client components handle controls, tabs, scrolling and PDF rendering. Reader code/worker load only on reader routes. Page/zoom changes do not query Sanity.
 
-The ad is separate HTML above the PDF surface. PDF errors must not remove the banner, edition identity or navigation. Use direct PDF rendering with a single cover, two-page desktop spreads and single-page narrow layouts; no page-turn animation or image conversion pipeline in the first release. The detailed contract is in [feature 02](feature-spec/02-pdf-reader-and-advertising.md). Prefer browser-to-asset-host PDF requests; do not proxy each file through a Next.js route by default.
+The ad is separate HTML above the PDF surface. PDF errors must not remove the banner, edition identity or navigation. Use direct PDF rendering with a single cover, two-page desktop spreads and single-page narrow layouts; no page-turn animation or image conversion pipeline in the first release. The detailed contract and implementation record are in [feature 02](feature-spec/02-pdf-reader-and-advertising.md). The browser requests PDF byte ranges directly from the asset host; no Next.js proxy.
+
+Reader route data flow: Server Component → `getReaderPageData` (magazine → its edition → that magazine's resolved ad chain) → serializable props → `PdfReader` (client). The client never queries content; page turns and zoom only request PDF byte ranges.
 
 ## Caching and Publishing
 

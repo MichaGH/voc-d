@@ -2,11 +2,13 @@
 
 ## Status and Agreed Approach
 
-Specification ready for implementation; reader not implemented. Design refinements can precede feature 02 without requiring their own detailed feature spec. Writing this specification does not change progress-tracker.md.
+**Units 1–5 implemented with fixtures (awaiting owner review); unit 6 (Sanity) not started.** See the [Implementation Record](#implementation-record) at the end for what was built, the decisions taken where this spec left a choice, and measurements.
 
-Use React-PDF (the existing-PDF display package, react-pdf) backed by PDF.js, inside a VOC page. Display the original PDF directly, with two-page desktop spreads, one page on narrow screens, bottom controls and an independent advertisement above the reader. No page-turn animation or flipbook library.
+Display the original PDF directly with **PDF.js (`pdfjs-dist`, used directly — not React-PDF)** inside a VOC page: two-page desktop spreads, one page on narrow screens, bottom controls and an independent advertisement above the reader. No page-turn animation or flipbook library.
 
-Implement with typed local fixtures and public assets first. Sanity remains the final integration stage. This task does not install dependencies, implement routes or change the current website design.
+Why PDF.js directly instead of the React-PDF wrapper (same engine, decided during implementation): without a turn animation the next spread must appear instantly, which needs render-ahead into a bounded, pixel-budgeted bitmap cache with cancellation and immediate canvas swaps. React-PDF renders per mounted `<Page>` and offers no control over that cache, density caps or scheduling; it also adds eight dependencies and lags PDF.js releases. Text selection uses PDF.js `TextLayer`; links are rendered as validated HTML hotspots instead of PDF.js's annotation layer.
+
+Fixtures and public assets are used until Sanity is integrated as the final stage.
 
 ## Confirmed Owner Decisions
 
@@ -15,7 +17,7 @@ Implement with typed local fixtures and public assets first. Sanity remains the 
 - Banner is HTML above the reader, never inside the PDF; until Sanity is connected a local placeholder/house banner from `public/` is used.
 - Legacy voc.sk material (PDFs, covers, copy) may be downloaded and reused as source/fixture data. The new website must still never *link* to the legacy site.
 
-Still open (see review `.ai/reviews/02-pdf-reader-and-advertising/spec/R01.md`): default zoom that fits the whole spread on screen, arrow placement (sides/bottom), banner strip size, download button, real PDF sizes and host behaviour.
+Implemented working choices for the R01 open points (owner review pending; see Implementation Record): the whole spread fits the screen at 100 %, arrows both at the spread's sides (pointer devices) and in the bottom bar, a 970×90 / 320×100 banner strip, no download button. Still open: real PDF sizes and host behaviour.
 
 ## Purpose
 
@@ -115,8 +117,8 @@ Resize/orientation changes must not reset the edition or reading position. Recal
 - Accept an integer from 1 to actual page count. Invalid input keeps the current view and shows a short inline Slovak validation message.
 - Disable previous on the first view and next on the last view.
 - Left/right keyboard navigation works while the reader has focus, except inside inputs/editable text. Do not install page-wide shortcuts that interfere with the rest of the site.
-- Zoom controls: Zmenšiť, Zväčšiť and Prispôsobiť šírke.
-- Initial zoom is fit-to-width. Working bounds are 100–250% of the fit scale, in 25% steps; indicate the current level and disable unavailable actions.
+- Zoom controls: Zmenšiť, Zväčšiť and Prispôsobiť (back to 100 %).
+- Initial zoom ("100 %") fits the whole spread into the available stage in spread layout (resolves R01-F01), and the page width in single-page layout. Working bounds are 100–250% of that fit, in 25% steps; indicate the current level and mark unavailable actions (`aria-disabled`, so focus is kept).
 - Keep zoom through page navigation, reset the page viewport's scroll to its top, and retain focus on the activated control. Fit resets zoom to 100%.
 - At enlarged zoom, support ordinary horizontal/vertical scrolling within the PDF viewport without making the whole website wider than the screen.
 - Rerender sharply at settled zoom/resize values instead of only stretching a low-resolution bitmap. Briefly retaining the previous render while replacement loads is acceptable.
@@ -129,23 +131,26 @@ Keep route composition and metadata on the server. Load the browser renderer in 
 
 Suggested responsibilities:
 
+Implemented responsibilities:
+
 | Module | Responsibility |
 | --- | --- |
-| app/(magazines)/[magazineSlug]/citat/[editionSlug]/page.tsx | Identity resolution, metadata, not-found and reader-page composition |
-| components/pdf-reader/PdfReaderLoader.tsx | Client-side lazy import/loading boundary |
-| components/pdf-reader/PdfReader.tsx | React-PDF document lifecycle and navigation/zoom state |
-| components/pdf-reader/PdfSpread.tsx | One/two visible Page instances, text and link layers |
-| components/pdf-reader/ReaderControls.tsx | Accessible controls and validation |
-| components/pdf-reader/ReaderAdBanner.tsx | Banner display and browser image-error fallback |
-| lib/pdf-reader/navigation.ts | Pure page pairing, bounds and resize/jump rules |
-| lib/content/ | Server-only facade and provider adapters |
-| lib/advertising/ | Pure selection/fallback policy |
+| app/(magazines)/[magazineSlug]/citat/[editionSlug]/page.tsx | Identity resolution, metadata (noindex), not-found, identity row, banner, reader or cover-only state |
+| components/pdf-reader/pdf-session.ts | Browser-only PDF.js session: on-demand library import, document lifecycle, prioritised render queue, cancellation, pixel-budgeted bitmap cache, text layers, safe links |
+| components/pdf-reader/PdfReader.tsx | View state (focused page, layout, zoom), stage measurement, render plan, keyboard/swipe, loading/error states |
+| components/pdf-reader/PdfPage.tsx | One page: swaps in the session's canvas, text layer, link hotspots, page-level error/retry |
+| components/pdf-reader/ReaderControls.tsx | Accessible bottom controls and page-input validation |
+| components/pdf-reader/ReaderAdBanner.tsx | Banner chain display and browser image-error fallback |
+| components/pdf-reader/reader.css | Text-layer CSS subset (loaded only by the reader) |
+| lib/pdf-reader/navigation.ts, zoom.ts | Pure page pairing/bounds/jump rules; fit, zoom and render-density rules |
+| lib/advertising/resolve-reader-ad.ts | Pure selection/fallback policy |
+| lib/url/safe-href.ts | Destination validation for ads and PDF links |
+| lib/content/reader.ts | `getReaderPageData` composition behind the facade |
+| scripts/copy-pdfjs-assets.mjs | Copies the installed PDF.js worker, CMaps, standard fonts and decoders into `public/pdfjs/<version>/` (predev/prebuild) |
 
-These are planned responsibilities, not a mandate to create empty modules.
+`pdfjs-dist` is pinned exactly (6.3.289). The **legacy build** is used: the modern build relies on very recent JS APIs (`Map.prototype.getOrInsertComputed`, `Uint8Array.prototype.toBase64`) without polyfills, which still-common Safari/Android versions lack. Worker, CMaps, standard fonts and WebAssembly decoders are served from our origin in the exact installed version with an immutable cache header. PDF.js 6 no longer evaluates font code with `eval` (the CVE-2024-4367 vector, fixed in 4.2.67); scripting and XFA stay disabled.
 
-Select/pin a compatible stable React-PDF version at implementation and verify its React, Node, browser and bundler requirements against its matching documentation. Configure the exact matching PDF.js worker in the renderer module, package it locally and load required text/annotation styles there. Include needed font/CMap/decoder assets according to representative PDFs; do not import unrelated packages or rely on a mismatched third-party worker.
-
-Follow the installed Next.js lazy-loading guide: browser-only dynamic import with ssr: false belongs inside a Client Component. Avoid eagerly importing PDF code from root layout/homepage modules. Do not fetch the PDF into an additional full-file Blob/base64 copy before passing it to the renderer.
+The reader shell is server-rendered (cover placeholder, controls) and the PDF.js library is imported on demand inside the session (the installed lazy-loading guide's "loading external libraries" pattern), so no other route ships PDF code and the cover appears before any script runs. The PDF is never copied into a Blob/base64 buffer.
 
 ## Data Flow and Fixtures
 
@@ -194,11 +199,11 @@ Document retry tears down the failed renderer session and starts one new attempt
 
 ### Rendering and Memory
 
-Start with only the current one/two page canvases mounted. No off-screen canvas buffer by default. An optional bounded next-spread preparation can be added only when measurements justify it; never render the entire issue.
+Only the current one/two page canvases are mounted. Render-ahead is the default (R01-F03): once the visible pages are drawn, the next and previous views are prepared into a bounded cache; never the whole issue. Limits are recorded in the Implementation Record.
 
-Use a stable document source/options identity so changing page/zoom does not reopen or download the document unnecessarily. Release abandoned canvases and cancel pending work through the renderer lifecycle. Temporary replacement canvases during zoom are allowed, but canvas count/memory must settle back to the current view rather than accumulate.
+Use a stable document session so changing page/zoom does not reopen or download the document. Cancel pending renders that are no longer wanted and release evicted canvases. Temporary replacement canvases during zoom are allowed, but canvas count/memory settles back within the budget rather than accumulating.
 
-Working density cap is devicePixelRatio 2, with an additional measured bitmap-size limit to prevent oversized mobile canvases. Record final limits in implementation after testing zoomed small text/diagrams; do not silently compromise readability or claim pixel limits equal total browser memory. Preserve text/vector detail available in the source; embedded photos/scans cannot gain missing detail.
+Density cap is devicePixelRatio 2, with a per-page bitmap limit to prevent oversized mobile canvases; pixel limits are not total browser memory. Preserve text/vector detail available in the source; embedded photos/scans cannot gain missing detail.
 
 ### File Delivery
 
@@ -248,7 +253,7 @@ Record PDF byte size/page count, device/browser, time to first usable page, byte
 ## Implementation Units
 
 1. Contracts, pure navigation/ad rules, mock provider and fixtures.
-2. React-PDF/worker integration check on the installed Next.js version; verify real text/link rendering.
+2. PDF.js/worker integration on the installed Next.js version (production build and Turbopack dev); real text/link rendering verified.
 3. Reader route shell, spreads, responsive state, controls and error recovery.
 4. Paid/default banner, central selection and image-failure handling.
 5. Available archive/sample entry points, accessibility and production performance verification.
@@ -267,7 +272,53 @@ These inputs do not reopen the agreed direct-PDF approach or block fixture-backe
 
 ## Technical References
 
-- [React-PDF](https://github.com/wojtekmaj/react-pdf) — package/version-specific integration and worker setup.
+- [PDF.js examples](https://mozilla.github.io/pdf.js/examples/) — direct rendering, text layer and worker setup.
 - [PDF.js API](https://mozilla.github.io/pdf.js/api/draft/module-pdfjsLib.html) — file transport options; verify against the selected installed version.
 - [PDF.js FAQ](https://github.com/mozilla/pdf.js/wiki/Frequently-Asked-Questions) — visible-page rendering, range loading and compatibility.
 - Installed Next.js docs: node_modules/next/dist/docs/01-app/02-guides/lazy-loading.md and 01-getting-started/05-server-and-client-components.md; caching guides listed in delivery-and-costs.md.
+
+## Implementation Record
+
+Implemented with fixtures; awaiting owner review. Verified with `npm test` (40 unit tests), `tsc`, `eslint`, `next build`, and Playwright (Chromium only in this environment; Safari/Firefox still to be checked) at 1440×900 and 390×844.
+
+### Decisions taken where the spec left a choice
+
+| Topic | Implemented working choice |
+| --- | --- |
+| Engine | PDF.js directly (see Status). Legacy build, exact version, assets self-hosted. |
+| Default size | Spread layout fits the whole spread into the stage (banner, spread and controls fit a 1440×900 laptop without scrolling); single-page layout fits the page width (max 900 px). |
+| Layout switch | Spread when the reader stage is ≥ 960 px wide (`SPREAD_MIN_STAGE_WIDTH`). |
+| Arrows | Labelled bottom controls (sticky); large side arrows beside the spread on pointer devices at 100 % (out of the tab order, they duplicate the bottom controls). On phones only the navigation row is sticky; "Prejsť na stranu" and zoom sit below the page. |
+| Turns | Arrow keys/PageUp/PageDown/Home/End while the reader has focus (never inside the page field); at a zoomed edge arrows first scroll. Horizontal swipe on touch screens when not zoomed or selecting. Internal PDF links jump to their page. |
+| Render-ahead | Default (R01-F03): after the visible pages are drawn, the next view and then the previous view are prepared; they never compete with the visible pages. Skipped with Data Saver. Prepared spreads appear instantly. |
+| Memory | Bitmap density cap devicePixelRatio 2; per page ≤ 8.4 MPx desktop / 4.2 MPx touch or ≤ 4 GB devices; whole cache ≤ 20 MPx (~80 MB) desktop / 10 MPx (~40 MB) touch. Least-recently-used non-visible bitmaps are evicted and their canvases zeroed (Safari). |
+| Range loading | `disableStream` + `disableAutoFetch`, `rangeChunkSize` 8 KB (see measurements). |
+| Banner geometry | Desktop 970×90 leaderboard, mobile 320×100 below 640 px, artwork contained (never cropped), label "Inzercia". |
+| Banner fallback | `resolveReaderAd` returns an ordered chain (selected paid → magazine fallback); a browser image error moves to the next entry, then to the built-in text banner "Inzerujte v časopise …" with "Dohodnúť inzerciu" (pre-filled e-mail). |
+| Entry point | Edition detail page shows "Čítať online" above the print-order panel when a PDF exists (link prefetch disabled). Cards keep linking to the edition page. |
+| Indexing | Reader routes are `noindex, follow` with the edition page as canonical; local fixture PDFs send `X-Robots-Tag: noindex` (not controllable on the Sanity CDN). |
+| Download button | None (unchanged). |
+
+### Fixtures
+
+`public/pdfs/` holds generated sample issues (real cover, sample Slovak pages, a photo across the 4–5 fold, linked contents page, ads with links, 6–7 pt captions and vector charts): PVK 4/2026 (36 p, 4.9 MB) and PVK 3/2026 (28 p, 3.1 MB) share the PVK placement, SBD 2/2026 (24 p, 2.8 MB) has its own. Real issues could not be downloaded (voc.sk is blocked by this environment's network policy) and must replace them. QA files (1, 2, 6, 7 pages; 96-page 102 MB print-style file, plain and linearized; password-protected; truncated) were used through request interception and are not committed.
+
+### Measurements (Chromium, `next start`, CDP throttling)
+
+| File | Link | First page drawn | PDF bytes then | Turns after |
+| --- | --- | --- | --- | --- |
+| Fixture 4.9 MB, 36 p | 9 Mb/s, 60 ms, desktop | 4.2 s | 0.73 MB | instant ×3 |
+| Fixture 4.9 MB, 36 p | 1.6 Mb/s, 150 ms, phone | 12.8 s | 0.73 MB | instant, instant, 0.9 s |
+| Print 102 MB, 96 p | 9 Mb/s, 60 ms, desktop | 3.8 s | 1.16 MB | instant, 2.1 s, 1.0 s |
+| Print 102 MB, 96 p | 1.6 Mb/s, 150 ms, phone | 12.5 s | 1.16 MB | instant, 8.2 s, 17.6 s |
+
+The edition cover (separate JPEG) is visible immediately in every case; the times are for the first PDF-rendered bitmap. Unthrottled localhost: ~0.8 s. Reading 20+ pages of the fixture transfers ~4.8 MB of 4.9 MB; page turns, zoom and resizing make no requests other than PDF ranges. Homepage, archive and edition pages load no PDF code, worker or file; cover-only readers neither.
+
+Findings that shape the reading-export rules (see delivery-and-costs.md):
+
+- On open PDF.js validates the page count by loading the last page, which in a flat page tree fetches every page object **sequentially**. With the 64 KB default chunk each fetch also pulled 64 KB of neighbouring image data (2.0 MB fixture / 5.5 MB print file before page 1). 8 KB chunks cut that to 0.29 / 0.73 MB (first page 16.9 → 12.8 s and 36.9 → 12.5 s on slow 3G). The remaining open time is round trips, i.e. a property of the file.
+- Print-resolution images (1–2 MB per page) make later turns slow on mobile; a web reading export is required. Linearization alone did not change the numbers.
+
+### Remaining for launch
+
+Representative real issues measured on the production asset host (range/CORS/cache headers), Safari and Firefox checks, owner sign-off on banner geometry/side arrows/default fit, and unit 6 (Sanity).

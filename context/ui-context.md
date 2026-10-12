@@ -100,11 +100,9 @@ Extend existing typography, palette, spacing, buttons and cover treatment. Magaz
 
 Plans have an explicit year selector and clearly labeled issue, publication/distribution date, submission deadline and optional theme/note. Mobile rows may stack without losing labels. Future years remain accessible. Dates come from content, not fixed decorative months. Final layout is chosen during implementation.
 
-## Future PDF Reader
+## PDF Reader (implemented, awaiting review)
 
-Keep VOC navigation, magazine/issue identity and a clearly labeled advertising rectangle above the PDF. It is separate HTML, not embedded in the PDF. Reserve consistent slot dimensions for paid/default/loading states to prevent layout jumps.
-
-Use navy/blue controls, light surfaces and clear Slovak loading/error messages. Preserve PDF proportions and readable mobile controls. Banner dimensions and sticky/fullscreen behavior are undecided; a normal non-sticky block is the initial assumption. Native/raw PDF viewing cannot guarantee a website banner.
+Route `/[magazine]/citat/[edition]` on a light surface page: compact identity row (magazine title link + bold issue label, `← Späť na vydanie` pill), then the `Inzercia` label and banner slot (970×90 desktop, 320×100 mobile, 14px corners, non-sticky), then the stage and the bottom controls. Pages sit on the surface with a soft shadow; spreads touch at the fold with a light fold shading. Large white round side arrows beside the spread on pointer devices. Bottom bar: white pill with `← Predchádzajúca`, `Strana 1 z 36` / `Strany 2–3 z 36`, navy `Nasledujúca →`, `Prejsť na stranu` + OK, zoom `−`/`100 %`/`+`/`Prispôsobiť`; sticky; on phones only the navigation row is sticky and the tools sit below the page. Loading hints ("Načítavam časopis…", "Načítavam stranu…") appear after a short delay; the cover image stands in for page 1 while the PDF opens. Error and cover-only states are white rounded panels with navy primary and outlined secondary actions. The edition detail page shows a blue full-width `Čítať online →` button above the `Chcete toto číslo?` panel when a PDF exists. Native/raw PDF viewing cannot guarantee a website banner.
 
 ## Interaction and Accessibility
 

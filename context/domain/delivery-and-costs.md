@@ -33,6 +33,16 @@ Estimate monthly PDF opens multiplied by average delivered bytes, plus images/do
 
 Sanity file uploads are the initial candidate. If measured delivery exceeds affordable allowances, resolve hosting before launch. The stable PdfAsset URL contract permits an explicit later delivery migration; this documentation does not introduce another service.
 
+## Reader Measurements and Reading-Export Rules
+
+Measured with generated sample issues (see the feature 02 Implementation Record); repeat with real issues on the production host. With range loading, opening a 36-page 4.9 MB issue and drawing the cover transfers ~0.73 MB; reading on transfers only the pages viewed. PDF.js uses 8 KB range chunks, so one reading session makes roughly 40–100 range requests: if the asset host counts requests (CDN request quotas), count them per session alongside bytes.
+
+Rules for the PDF uploaded for reading (to confirm with the publisher's exports):
+
+- Single reading pages (not print-imposed spreads), web/screen export: images around 150–200 ppi at page size, JPEG compression; print-resolution files made later turns 8–18 s slower on a slow mobile link.
+- Fewer objects to walk on open help: PDF.js loads every page object of a flat page tree sequentially before the first page. Producer exports with optimised structure ("Fast Web View"/optimised PDF) should be measured against plain exports.
+- Upload validation (unit 6) should flag files above a size threshold chosen from real measurements.
+
 ## Launch Verification
 
 Check production-mode cold/repeated loads, CMS counts and navigation prefetch. Confirm page/zoom makes no CMS requests and archive/homepage loads no PDF code/bytes. Measure real long PDFs on mobile for transfer, memory and responsiveness. Verify publication swaps across old/new readers within the agreed delay, independent magazine ads, image sizes and stable banner geometry. Review service usage against conservative traffic assumptions, configure available usage notifications and set a review threshold below plan limits.

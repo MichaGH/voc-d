@@ -34,6 +34,11 @@ export function editionPath(key: MagazineKey, editionSlug: string) {
   return `${editionsPath(key)}/${editionSlug}`;
 }
 
+/** On-site reader of an edition's PDF. Link to it only when the edition has a PDF. */
+export function readerPath(key: MagazineKey, editionSlug: string) {
+  return `${magazinePath(key)}/citat/${editionSlug}`;
+}
+
 export function editorialPlanPath(key: MagazineKey) {
   return `${magazinePath(key)}/edicny-plan`;
 }

@@ -2,6 +2,7 @@ import "server-only";
 
 import type { ContentProvider } from "@/lib/content/provider";
 import { mockProvider } from "@/lib/content/providers/mock";
+import { getReaderPageDataFrom, type ReaderPageQuery } from "@/lib/content/reader";
 
 /**
  * Server-only content facade. Pages call these operations; they never import
@@ -30,3 +31,9 @@ export const getEditorialPlan = provider.getEditorialPlan;
 export const getArticles = provider.getArticles;
 export const getArticleBySlug = provider.getArticleBySlug;
 export const getEducationOffers = provider.getEducationOffers;
+export const getReaderAdPlacement = provider.getReaderAdPlacement;
+
+/** Reader route data: magazine → its edition → that magazine's resolved banner. */
+export function getReaderPageData(query: ReaderPageQuery) {
+  return getReaderPageDataFrom(provider, query);
+}

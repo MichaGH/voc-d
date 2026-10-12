@@ -6,7 +6,7 @@ import InsertList from "@/components/magazine/InsertList";
 import Breadcrumbs from "@/components/shared/Breadcrumbs";
 import { h3, inner, sectionX } from "@/components/shared/ui";
 import { CONTACT } from "@/constants";
-import { ROUTES, editionPath, editionsPath, magazinePath, subscriptionPath } from "@/constants/routes";
+import { ROUTES, editionPath, editionsPath, magazinePath, readerPath, subscriptionPath } from "@/constants/routes";
 import { getEdition, getEditions, getMagazineBySlug, getMagazines } from "@/lib/content";
 import { bindDashes } from "@/lib/format/text";
 import type { EditionSummary, MagazineKey } from "@/types/content";
@@ -126,8 +126,18 @@ export default async function EditionPage({ params }: PageProps<"/[magazineSlug]
                 <p className="mt-6 max-w-[48ch] text-[clamp(17px,1.4vw,20px)] leading-[1.55] text-[var(--color-copy)] text-pretty">{edition.description}</p>
               )}
 
-              {/* The one obvious action */}
-              <div className="mt-10 rounded-[28px] bg-[linear-gradient(135deg,var(--color-navy-light)_0%,var(--color-navy)_75%)] p-[clamp(28px,3.5vw,44px)] text-white">
+              {/* Reading online comes first when a PDF exists; ordering a print copy stays one click away. */}
+              {edition.pdf && (
+                <Link
+                  href={readerPath(key, edition.slug)}
+                  prefetch={false}
+                  className="mt-10 flex h-16 w-full items-center justify-center gap-3 rounded-full bg-[var(--color-blue)] px-8 text-lg font-semibold text-white no-underline transition-colors hover:bg-[var(--color-navy)] hover:text-white"
+                >
+                  Čítať online <span aria-hidden="true">→</span>
+                </Link>
+              )}
+
+              <div className={`${edition.pdf ? "mt-4" : "mt-10"} rounded-[28px] bg-[linear-gradient(135deg,var(--color-navy-light)_0%,var(--color-navy)_75%)] p-[clamp(28px,3.5vw,44px)] text-white`}>
                 <h2 className="text-[clamp(24px,2.2vw,32px)] leading-[1.1] font-bold tracking-[-.025em] text-balance">Chcete toto číslo?</h2>
                 <p className="mt-3 max-w-[44ch] text-base leading-[1.6] text-[var(--color-card-copy)] text-pretty">
                   Pošleme vám tlačený výtlačok. Stačí nám napísať — dostupnosť staršieho čísla potvrdíme.
@@ -142,9 +152,7 @@ export default async function EditionPage({ params }: PageProps<"/[magazineSlug]
                   <Link href={subscriptionPath(key)} className="font-semibold text-white no-underline hover:text-[var(--color-blue-pale)]">
                     Radšej predplatné →
                   </Link>
-                  <span className="text-[var(--color-stat-copy)]">
-                    {edition.pdf ? "Čítanie online pripravujeme" : `Telefón ${CONTACT.phoneDisplay}`}
-                  </span>
+                  <span className="text-[var(--color-stat-copy)]">Telefón {CONTACT.phoneDisplay}</span>
                 </div>
               </div>
             </div>

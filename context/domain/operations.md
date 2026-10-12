@@ -2,7 +2,7 @@
 
 ## Boundary and Status
 
-Implemented for fixtures: domain interfaces in `types/content.ts`, provider interface in `lib/content/provider.ts`, public server-only exports in `lib/content/index.ts` and the mock adapter in `lib/content/providers/mock.ts` using `data/mock/`. Not yet implemented: getSiteSettings, getHomePageContent, getReaderAdPlacement, getReaderPageData. Add Sanity last.
+Implemented for fixtures: domain interfaces in `types/content.ts`, provider interface in `lib/content/provider.ts`, public server-only exports in `lib/content/index.ts` and the mock adapter in `lib/content/providers/mock.ts` using `data/mock/`. getReaderAdPlacement (provider) and getReaderPageData (facade composition in `lib/content/reader.ts`) are implemented for fixtures. Not yet implemented: getSiteSettings, getHomePageContent. Add Sanity last.
 
 Every read is asynchronous from day one. Pages use the facade; adapters normalize source data. UI never selects the provider.
 
@@ -23,7 +23,7 @@ Every read is asynchronous from day one. Pages use the facade; adapters normaliz
 | getEditorialPlanYears | Magazine key | Published plan years, including future years |
 | getEditorialPlan | magazineKey, explicit year | Plan or null; no silent year substitution |
 | getReaderAdPlacement | Magazine key | Placement/candidate data or null |
-| getReaderPageData | magazineSlug, editionSlug | Matching magazine/edition and resolved ad, or null |
+| getReaderPageData | magazineSlug, editionSlug | Magazine summary, edition identity/cover/optional PdfAsset and the resolved ad chain, or null |
 | getArticles | section, optional magazine/kind filter, cursor, bounded limit | Published summaries; initial section is education |
 | getArticleBySlug | section, article slug | Scoped published detail or null; feature 01 uses education |
 | getEducationOffers | None | Evergreen conference/course offers in display order |

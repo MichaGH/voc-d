@@ -12,6 +12,7 @@ import type {
   MagazineKey,
   MagazineSummary,
   Partner,
+  ReaderAdPlacement,
 } from "@/types/content";
 
 export interface EditionsQuery {
@@ -47,4 +48,6 @@ export interface ContentProvider {
   getArticles(query: ArticlesQuery): Promise<ArticlePage>;
   getArticleBySlug(section: ArticleSection, slug: string): Promise<Article | null>;
   getEducationOffers(): Promise<EducationOffer[]>;
+  /** Published reader placement of one magazine (with its candidates), or null. */
+  getReaderAdPlacement(magazineKey: MagazineKey): Promise<ReaderAdPlacement | null>;
 }

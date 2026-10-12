@@ -64,6 +64,7 @@
 - `context/domain/` — content relationships, operation contracts, advertising and delivery/cost rules.
 - `context/feature-spec/` — substantial behavioral specs; routine visual changes can use concise context notes.
 - Name files after the responsibility they contain, not the technology.
+- Pure rule modules (`lib/pdf-reader/`, `lib/advertising/`, `lib/url/`) keep runtime imports relative with `.ts` extensions (or type-only) so `npm test` can run their `*.test.ts` files with Node's built-in runner; no extra test framework.
 
 ## Applicability of Shared Route Rules
 

@@ -131,6 +131,63 @@ export interface EditionPage {
 }
 
 /* ------------------------------------------------------------------ */
+/* Reader advertising                                                  */
+/* ------------------------------------------------------------------ */
+
+/** Reusable advertisement creative ("advertisement" document). */
+export interface AdCreative {
+  id: string;
+  /** Internal name for editors; never shown to visitors. */
+  title: string;
+  advertiser: string;
+  /** Desktop artwork. Its alt text is the banner's accessible text. */
+  image: ContentImage;
+  /** Optional artwork for narrow screens. */
+  mobileImage?: ContentImage;
+  /** Internal path or HTTP(S) URL; anything else is ignored at resolution. */
+  href?: string;
+}
+
+/**
+ * One reader placement per magazine. Candidates are kept for a later
+ * rotation spec; today the owner selects exactly one of them manually.
+ */
+export interface ReaderAdPlacement {
+  magazineKey: MagazineKey;
+  enabled: boolean;
+  candidates: AdCreative[];
+  selectedId?: string;
+  /** Magazine-level default shown when no paid creative is usable. */
+  fallback?: AdCreative;
+}
+
+/** A usable creative, resolved for display. */
+export interface ReaderAdCreative {
+  kind: "paid" | "fallback";
+  advertiser: string;
+  image: ContentImage;
+  mobileImage?: ContentImage;
+  /** Validated internal path or HTTP(S) URL; absent = non-clickable banner. */
+  href?: string;
+}
+
+/**
+ * Resolved, serializable banner chain for the reader: the first creative is
+ * shown; if its artwork fails in the browser the next one is used; after the
+ * last (or with none) the built-in house banner. No re-fetching, no retries.
+ */
+export interface ReaderAd {
+  creatives: ReaderAdCreative[];
+}
+
+/** Everything the reader route needs; PDF bytes are never part of it. */
+export interface ReaderPageData {
+  magazine: MagazineSummary;
+  edition: Pick<Edition, "magazineKey" | "slug" | "label" | "year" | "cover" | "pdf">;
+  ad: ReaderAd;
+}
+
+/* ------------------------------------------------------------------ */
 /* Editorial plans                                                     */
 /* ------------------------------------------------------------------ */
 
