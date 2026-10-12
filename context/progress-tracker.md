@@ -29,7 +29,7 @@ Update this file whenever the current phase, active feature, or implementation s
 
 - Top bar transparent (no background, no visible `Inzercia` label); spreads fitted below it, overview/continuous views scroll under it and under the bottom bar.
 - Three modes in the bar: Listovanie (book; pages are click targets — ring while the page renders, then continuous reading at that page; no text selection), Náhľad strán (fixed-size 282 px pages, 4/3/1 columns, spacing-only resize then brief shrink), Strany pod sebou (≈87 % width, no gaps, selectable text/links, arrow keys in small steps, zoom 50–200 %). Phone bar: single mode button with a menu, compact inserts button and page field.
-- Bottom bar hide tab (slides to a 4 px line). New pure modules `lib/pdf-reader/grid.ts`, `scroll.ts` (+ tests), views `GridView.tsx`, `ScrollView.tsx`.
+- Bottom bar hide tab (slides to a 4 px line), above the bar's right end. Phones default to Strany pod sebou; pointer cursor on clickable pages; no scrollbar flash during the page turn; phone inserts panel as a bottom sheet. New pure modules `lib/pdf-reader/grid.ts`, `scroll.ts` (+ tests), views `GridView.tsx`, `ScrollView.tsx`.
 
 ## Feature 02 — Part B revision (applied, awaiting review)
 

@@ -63,11 +63,13 @@ const iconButton =
 
 /** Height of the line left visible when the bar is hidden. */
 export const HIDDEN_BAR_LINE = 4;
+/** Height of the hide/show tab above the bar's right end (over the view modes). */
+const BAR_TAB_HEIGHT = 22;
 
 /**
  * The reader's single control surface at the bottom of the screen: identity
  * on the left, page controls and view modes on the right. A small tab above
- * its left end slides it down to a thin line and back. Unavailable actions
+ * its right end slides it down to a thin line and back. Unavailable actions
  * use aria-disabled so the focused control keeps focus at the ends of the issue.
  */
 export default function ReaderBar({
@@ -95,7 +97,8 @@ export default function ReaderBar({
           aria-controls={contentId}
           aria-label={hidden ? "Zobraziť ovládací panel" : "Skryť ovládací panel"}
           title={hidden ? "Zobraziť ovládací panel" : "Skryť ovládací panel"}
-          className="absolute bottom-full left-3 grid h-[22px] w-[52px] place-items-center rounded-t-[10px] bg-[var(--color-primary)] text-white transition-colors hover:bg-[var(--color-primary-bright)] sm:left-4"
+          className="absolute right-2 bottom-full grid w-[56px] place-items-center rounded-t-[10px] sm:right-4 bg-[var(--color-primary)] text-white transition-colors hover:bg-[var(--color-primary-bright)]"
+          style={{ height: BAR_TAB_HEIGHT }}
         >
           <svg
             width="16"
@@ -403,7 +406,7 @@ function InsertsMenu({ inserts, onOpen }: { inserts: EditionInsert[]; onOpen: (k
           id={panelId}
           role="region"
           aria-label="Súčasťou čísla"
-          className="absolute right-0 bottom-[calc(100%+12px)] w-[min(420px,calc(100vw-16px))] rounded-[18px] border border-[var(--color-line)] bg-white p-3 text-[var(--color-navy)] shadow-[0_24px_60px_-20px_rgba(4,23,58,.45)]"
+          className="absolute right-0 bottom-[calc(100%+12px)] w-[min(420px,calc(100vw-16px))] rounded-[18px] border border-[var(--color-line)] bg-white p-3 text-[var(--color-navy)] shadow-[0_24px_60px_-20px_rgba(4,23,58,.45)] max-sm:fixed max-sm:inset-x-2 max-sm:right-2 max-sm:bottom-[calc(72px+env(safe-area-inset-bottom))] max-sm:w-auto max-sm:max-h-[70dvh] max-sm:overflow-y-auto max-sm:rounded-[20px]"
         >
           <p className="px-2 pt-1 pb-2 text-[13px] font-semibold tracking-[.06em] text-[var(--color-muted)] uppercase">Súčasťou čísla</p>
           <ul className="grid list-none gap-1">

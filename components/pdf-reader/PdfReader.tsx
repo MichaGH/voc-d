@@ -56,7 +56,10 @@ export default function PdfReader({ pdf, cover, identity, title, inserts, orderH
   const [insertKey, setInsertKey] = useState<string | null>(null);
   // The issue page to return to after viewing an insert.
   const [issuePage, setIssuePage] = useState(1);
-  const [mode, setMode] = useState<ReaderMode>("book");
+  // Until the reader picks a view, phones get continuous reading and larger screens the book.
+  const [chosenMode, setMode] = useState<ReaderMode | null>(null);
+  const phone = useSyncExternalStore(subscribePhone, isPhone, notPhone);
+  const mode = chosenMode ?? (phone ? "scroll" : "book");
   const [barHidden, setBarHidden] = useState(false);
   const insert = inserts.find((item) => item.key === insertKey && item.digital);
   const barProps = {
@@ -110,6 +113,8 @@ interface StageBox {
 
 /** Padding around the pages inside the stage (spreads). */
 const STAGE_PADDING = 16;
+/** Below this width (phones) the reader opens in continuous reading. */
+const PHONE_QUERY = "(max-width: 767px)";
 /** Room kept on each side of a spread for the side arrows. */
 const ARROW_GUTTER = 88;
 /** Side arrows never sit further than this from the pages. */
@@ -128,6 +133,14 @@ const PICK_TIMEOUT_MS = 10_000;
 const CURRENT_LINE = 0.3;
 
 const noSubscribe = () => () => {};
+
+function subscribePhone(onChange: () => void) {
+  const query = window.matchMedia?.(PHONE_QUERY);
+  query?.addEventListener("change", onChange);
+  return () => query?.removeEventListener("change", onChange);
+}
+const isPhone = () => window.matchMedia?.(PHONE_QUERY).matches ?? false;
+const notPhone = () => false;
 const zero = () => 0;
 
 interface ReaderDocumentProps {
@@ -255,7 +268,11 @@ function ReaderDocument({ pdf, cover, title, initialPage, onPageChange, barProps
 
   const view = viewForPage(focused, pageCount, layout);
   const viewKey = view.join("-");
-  const bookWidth = view.reduce((sum, page) => sum + Math.round(sizeOf(page).width * bookCss), 0);
+  // The side arrows are placed for a full spread even when the cover or last page stands alone, so they never jump.
+  const bookWidth =
+    layout === "spread"
+      ? 2 * Math.round(reference.width * bookCss)
+      : view.reduce((sum, page) => sum + Math.round(sizeOf(page).width * bookCss), 0);
 
   const scrollPadding = { top: topInset + SCROLL_TOP_GAP, bottom: barInset + SCROLL_TOP_GAP, side: stage ? scrollSideMargin(stage.width) : 0 };
   const gridPadding = { top: topInset + GRID_GAP, bottom: barInset + GRID_GAP };
@@ -712,7 +729,8 @@ function ReaderDocument({ pdf, cover, title, initialPage, onPageChange, barProps
           <div
             className={
               stage
-                ? "flex min-h-full w-max min-w-full items-center justify-center"
+                ? // Clip, so the 3D page turn never makes the stage scrollable for a moment.
+                  "flex min-h-full w-max min-w-full items-center justify-center overflow-clip"
                 : "flex h-full items-center justify-center p-4 pb-[calc(80px+env(safe-area-inset-bottom))]"
             }
             style={

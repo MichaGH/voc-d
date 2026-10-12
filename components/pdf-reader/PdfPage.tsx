@@ -135,7 +135,7 @@ export default function PdfPage({
             type="button"
             disabled={!session}
             onClick={() => onPick?.(page)}
-            className="absolute inset-0 z-[3] cursor-zoom-in outline-offset-[6px] disabled:cursor-default"
+            className="absolute inset-0 z-[3] cursor-pointer outline-offset-[6px] disabled:cursor-default"
           >
             <span className="sr-only">Čítať stranu {page}</span>
           </button>
